@@ -1,6 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Components } from "../Components/EntityComponents.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Location/Vector.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { Dimension } from "../Dimension/index.js";
 import { Location } from "../Location/Location.js";
@@ -164,8 +164,13 @@ export class Entity {
   /**
    * EntityクラスからPlayerクラスへ変換します。
    */
-  convertPlayer(){
-    return world.getPlayers({name: this.NameTag(), location: this.location.getMCLocation(), maxDistance: 1, minDistance: 1})[0];
+  convertPlayer() {
+    return world.getPlayers({
+      name: this.NameTag(),
+      location: this.location.getMCLocation(),
+      maxDistance: 1,
+      minDistance: 1,
+    })[0];
   }
   /**
    * スコアを取得します。
@@ -189,17 +194,17 @@ export class Entity {
    * @returns 返ってくる値はboolean、存在した場合はtrue,存在しない場合はfalseになります。
    */
   hasTag(tag) {
-    if(tag instanceof Array) return tag.filter(x => this._player.hasTag(String(x))).length == tag.length;
+    if (tag instanceof Array) return tag.filter((x) => this._player.hasTag(String(x))).length == tag.length;
     return this._player.hasTag(tag);
   }
   /**
    * エンティティに指定されたタグが存在するかどうかを個数単位でチェックします。
    * 配列ではない場合は、部分一致で数値を返します。
-   * @param {string | string[]} tag 
+   * @param {string | string[]} tag
    */
-  hasTags(tag){
-    if(tag instanceof Array) return this.getTags().filter(x => tag.find(y => x === y)).length;
-    return this.getTags().filter(x => x.match(tag)).length;
+  hasTags(tag) {
+    if (tag instanceof Array) return this.getTags().filter((x) => tag.find((y) => x === y)).length;
+    return this.getTags().filter((x) => x.match(tag)).length;
   }
   /**
    * エンティティをキルします。

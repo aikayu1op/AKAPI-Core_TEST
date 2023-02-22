@@ -1,6 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Player } from "../Player/index.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Location/Vector.js";
 import { BlockLocation, Location } from "../Location/index.js";
 import { Block } from "../Block/Block.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
@@ -57,7 +57,7 @@ export class Dimension {
     if (options instanceof EntityQueryOptions)
       for (const entity of this._dimension.getEntities(options.getOptions())) push.push(new Entity(entity));
     else for (const entity of this._dimension.getEntities(options)) push.push(new Entity(entity));
-    
+
     return push[Symbol.iterator]();
   }
   /**

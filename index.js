@@ -1,5 +1,5 @@
 export { ItemStack } from "./API/ItemStack/ItemStack.js";
-export { Vector } from "./API/Vector/index.js";
+export { Vector } from "./API/Location/Vector.js";
 export { world } from "./API/World/index.js";
 export { EntityQueryOptions, SoundOptions, MusicOptions, BlockRaycastOptions } from "./API/Interfaces/index.js";
 export { BlockLocation, Location } from "./API/Location/index.js";

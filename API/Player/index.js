@@ -6,7 +6,7 @@ import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { SoundOptions } from "../Interfaces/SoundOptions.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Location } from "../Location/Location.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Location/Vector.js";
 import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
@@ -113,14 +113,14 @@ export class Player {
    * 経験値を増やせます。(Exp単位)
    * @param {number} amount
    */
-  addExperience(amount){
+  addExperience(amount) {
     this._player.addExperience(amount);
   }
   /**
    * 経験値を増やせます。(Lv単位)
-   * @param {number} amount 
+   * @param {number} amount
    */
-  addLevels(amount){
+  addLevels(amount) {
     this._player.addLevels(amount);
   }
   /**
@@ -132,24 +132,24 @@ export class Player {
   }
   /**
    * ダメージを与えます。
-   * @param {number} damage 
-   * @param {EntityDamageSource} source 
+   * @param {number} damage
+   * @param {EntityDamageSource} source
    */
-  applyDamage(damage, source = undefined){
-    return this._player.applyDamage(damage, source)
+  applyDamage(damage, source = undefined) {
+    return this._player.applyDamage(damage, source);
   }
   /**
    * EntityクラスからPlayerクラスへ変換します。
    * @deprecated
    */
-  convertPlayer(){
+  convertPlayer() {
     return this;
   }
   /**
-   * 
-   * @param {boolean} useEffects 
+   *
+   * @param {boolean} useEffects
    */
-  extinguishFire(useEffects = undefined){
+  extinguishFire(useEffects = undefined) {
     return this._player.extinguishFire(useEffects);
   }
   /**
@@ -225,7 +225,7 @@ export class Player {
    * 現在のゲームモードを取得します。
    * @returns {"survival" | "creative" | "adventure" | "spectator"}
    */
-  getGameMode(){
+  getGameMode() {
     for (const gamemodeName in mc.GameMode) {
       if ([...world.getPlayers({ name: this.name, gameMode: mc.GameMode[gamemodeName] })].length > 0) {
         return gamemodeName;
@@ -235,25 +235,25 @@ export class Player {
   /**
    * 現在の経験値を取得します。
    */
-  getLevel(){
+  getLevel() {
     return this._player.level;
   }
   /**
    * 次のレベルまでいくらの経験値量が必要かを返します。
    */
-  getNeededNextExp(){
+  getNeededNextExp() {
     return this._player.totalXpNeededForNextLevel;
   }
-  getXpEarnedAtCurrentLevel(){
+  getXpEarnedAtCurrentLevel() {
     return this._player.xpEarnedAtCurrentLevel;
   }
   /**
    * 指定されたオブジェクトでスコアを取得します。
    *
    * 値が存在しない場合は、0が返ります。
-   * @param {string} objectiveId 
+   * @param {string} objectiveId
    */
-  getScore(objectiveId){
+  getScore(objectiveId) {
     return world.scoreboard.getObjective(objectiveId).getScore(this.scoreboard) ?? 0;
   }
   /**
@@ -269,28 +269,28 @@ export class Player {
    * @returns 返ってくる値はboolean、存在した場合はtrue,存在しない場合はfalseになります。
    */
   hasTag(tag) {
-    if(tag instanceof Array) return tag.filter(x => this._player.hasTag(String(x))).length == tag.length;
+    if (tag instanceof Array) return tag.filter((x) => this._player.hasTag(String(x))).length == tag.length;
     return this._player.hasTag(tag);
   }
   /**
    * プレイヤーに指定されたタグが存在するかどうかを個数単位でチェックします。
    * 配列ではない場合は、部分一致で数値を返します。
-   * @param {string | string[]} tag 
+   * @param {string | string[]} tag
    */
-  hasTags(tag){
-    if(tag instanceof Array) return this.getTags().filter(x => tag.find(y => x === y)).length;
-    return this.getTags().filter(x => x.match(tag)).length;
+  hasTags(tag) {
+    if (tag instanceof Array) return this.getTags().filter((x) => tag.find((y) => x === y)).length;
+    return this.getTags().filter((x) => x.match(tag)).length;
   }
   /**
    * 一瞬だけスニークしたことを検知します。
    */
-  isInstantSneaking(){
-    if(this.Sneaking()){
-      if(!this.hasTag("AKAPI-Sneak")){
+  isInstantSneaking() {
+    if (this.Sneaking()) {
+      if (!this.hasTag("AKAPI-Sneak")) {
         this.addTag("AKAPI-Sneak");
         return true;
-      }else return false;
-    }else{
+      } else return false;
+    } else {
       this.removeTag("AKAPI-Sneak");
       return false;
     }
@@ -303,13 +303,14 @@ export class Player {
   }
   /**
    * 右手に持っているアイテムを設定・取得します。
-   * 
+   *
    * @param {ItemStack} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
    * @returns {ItemStack | void}
    */
   RighthandItem(itemStack = undefined) {
-    if(!itemStack) return this.getComponent().getInventory().container.getItem(this.SelectedSlot());
-    else if(itemStack instanceof ItemStack) this.getComponent().getInventory().container.setItem(this.SelectedSlot(),itemStack);
+    if (!itemStack) return this.getComponent().getInventory().container.getItem(this.SelectedSlot());
+    else if (itemStack instanceof ItemStack)
+      this.getComponent().getInventory().container.setItem(this.SelectedSlot(), itemStack);
   }
   /**
    * プレイヤーにopを設定・確認出来ます。
@@ -334,8 +335,8 @@ export class Player {
    * @param {mc.SoundOptions | SoundOptions} options
    */
   playSound(soundID, options = {}) {
-    if(options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
-    else if(typeof options == "object") this._player.playSound(soundID, options);
+    if (options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
+    else if (typeof options == "object") this._player.playSound(soundID, options);
   }
   /**
    *
@@ -369,9 +370,9 @@ export class Player {
   }
   /**
    * プレイヤーにアクションバーを送信します。
-   * @param {string} message 
+   * @param {string} message
    */
-  sendActionbar(message){
+  sendActionbar(message) {
     this.onScreenDisplay.setActionbar(message);
   }
   /**
@@ -387,10 +388,12 @@ export class Player {
    * @param {"survival" | "creative" | "adventure" | "spectator"} gameMode
    * @returns {void}
    */
-  async setGameMode(gameMode){
-    try{
+  async setGameMode(gameMode) {
+    try {
       await this.runCommandAsync(`gamemode ${gameMode}`);
-    }catch(e){throw e}
+    } catch (e) {
+      throw e;
+    }
   }
   /**
    * プレイヤーの向きを設定します。

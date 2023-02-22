@@ -1,5 +1,5 @@
 import * as mc from "@minecraft/server";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "./Vector.js";
 import { BlockLocation } from "./BlockLocation.js";
 export class Location {
   /**

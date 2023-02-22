@@ -1,5 +1,5 @@
 import * as mc from "@minecraft/server";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "./Vector.js";
 import { Location } from "./Location.js";
 
 export class BlockLocation {
@@ -74,16 +74,11 @@ export class BlockLocation {
    * @param {number} z
    */
   constructor(x, y, z) {
-    if (
-      x instanceof Location ||
-      x instanceof Vector ||
-      x instanceof mc.BlockLocation ||
-      x instanceof mc.Location
-    ) {
+    if (x instanceof Location || x instanceof Vector || x instanceof mc.BlockLocation || x instanceof mc.Location) {
       this.x = Math.floor(x.x);
       this.y = Math.floor(x.y);
       this.z = Math.floor(x.z);
-    } else if(typeof x === "number") {
+    } else if (typeof x === "number") {
       this.x = Math.floor(x);
       this.y = Math.floor(y);
       this.z = Math.floor(z);
