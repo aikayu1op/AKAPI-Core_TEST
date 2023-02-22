@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## AKAPI-Coreとは
-現時点でのGametest Frameworkにちょっとした機能や、日本語化を目的として作ったソースです。
+現時点でのGametest Frameworkにちょっとした機能追加や、日本語化を目的として作ったソースです。
 
 完成度は20%です
 
