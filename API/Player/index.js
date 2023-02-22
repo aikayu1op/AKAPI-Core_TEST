@@ -307,7 +307,7 @@ export class Player {
    * @param {ItemStack} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
    * @returns {ItemStack | void}
    */
-  RighthandItem(itemStack = undefined) {
+  MainhandItem(itemStack = undefined) {
     if (!itemStack) return this.getComponent().getInventory().container.getItem(this.SelectedSlot());
     else if (itemStack instanceof ItemStack)
       this.getComponent().getInventory().container.setItem(this.SelectedSlot(), itemStack);
@@ -397,6 +397,7 @@ export class Player {
   }
   /**
    * プレイヤーの向きを設定します。
+   * @deprecated
    * @param {number} degreesX
    * @param {number} degreesY
    */
