@@ -1,0 +1,1 @@
+export { MinecraftItemTypes } from "./MinecraftItemTypes.js";
