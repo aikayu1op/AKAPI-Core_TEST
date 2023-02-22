@@ -23,5 +23,7 @@
 
 # 現在新たに追加されている内容
 **PlayerInventoryComponentのgetAllItems**
+
 **Location系相互変換機能**
+
 **Playerクラスにいくつかの関数追加(hasTags, isInstantSneaking, MainhandItem, sendActionbar, setGamemode, getGamemode)**etc...
