@@ -513,6 +513,7 @@ export class Player {
     new MultiLineActionbar(this, id, message);
   }
   /**
+   * MultiLineActionbarに登録されたIDで削除します。
    * @param {string} id
    */
   deleteMultiLineActionbar(id) {
