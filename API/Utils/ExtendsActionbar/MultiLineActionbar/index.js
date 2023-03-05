@@ -3,7 +3,7 @@ import { Player } from "../../../Player/index.js";
 import { world } from "../../../World/index.js";
 
 /**
- * ExtendsActionbarのデータ
+ * MultiLineActionbarのデータ
  * @type {Map<Player, Map<string, string>>}
  */
 var alldata = new Map();
@@ -14,7 +14,7 @@ var alldata = new Map();
  *
  * idがmainまたは何も書いていない場合は、一番上に表示されます。
  */
-export class ExtendsActionbar {
+export class MultiLineActionbar {
   /**
    * actionbarの表示データをIDで削除します。
    * @param {Player} player
