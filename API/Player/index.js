@@ -10,7 +10,7 @@ import { Vector } from "../Location/Vector.js";
 import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
-import { ExtendsActionbar } from "../Utils/ExtendsActionbar/index.js";
+import { ExtendsActionbar } from "../Utils/ExtendsActionbar/MultiLineActionbar/index.js";
 
 export class Player {
   /**
@@ -493,9 +493,9 @@ export class Player {
   }
   /**
    * actionbarに表示するテキストを複数使えるようにします。
-   * 
+   *
    * idに適当な文字列を入れ、messageには表示するテキストを入れることができます。
-   * 
+   *
    * ```
    * system.run(function test(){
    *    system.run(test);
@@ -509,13 +509,13 @@ export class Player {
    * @param {string} id 表示用ID
    * @param {string} message 表示用テキスト
    */
-  addExActionbar(id, message){
+  addExActionbar(id, message) {
     new ExtendsActionbar(this, id, message);
   }
   /**
    * @param {string} id
    */
-  deleteExActionbar(id){
+  deleteExActionbar(id) {
     ExtendsActionbar.deleteData(this, id);
   }
   /**
