@@ -10,6 +10,7 @@ import { Vector } from "../Location/Vector.js";
 import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
+import { ExtendsActionbar } from "../Utils/ExtendsActionbar/index.js";
 
 export class Player {
   /**
@@ -489,6 +490,33 @@ export class Player {
   Sneaking(value = undefined) {
     if (value == undefined) return this._player.isSneaking;
     if (typeof value == "boolean") this._player.isSneaking = value;
+  }
+  /**
+   * actionbarに表示するテキストを複数使えるようにします。
+   * 
+   * idに適当な文字列を入れ、messageには表示するテキストを入れることができます。
+   * 
+   * ```
+   * system.run(function test(){
+   *    system.run(test);
+   *    for(const player of world.getPlayers()){
+   *        player.addExActionbar("test", "this is test message");
+   *        player.addExActionbar("test2", "two line message");
+   *        player.addExActionbar("main", "this is main message");
+   *    }
+   * })
+   * ```
+   * @param {string} id 表示用ID
+   * @param {string} message 表示用テキスト
+   */
+  addExActionbar(id, message){
+    new ExtendsActionbar(this, id, message);
+  }
+  /**
+   * @param {string} id
+   */
+  deleteExActionbar(id){
+    ExtendsActionbar.deleteData(this, id);
   }
   /**
    *
