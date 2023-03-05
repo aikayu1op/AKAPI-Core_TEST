@@ -1,1 +1,4 @@
+#git ignore files.
+
 /API/Utils/SendCommand/*
+/API/Utils/ExtendedActionbar/*
