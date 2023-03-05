@@ -9,6 +9,8 @@ import { world } from "../../../World/index.js";
 var alldata = new Map();
 
 /**
+ * @todo 削除までの秒数(tick)がほしい際に実装する。
+ * 
  * Actionbarを派生したクラスです。
  * メッセージを分けて表示させることができます。
  *
