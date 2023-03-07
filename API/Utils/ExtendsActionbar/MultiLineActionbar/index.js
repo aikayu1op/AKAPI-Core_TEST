@@ -4,7 +4,7 @@ import { world } from "../../../World/index.js";
 
 /**
  * MultiLineActionbarのデータ
- * @type {Map<Player, Map<string, string>>}
+ * @type {Map<number, Map<string, string>>}
  */
 var alldata = new Map();
 
