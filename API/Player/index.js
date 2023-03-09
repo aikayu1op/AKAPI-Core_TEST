@@ -11,6 +11,7 @@ import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
 import { MultiLineActionbar } from "../Utils/ExtendsActionbar/MultiLineActionbar/index.js";
+import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index.js";
 
 export class Player {
   /**
@@ -514,6 +515,9 @@ export class Player {
    */
   setMultiLineActionbar(id = "main", message = "undefined", tick = -1) {
     MultiLineActionbar.addMultiLineData(this, id , message , tick);
+  }
+  setSliderActionbar(id = "test", message = "undefined"){
+    SliderActionbar.setData(this, id, message);
   }
   /**
    * MultiLineActionbarに登録されたIDで削除します。

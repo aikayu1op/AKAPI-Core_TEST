@@ -47,6 +47,12 @@ export class MultiLineActionbar {
     if (!alldata.has(player.id)) alldata.set(player.id, new Map().set(id, message));
     else alldata.set(player.id, alldata.get(player.id).set(id, message));
   }
+  /**
+   * @deprecated
+   */
+  static getAllData(){
+    return alldata;
+  }
 }
 
 system.run(function acbar() {
