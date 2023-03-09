@@ -306,7 +306,7 @@ export class Player {
    * 右手に持っているアイテムを設定・取得します。
    *
    * @param {ItemStack} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
-   * @returns {ItemStack | void}
+   * @returns {ItemStack | undefined}
    */
   MainhandItem(itemStack = undefined) {
     if (!itemStack) return this.getComponent().getInventory().container.getItem(this.SelectedSlot());
@@ -495,6 +495,8 @@ export class Player {
    * actionbarに表示するテキストを複数使えるようにします。
    *
    * idに適当な文字列を入れ、messageには表示するテキストを入れることができます。
+   * 
+   * 通常actionbarと共存は不可能なのでどちらかを使うようにしてください。(コマンドも同様)
    *
    * ```
    * system.run(function test(){
@@ -508,9 +510,10 @@ export class Player {
    * ```
    * @param {string} id 表示用ID
    * @param {string} message 表示用テキスト
+   * @param {number} tick 表示時間(1/20s)
    */
-  addMultiLineActionbar(id, message) {
-    new MultiLineActionbar(this, id, message);
+  setMultiLineActionbar(id = "main", message = "undefined", tick = -1) {
+    MultiLineActionbar.addMultiLineData(this, id , message , tick);
   }
   /**
    * MultiLineActionbarに登録されたIDで削除します。
