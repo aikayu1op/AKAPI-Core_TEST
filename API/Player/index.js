@@ -5,8 +5,7 @@ import { Entity } from "../Entity/index.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { SoundOptions } from "../Interfaces/SoundOptions.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
-import { Location } from "../Location/Location.js";
-import { Vector } from "../Location/Vector.js";
+import { Vector } from "../Vector/index.js";
 import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
@@ -27,7 +26,7 @@ export class Player {
   id;
   /**
    * プレイヤーの頭からの座標クラスが返ります。
-   * @type {Location}
+   * @type {Vector}
    * @readonly
    */
   headLocation;
@@ -50,11 +49,6 @@ export class Player {
    */
   onScreenDisplay;
   /**
-   * プレイヤーが向いている方向のクラスが返ります。
-   * @readonly
-   */
-  rotation;
-  /**
    * @readonly
    */
   target;
@@ -66,7 +60,7 @@ export class Player {
    *
    * world.events.beforeChat.subscribe((ev) =>{
    *    let score = world.scoreboard.getObjective("スコアの名前").getScore(ev.sender.scoreboard);
-   *    if(score >= 10) ev.sender.tell("スコア10以上あります。");
+   *    if(score >= 10) ev.sender.sendMessage("スコア10以上あります。");
    * })
    * ```
    * @readonly
@@ -158,9 +152,9 @@ export class Player {
    * プレイヤーが向いている方向のブロッククラスを返します。
    * @param {{} | BlockRaycastOptions} options 距離等のオプションの設定
    */
-  getBlockFromViewVector(options = {}) {
-    if (options instanceof BlockRaycastOptions) return this._player.getBlockFromViewVector(options.getOptions());
-    else return this._player.getBlockFromViewVector(options);
+  getBlockFromViewDirection(options = {}) {
+    if (options instanceof BlockRaycastOptions) return this._player.getBlockFromViewDirection(options.getOptions());
+    else return this._player.getBlockFromViewDirection(options);
   }
   /**
    * プレイヤーのコンポーネントを設定・取得するクラスを返します。
@@ -263,6 +257,49 @@ export class Player {
    */
   getTags() {
     return this._player.getTags();
+  }
+  /**
+   * 動いている方向の速度を返します。
+   */
+  getVelocity(){
+    return new Vector(this._player.getVelocity());
+  }
+  /**
+   * 
+   */
+  getViewDirection(){
+    return new Vector(this._player.getViewDirection());
+  }
+  /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  getRotation(){
+    return this._player.getRotation();
+  }
+  /**
+   * 死んだ際にスポーンする座標が個別に設定されている場合、座標を取得できます。
+   */
+  getSpawnPosition(){
+    return new Vector(this._player.getSpawnPosition());
+  }
+  /**
+   * 死んだ際にスポーンする座標が個別に設定されている場合に、そのスポーンするディメンションを取得できます。
+   */
+  get spawnDimension(){
+    return new Dimension(this._player.spawnDimension);
+  }
+  /**
+   * 死んだ際にスポーンする場所を設定できます。
+   */
+  setSpawn(spawnPosition = this.location, spawnDimension = this.dimension){
+    this._player.setSpawn(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
+  }
+  /**
+   * スポーンポイントをリセットします。
+   */
+  clearSpawn(){
+    this._player.clearSpawn();
   }
   /**
    * プレイヤーに指定されたタグが存在するかどうかをチェックします。
@@ -407,14 +444,6 @@ export class Player {
     this._player.setRotation(degreesX, degreesY);
   }
   /**
-   * プレイヤー移動速度を設定します。
-   * @param {Vector | mc.Vector3} velocity
-   */
-  setVelocity(velocity = {}) {
-    if (velocity instanceof Vector) this._player.setVelocity(velocity.getMCVector3());
-    else if (typeof velocity === "object") this._player.setVelocity(velocity);
-  }
-  /**
    * プレイヤーに指定したアイテムのカテゴリに対して、クールダウンを付与します。
    * @param {String} itemCategory
    * @param {number} tickDuration
@@ -454,8 +483,8 @@ export class Player {
    * @param {{} | string} message
    */
   sendMessage(message) {
-    if (typeof message == "object") this._player.tell(message);
-    else this._player.tell(String(message));
+    if (typeof message == "object") this._player.sendMessage(message);
+    else this._player.sendMessage(String(message));
   }
   /**
    * イベントをトリガーします。
@@ -464,14 +493,18 @@ export class Player {
   triggerEvent(eventName) {
     this._player.triggerEvent(eventName);
   }
-
   /**
    * プレイヤーが右手に持っているスロット番号を返します。
-   * @param {number} value
    */
-  SelectedSlot(value = undefined) {
-    if (value == undefined) return this._player.selectedSlot;
-    if (typeof value == "number") this._player.selectedSlot = value;
+  get selectedSlot(){
+    return this._player.selectedSlot;
+  }
+  /**
+   * プレイヤーが右手に持っているスロット番号を返します。
+   * @param {number} value 0~9の値を入れることで、ホットバーに指定された数値の場所にカーソルを合わせてくれます。
+   */
+  set selectedSlot(value){
+    if(typeof value == "number") this._player.selectedSlot = value;
   }
 
   /**
@@ -482,6 +515,19 @@ export class Player {
   NameTag(value = undefined) {
     if (value == undefined) return this._player.nameTag;
     if (typeof value == "string") this._player.nameTag = value;
+  }
+  /**
+   * プレイヤーのネームタグを取得します。
+   */
+  get nameTag(){
+    return this._player.nameTag;
+  }
+  /**
+   * プレイヤーのネームタグを取得します。
+   * @param {string} value 文字列を指定することで、名前を変更することができます。
+   */
+  set nameTag(value){
+    this._player.nameTag = value;
   }
   /**
    * スニークを設定・変更できます。中に何も入れなかった場合は、スニークしているかどうかが返ります。
@@ -496,7 +542,7 @@ export class Player {
    * actionbarに表示するテキストを複数使えるようにします。
    *
    * idに適当な文字列を入れ、messageには表示するテキストを入れることができます。
-   * 
+   *
    * 通常actionbarと共存は不可能なのでどちらかを使うようにしてください。(コマンドも同様)
    *
    * ```
@@ -506,6 +552,7 @@ export class Player {
    *        player.addExActionbar("test", "this is test message");
    *        player.addExActionbar("test2", "two line message");
    *        player.addExActionbar("main", "this is main message");
+   *        player.addExActionbar("last", "this is last message");
    *    }
    * })
    * ```
@@ -514,9 +561,16 @@ export class Player {
    * @param {number} tick 表示時間(1/20s)
    */
   setMultiLineActionbar(id = "main", message = "undefined", tick = -1) {
-    MultiLineActionbar.addMultiLineData(this, id , message , tick);
+    MultiLineActionbar.addMultiLineData(this, id, message, tick);
   }
-  setSliderActionbar(id = "test", message = "undefined"){
+  /**
+   * 右から左へ流れるactionbarを作ることができます。
+   * 
+   * sendActionbarや、コマンドによるactionbarは併用不可能です。
+   * @param {string} id 
+   * @param {string} message 
+   */
+  setSliderActionbar(id = "test", message = "undefined") {
     SliderActionbar.setData(this, id, message);
   }
   /**
@@ -538,17 +592,13 @@ export class Player {
       this._player = player;
 
       this.dimension = new Dimension(this._player.dimension);
-      this.headLocation = new Location(this._player.headLocation);
       this.id = this._player.id;
       this.location = new Vector(this._player.location);
       this.name = this._player.name;
       this.onScreenDisplay = new onScreenDisplay(this);
-      this.rotation = this._player.rotation;
       this.scoreboard = this._player.scoreboard;
       this.target = new Entity(this._player.target);
       this.typeId = this._player.typeId;
-      this.velocity = new Vector(this._player.velocity);
-      this.viewVector = new Vector(this._player.viewVector);
     } catch (e) {}
   }
 }

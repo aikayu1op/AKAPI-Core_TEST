@@ -1,10 +1,10 @@
 import * as mc from "@minecraft/server";
 import { Components } from "../Components/EntityComponents.js";
-import { Vector } from "../Location/Vector.js";
+import { Vector } from "../Vector/index.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { Dimension } from "../Dimension/index.js";
-import { Location } from "../Location/Location.js";
 import { world } from "../World/index.js";
+import { Block } from "../Block/Block.js";
 
 export class Entity {
   /**
@@ -18,12 +18,6 @@ export class Entity {
    * @type {string}
    */
   id;
-  /**
-   * エンティティの頭からの座標クラスが返ります。
-   * @type {Location}
-   * @readonly
-   */
-  headLocation;
   /**
    * エンティティの現在いるディメンションクラスを取得します。
    * @type {Dimension}
@@ -60,18 +54,6 @@ export class Entity {
    * @readonly
    */
   typeId;
-  /**
-   * エンティティの速度を取得し、設定されたVelocityクラスが返ってきます。
-   * @type {Vector}
-   * @readonly
-   */
-  velocity;
-  /**
-   * 向いている方向のベクターを返します。
-   * @readonly
-   * @type {Vector}
-   */
-  viewVector;
 
   /**
    * エンティティにエフェクトを追加します。
@@ -100,12 +82,35 @@ export class Entity {
     this._entity.addTag(tag);
   }
   /**
+   * 現在の速度に衝撃を与えたベクトルを追加します。
+   * @param {Vector} vector 
+   */
+  applyImpulse(vector){
+    this._entity.applyImpulse(vector.getMCVector3());
+  }
+  /**
+   * 
+   * @param {number} directionX 
+   * @param {number} directionZ 
+   * @param {number} horizontalStrength 
+   * @param {number} verticalStrength 
+   */
+  applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength){
+    this._entity.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+  }
+  /**
+   * 速度をリセットさせます。
+   */
+  clearVelocity(){
+    this._entity.clearVelocity();
+  }
+  /**
    * エンティティが向いている方向のブロッククラスを返します。
    * @param {{} || BlockRaycastOptions} options 距離等のオプションの設定
    */
-  getBlockFromViewVector(options = {}) {
-    if (options instanceof BlockRaycastOptions) return this._entity.getBlockFromViewVector(options.getOptions());
-    else return this._entity.getBlockFromViewVector(options);
+  getBlockFromViewDirection(options = {}) {
+    if (options instanceof BlockRaycastOptions) return new Block(this._entity.getBlockFromViewDirection(options.getOptions()));
+    else return new Block(this._entity.getBlockFromViewDirection(options));
   }
   /**
    * エンティティのコンポーネントを設定・取得するクラスを返します。(自作クラス)
@@ -150,8 +155,8 @@ export class Entity {
    * エンティティが向いている方向のエンティティを取得します。
    * @param {mc.EntityRaycastOptions} options 範囲の設定ができます。
    */
-  getEntitiesFromViewVector(options = {}) {
-    return this._entity.getEntitiesFromViewVector(options);
+  getEntitiesFromViewDirection(options = {}) {
+    return this._entity.getEntitiesFromViewDirection(options).map(x => new Entity(x));
   }
   /**
    * マイクラ公式のEntityクラスを返します。
@@ -167,7 +172,7 @@ export class Entity {
   convertPlayer() {
     return world.getPlayers({
       name: this.NameTag(),
-      location: this.location.getMCLocation(),
+      location: this.location,
       maxDistance: 1,
       minDistance: 1,
     })[0];
@@ -188,14 +193,39 @@ export class Entity {
     return this._entity.getTags();
   }
   /**
+   * 頭からの座標を返します。
+   */
+  getHeadLocation(){
+    return new Vector(this._entity.getHeadLocation());
+  }
+  /**
+   * 動いている方向の速度を返します。
+   */
+  getVelocity(){
+    return new Vector(this._entity.getVelocity());
+  }
+  /**
+   * 向いている方向のベクターを返します。
+   */
+  getViewDirection(){
+    return new Vector(this._entity.getViewDirection());
+  }
+  /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  getRotation(){
+    return this._entity.getRotation();
+  }
+  /**
    * エンティティに指定されたタグが存在するかどうかをチェックします。
    * 配列で指定すると、指定したタグがすべて完全一致したらtrueを返します。
    * @param {string | string[]} tag
    * @returns 返ってくる値はboolean、存在した場合はtrue,存在しない場合はfalseになります。
    */
   hasTag(tag) {
-    if (tag instanceof Array) return tag.filter((x) => this._player.hasTag(String(x))).length == tag.length;
-    return this._player.hasTag(tag);
+    if (tag instanceof Array) return tag.filter((x) => this._entity.hasTag(String(x))).length == tag.length;
+    return this._entity.hasTag(tag);
   }
   /**
    * エンティティに指定されたタグが存在するかどうかを個数単位でチェックします。
@@ -211,6 +241,14 @@ export class Entity {
    */
   kill() {
     this._entity.kill();
+  }
+  /**
+   * アニメーションを実行します。
+   * @param {string} animationName 
+   * @param {{}} options 
+   */
+  playAnimation(animationName, options){
+    this._entity.playAnimation(animationName, options);
   }
   /**
    * エンティティに追加されているダイナミックプロパティを削除します。
@@ -251,13 +289,6 @@ export class Entity {
     this._entity.setRotation(degreesX, degreesY);
   }
   /**
-   * エンティティ移動速度を設定します。
-   * @param {mc.Vector3} velocity
-   */
-  setVelocity(velocity = {}) {
-    this._entity.setVelocity(velocity);
-  }
-  /**
    * エンティティをテレポートさせます。
    * @param {Vector} location
    * @param {boolean} keepVelocity
@@ -272,7 +303,7 @@ export class Entity {
     xRotation = this._entity.rotation.x,
     yRotation = this._entity.rotation.y
   ) {
-    this._entity.teleport(location.convertVector3(), dimension.getMCDimension(), xRotation, yRotation, keepVelocity);
+    this._entity.teleport(location.getMCVector3(), dimension.getMCDimension(), xRotation, yRotation, keepVelocity);
   }
   /**
    * エンティティをテレポートさせます。
@@ -283,9 +314,9 @@ export class Entity {
    */
   teleportFacing(location, dimension = this.dimension, facing, keepVelocity = false) {
     this._entity.teleportFacing(
-      location.convertVector3(),
+      location.getMCVector3(),
       dimension.getMCDimension(),
-      facing.convertVector3(),
+      facing.getMCVector3(),
       keepVelocity
     );
   }
@@ -307,6 +338,19 @@ export class Entity {
     if (typeof value == "string") this._entity.nameTag = value;
   }
   /**
+   * エンティティのネームタグを設定・変更します。
+   */
+  get nameTag(){
+    return this._entity.nameTag;
+  }
+  /**
+   * エンティティのネームタグを設定・変更します。
+   * @param {string} value ここに文字列を入れることで、名前が変更されます。
+   */
+  set nameTag(value){
+    this._entity.nameTag = value;
+  }
+  /**
    * スニークを設定・変更できます。中に何も入れなかった場合は、スニークしているかどうかが返ります。
    * 中にbooleanを入れると設定されます。
    * @param {boolean} value
@@ -326,15 +370,11 @@ export class Entity {
        */
       this._entity = entity;
       this.dimension = new Dimension(this._entity.dimension);
-      this.headLocation = new Location(this._entity.headLocation);
       this.id = this._entity.id;
       this.location = new Vector(this._entity.location);
-      this.rotation = this._entity.rotation;
       this.scoreboard = this._entity.scoreboard;
       this.target = new Entity(this._entity.target);
       this.typeId = this._entity.typeId;
-      this.velocity = new Vector(this._entity.velocity);
-      this.viewVector = new Vector(this._entity.viewVector);
     } catch (e) {}
   }
 }

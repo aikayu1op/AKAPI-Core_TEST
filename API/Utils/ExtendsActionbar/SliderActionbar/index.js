@@ -40,7 +40,7 @@ export class SliderActionbar{
         else sliderFlash.set(player.id, sliderFlash.get(player.id).set(id, false));
     }
 }
-system.runSchedule(() =>{
+system.runInterval(() =>{
     for(const p of world.getAllPlayers()){
         if(!slider.has(p.id)) continue;
         let sliderData = slider.get(p.id);

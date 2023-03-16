@@ -1,7 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Player } from "../Player/index.js";
-import { Vector } from "../Location/Vector.js";
-import { BlockLocation, Location } from "../Location/index.js";
+import { Vector } from "../Vector/index.js";
 import { Block } from "../Block/Block.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
@@ -26,14 +25,14 @@ export class Dimension {
    * @param {mc.ExplosionOptions} options
    */
   createExplosion(location, radius, options = {}) {
-    this._dimension.createExplosion(location.getMCLocation(), radius, options);
+    this._dimension.createExplosion(location.getMCVector3(), radius, options);
   }
   /**
    * 指定されたディメンションと座標のブロックを取得します。
-   * @param { BlockLocation | Location | Vector} location
+   * @param {Vector} location
    */
   getBlock(location) {
-    return new Block(this._dimension.getBlock(location.getMCBlockLocation()));
+    return new Block(this._dimension.getBlock(location.getMCVector3()));
   }
   /**
    *
@@ -43,8 +42,8 @@ export class Dimension {
    */
   getBlockFromRay(location, direction, options = {}) {
     if (options instanceof BlockRaycastOptions)
-      return this._dimension.getBlockFromRay(location.getMCLocation(), direction.getMCLocation(), options.getOptions());
-    else return this._dimension.getBlockFromRay(location.getMCLocation(), direction.getMCLocation(), options);
+      return new Block(this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options.getOptions()));
+    else return new Block(this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options));
   }
   /**
    * optionsで指定されたエンティティを返します。
@@ -61,16 +60,10 @@ export class Dimension {
     return push[Symbol.iterator]();
   }
   /**
-   * @param {BlockLocation | Location} location
+   * @param {Vector} location
    */
   getEntitiesAtBlockLocation(location) {
-    /**
-     * @type {Entity[]}
-     */
-    const push = [];
-    for (const entity of this._dimension.getEntitiesAtBlockLocation(location.getMCBlockLocation()))
-      push.push(new Entity(entity));
-    return push;
+    return this._dimension.getEntitiesAtBlockLocation(location.getMCVector3()).map(x => new Entity(x));
   }
   /**
    *
@@ -78,17 +71,8 @@ export class Dimension {
    * @returns {Player[]}
    */
   getPlayers(options = {}) {
-    /**
-     * @type {Player[]}
-     */
-    let allPlayer = [];
-    if (options instanceof EntityQueryOptions) {
-      [...this._dimension.getPlayers(options.getOptions())].forEach((p) => allPlayer.push(new Player(p)));
-      return allPlayer;
-    } else if (typeof options === "object") {
-      [...this._dimension.getPlayers(options)].forEach((p) => allPlayer.push(new Player(p)));
-      return allPlayer;
-    }
+    if (options instanceof EntityQueryOptions) return [...this._dimension.getPlayers(options.getOptions())].map(p => new Player(p));
+    else if (typeof options === "object") return [...this._dimension.getPlayers(options)].map(p => new Player(p));
   }
   /**
    * コマンドを非同期処理で実行します。
@@ -100,27 +84,27 @@ export class Dimension {
   /**
    * 指定されたエンティティを召喚します。
    * @param {string} identifier
-   * @param {Location | BlockLocation | Vector} location
+   * @param {Vector} location
    */
   spawnEntity(identifier, location) {
-    return new Entity(this._dimension.spawnEntity(identifier, location.getMCLocation()));
+    return new Entity(this._dimension.spawnEntity(identifier, location.getMCVector3()));
   }
   /**
    * 指定されたアイテムを召喚します。
    * @param {ItemStack} itemStack
-   * @param {Location | BlockLocation | Vector} location
+   * @param {Vector} location
    */
   spawnItem(itemStack, location) {
-    return new Entity(this._dimension.spawnItem(itemStack.getItemStack(), location.getMCLocation()));
+    return new Entity(this._dimension.spawnItem(itemStack.getItemStack(), location.getMCVector3()));
   }
   /**
    * 指定されたパーティクルを召喚します。
    * @param {string} effectName
-   * @param {Location | BlockLocation | Vector} location
+   * @param {Vector} location
    * @param {mc.MolangVariableMap} molangVariableMap
    */
   spawnParticle(effectName, location, molangVariableMap = new mc.MolangVariableMap()) {
-    this._dimension.spawnParticle(effectName, location.getMCLocation(), molangVariableMap);
+    this._dimension.spawnParticle(effectName, location.getMCVector3(), molangVariableMap);
   }
   /**
    * マイクラ公式のDimensionクラスを返します。

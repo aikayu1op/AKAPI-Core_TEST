@@ -1,4 +1,5 @@
 import * as mc from "@minecraft/server";
+import { Vector } from "../Vector/index.js";
 
 /**
  * world.getPlayers()や\<Dimension\>.getEntities() の判定範囲を限定化するオプションです。
@@ -24,7 +25,7 @@ export class EntityQueryOptions {
    */
   gameMode = "";
   /**
-   * @type {Location}
+   * @type {Vector}
    */
   location = "";
   maxDistance = -32767;
@@ -57,7 +58,7 @@ export class EntityQueryOptions {
     if (this.families != "") this.alldata.families = this.families;
     if (this.farthest != -32767) this.alldata.farthest = this.farthest;
     if (this.gameMode != "") this.alldata.gameMode = this.gameMode;
-    if (this.location != "") this.alldata.location = this.location;
+    if (this.location != "") this.alldata.location = this.location.getMCVector3();
     if (this.maxDistance != -32767) this.alldata.maxDistance = this.maxDistance;
     if (this.maxHorizontalRotation != -32767) this.alldata.maxHorizontalRotation = this.maxHorizontalRotation;
     if (this.maxLevel != -32767) this.alldata.maxLevel = this.maxLevel;

@@ -2,6 +2,7 @@ import { world as w } from "@minecraft/server";
 import { Player } from "../Player/index.js";
 import * as myOptions from "../Interfaces/index.js";
 import { Dimension } from "../Dimension/index.js";
+import { Vector } from "../Vector/index.js";
 
 class World {
   /**
@@ -32,12 +33,7 @@ class World {
    * すべてのプレイヤーを返します。
    */
   getAllPlayers() {
-    /**
-     * @type {Player[]}
-     */
-    let allPlayer = [];
-    w.getAllPlayers().forEach((p) => allPlayer.push(new Player(p)));
-    return allPlayer;
+    return w.getAllPlayers().map(p => new Player(p));
   }
   /**
    * 指定されたIDのDimensionクラスを返します。
@@ -45,6 +41,19 @@ class World {
    */
   getDimension(dimensionId) {
     return new Dimension(dimensionId);
+  }
+  /**
+   * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
+   */
+  get defaultSpawnPosition(){
+    return new Vector(w.getDefaultSpawnPosition());
+  }
+  /**
+   * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
+   * @param {Vector} vector 指定された場所が初期設定のスポーンポイントになります。
+   */
+  set defaultSpawnPosition(vector){
+    w.setDefaultSpawn(vector.getMCVector3());
   }
   /**
    *
@@ -59,17 +68,8 @@ class World {
    * @returns {Player[]}
    */
   getPlayers(options = {}) {
-    /**
-     * @type {Player[]}
-     */
-    let allPlayer = [];
-    if (options instanceof myOptions.EntityQueryOptions) {
-      [...w.getPlayers(options.getOptions())].forEach((p) => allPlayer.push(new Player(p)));
-      return allPlayer;
-    } else if (typeof options === "object") {
-      [...w.getPlayers(options)].forEach((p) => allPlayer.push(new Player(p)));
-      return allPlayer;
-    }
+    if (options instanceof myOptions.EntityQueryOptions) return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
+    else if (typeof options === "object") return [...w.getPlayers(options)].map(p => new Player(p));
   }
   /**
    * 音楽を再生します。
@@ -110,8 +110,8 @@ class World {
    * @param {{} | string} message
    */
   sendMessage(message) {
-    if (typeof message === "object") w.say(message);
-    else w.say(String(message));
+    if (typeof message === "object") w.sendMessage(message);
+    else w.sendMessage(String(message));
   }
   /**
    * すべてのプレイヤーに対して、actionbarを送信します。

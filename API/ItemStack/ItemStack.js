@@ -1,6 +1,5 @@
 import * as mc from "@minecraft/server";
 import { ItemComponentBase } from "../Components/ItemComponents.js";
-import { world } from "../World/index.js";
 
 export class ItemStack {
   /**
@@ -14,6 +13,13 @@ export class ItemStack {
    * @readonly
    */
   typeId = undefined;
+
+  /**
+   * itemStackを複製します。
+   */
+  clone(){
+    return new ItemStack(this._itemStack);
+  }
   /**
    * アイテムのコンポーネントを操作できます。
    */
@@ -31,6 +37,61 @@ export class ItemStack {
    */
   getLore() {
     return this._itemStack.getLore();
+  }
+  /**
+   * そのアイテムが1stいくら持てるのかを取得できます。
+   * @readonly
+   */
+  get maxAmount(){
+    return this._itemStack.maxAmount;
+  }
+  /**
+   * そのアイテムがスタック可能かを返します。
+   * @readonly
+   */
+  get isStackable(){
+    return this._itemStack.isStackable;
+  }
+  /**
+   * 
+   */
+  get keepOnDeath(){
+    return this._itemStack.keepOnDeath;
+  }
+  /**
+   * @param {boolean} value
+   */
+  set keepOnDeath(value){
+    if(typeof value === "boolean") this._itemStack.keepOnDeath = value;
+  }
+  get lockMode(){
+    return this._itemStack.lockMode;
+  }
+  /**
+   * @param {mc.ItemLockMode} value
+   */
+  set lockMode(value){
+    if(typeof value === "boolean") this._itemStack.lockMode = value;
+  }
+  /**
+   * アドベンチャーモードで指定されたブロックに対して設置可能にします。
+   */
+  get canPlaceOn(){return null;}
+  /**
+   * @param {string[]} blockIdentifiers 指定されたブロックIDだけを設置可能にします。
+   */
+  set canPlaceOn(blockIdentifiers){
+    this._itemStack.setCanPlaceOn(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
+  }
+  /**
+   * アドベンチャーモードで指定されたブロックに対して破壊可能にします。
+   */
+  get canDestroy(){return null;}
+  /**
+   * @param {string[]} blockIdentifiers 指定されたブロックIDだけを破壊可能にします。
+   */
+  set canDestroy(blockIdentifiers){
+    this._itemStack.setCanDestroy(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
   }
   /**
    * アイテムに説明文を追加します。
@@ -63,6 +124,19 @@ export class ItemStack {
     this._itemStack.nameTag = value;
   }
   /**
+   * アイテムの名前を確認します。
+   */
+  get nameTag(){
+    return this._itemStack.nameTag;
+  }
+  /**
+   * アイテムの名前を確認します。
+   * @param {string} value 文字列を入れることでアイテムに名前を付けれます。undefinedをいれることで名前をリセットできます。
+   */
+  set nameTag(value){
+    if(typeof value == "string") this._itemStack.nameTag = value;
+  }
+  /**
    * アイテムの個数を確認・変更します。
    * valueに値を入れると変更され、何も入れないと確認可能です。
    * @example
@@ -79,6 +153,19 @@ export class ItemStack {
     this._itemStack.amount = value;
   }
   /**
+   * アイテムの個数を確認します。
+   */
+  get amount(){
+    return this._itemStack.amount;
+  }
+  /**
+   * アイテムの個数を確認します。
+   * @param {number} value
+   */
+  set amount(value){
+    if(typeof value == "number") this._itemStack.amount = value;
+  }
+  /**
    * アイテムのデータ値を確認・変更します。
    * valueに値を入れると変更され、何も入れないと確認可能です。
    * @example
@@ -89,11 +176,12 @@ export class ItemStack {
    * console.log(item.Data()); //output: 1
    * ```
    * @param {number} value 
+   * @deprecated
    */
-  Data(value = undefined){
+  /*Data(value = undefined){
     if(value == undefined) return this._itemStack.data;
     this._itemStack.data = value;
-  }
+  }*/
   /**
    * マイクラ公式のItemStackを返します。
    * @deprecated
@@ -109,20 +197,19 @@ export class ItemStack {
    * import { ItemStack } from "./ItemStack/index.js";
    *
    * //ItemType Version
-   * const itemTypeVer = new ItemStack(mc.MinecraftItemTypes.apple, 1, 0);
-   * const itemTypeVer2 = new ItemStack(mc.MinecraftItemTypes.apple, 1, 0, "apple?", "yes");
+   * const itemTypeVer = new ItemStack(mc.MinecraftItemTypes.apple, 1);
+   * const itemTypeVer2 = new ItemStack(mc.MinecraftItemTypes.apple, 1, "apple?", "yes");
    *
    * //ItemStack Version
-   * const example = new mc.ItemStack(mc.MinecraftItemTypes.apple, 1, 0);
+   * const example = new mc.ItemStack(mc.MinecraftItemTypes.apple, 1);
    * const itemStackVersion = new ItemStack(example);
    * ```
    * @param {mc.ItemType | mc.ItemStack} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
    * @param {number} amount 個数
-   * @param {number} data データ値
    * @param {string} nameTag アイテム名
    * @param {string[]} lore アイテムの説明
    */
-  constructor(itemType, amount = 1, data = 0, nameTag = "", lore = undefined) {
+  constructor(itemType, amount = 1, nameTag = "", lore = undefined) {
     if (itemType instanceof mc.ItemStack) {
       this._itemStack = itemType;
       this.typeId = this._itemStack.typeId;
@@ -132,7 +219,7 @@ export class ItemStack {
 
     }
     if (itemType instanceof mc.ItemType) {
-      this._itemStack = new mc.ItemStack(itemType, amount, data);
+      this._itemStack = new mc.ItemStack(itemType, amount);
       this.typeId = this._itemStack.typeId;
       if(nameTag != "") this._itemStack.nameTag = nameTag;
       if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);

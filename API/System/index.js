@@ -19,13 +19,6 @@ class System{
         mc.system.clearRun(runId);
     }
     /**
-     * 登録しているrunScheduleイベントを終了します。
-     * @param {number} runScheduleId 
-     */
-    clearRunSchedule(runScheduleId){
-        mc.system.clearRunSchedule(runScheduleId);
-    }
-    /**
      * callback関数を1tickごとに動かす際に使用します。
      * ただし、このままだと1回しか実行できないので、関数内にも定義する必要があります。
      * @example
@@ -40,7 +33,7 @@ class System{
      * @param {Function<void>} callback 
      */
     run(callback){
-        mc.system.run(callback);
+        return mc.system.run(callback);
     }
     /**
      * callback関数をdelayTicksごとに動かす際に使用します。
@@ -56,8 +49,8 @@ class System{
      * @param {Function<void>} callback 
      * @param {number} delayTicks 
      */
-    runSchedule(callback, delayTicks = 0){
-        mc.system.runSchedule(callback, delayTicks)
+    runInterval(callback, delayTicks = 0){
+        return mc.system.runInterval(callback, delayTicks)
     }
 }
 export const system = new System();

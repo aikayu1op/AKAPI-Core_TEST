@@ -18,6 +18,8 @@
 - [x] すべてのコンポーネントを追加する(1.19.51時点)
 - [ ] すべてのコンポーネントを追加する(1.19.60時点)
 - [ ] すべてのコンポーネントを日本語化する
+
+- [ ] 1.19.70用に変更する
 ### その他
 現在特になし 
 
@@ -27,3 +29,7 @@
 **Location系相互変換機能**
 
 **Playerクラスにいくつかの関数追加(hasTags, isInstantSneaking, MainhandItem, sendActionbar, setGamemode, getGamemode)** etc...
+
+# ChangeLog
+> ver 1.1β
+1.19.70で一応はエラーが吐かないように変更した。

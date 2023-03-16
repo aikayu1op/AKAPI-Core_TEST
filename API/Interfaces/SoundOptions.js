@@ -1,4 +1,4 @@
-import { Location } from "@minecraft/server";
+import { Vector } from "../Vector/index.js";
 export class SoundOptions{
     /**
      * @private
@@ -7,13 +7,13 @@ export class SoundOptions{
     volume = -32767;
     pitch = -32767;
     /**
-     * @type {Location}
+     * @type {Vector}
      */
     location = null;
     getOptions(){
         if(this.volume != -32767) this.alldata.volume = this.volume;
         if(this.pitch != -32767) this.alldata.pitch = this.pitch;
-        if(this.location != null && this.location instanceof Location) this.alldata.location = this.location;
+        if(this.location != null && this.location instanceof Vector) this.alldata.location = this.location.getMCVector3();
         return this.alldata;
     }
     constructor(){}

@@ -1,6 +1,5 @@
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { ItemType } from "../ItemStack/ItemType.js";
-import { BlockLocation } from "../Location/BlockLocation.js";
 import { Block } from "./Block.js";
 import { Color } from "../Components/Color/index.js";
 /**
@@ -18,49 +17,49 @@ export class BaseBlockComponent {
    * 大釜に溶岩が入っている際に使用可能なコンポーネントです。
    * @returns {BlockLavaContainerComponent}
    */
-  getLavaContainer(){
+  getLavaContainer() {
     return new BlockLavaContainerComponent(this._block);
   }
   /**
    * ピストンブロックだった場合に使用可能なコンポーネントです。
    * @returns {BlockPistonComponent}
    */
-  getPiston(){
+  getPiston() {
     return new BlockPistonComponent(this._block);
   }
   /**
    * 大釜にポーションが入っている際に使用可能なコンポーネントです。
    * @returns {BlockPotionContainerComponent}
    */
-  getPotionContainer(){
+  getPotionContainer() {
     return new BlockPotionContainerComponent(this._block);
   }
   /**
    * ジュークボックスのようなブロックの場合に使用可能なコンポーネントです。
    * @returns {BlockRecordPlayerComponent}
    */
-  getRecordPlayer(){
+  getRecordPlayer() {
     return new BlockRecordPlayerComponent(this._block);
   }
   /**
    * 看板ブロックの類の場合に使用可能なコンポーネントです。
    * @returns {BlockSignComponent}
    */
-  getSign(){
+  getSign() {
     return new BlockSignComponent(this._block);
   }
   /**
    * 大釜に粉雪が入っている際に使用可能なコンポーネントです。
    * @returns {BlockSnowContainerComponent}
    */
-  getSnowContainer(){
+  getSnowContainer() {
     return new BlockSnowContainerComponent(this._block);
   }
   /**
    * 大釜に水が入っている際に使用可能なコンポーネントです。
    * @returns {BlockWaterContainerComponent}
    */
-  getWaterContainer(){
+  getWaterContainer() {
     return new BlockWaterContainerComponent(this._block);
   }
   /**
@@ -88,12 +87,6 @@ class BlockInventoryComponent {
    */
   container;
   /**
-   * ブロックの座標データが入っています。
-   * @readonly
-   * @type {BlockLocation}
-   */
-  location;
-  /**
    * @param {Block} block
    */
   constructor(block) {
@@ -102,7 +95,6 @@ class BlockInventoryComponent {
        * @private
        */
       this._block = block.getMCBlock();
-      this.location = block.location;
       this.container = new BlockInventoryComponentContainer(block);
     } catch (e) {}
   }
@@ -216,9 +208,11 @@ class BlockInventoryComponentContainer {
     /**
      * @private
      */
-    this._blockComp = block.getMCBlock().getComponent("minecraft:inventory").container;
-    this.size = this._blockComp.size;
-    this.emptySlotsCount = this._blockComp.emptySlotsCount;
+    try{
+      this._blockComp = block.getMCBlock().getComponent("minecraft:inventory").container;
+      this.size = this._blockComp.size;
+      this.emptySlotsCount = this._blockComp.emptySlotsCount;
+    }catch(e){}
   }
 }
 /**
@@ -230,12 +224,6 @@ class BlockLavaContainerComponent {
    * コンポーネントID
    */
   typeId = "minecraft:lavaContainer";
-  /**
-   * ブロックの座標データが格納されています。
-   * @type {BlockLocation}
-   * @readonly
-   */
-  location;
   /**
    * 大釜に入っている量を設定・確認できます。
    * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
@@ -251,7 +239,6 @@ class BlockLavaContainerComponent {
   constructor(block) {
     try {
       this._blockComp = block.getMCBlock().getComponent(this.typeId);
-      this.location = this._blockComp.location;
     } catch (e) {}
   }
 }
@@ -261,17 +248,6 @@ class BlockPistonComponent {
    * コンポーネントID
    */
   typeId = "minecraft:piston";
-  /**
-   * ブロックの座標データが格納されています。
-   * @type {BlockLocation}
-   * @readonly
-   */
-  location;
-  /**
-   * @type {BlockLocation}
-   * @readonly
-   */
-  attachedBlocks;
   /**
    * @readonly
    * @type {boolean}
@@ -292,6 +268,15 @@ class BlockPistonComponent {
    * @type {boolean}
    */
   isRetracting;
+
+  /**
+   * 
+   * @returns {Block[]}
+   */
+  getAttachedBlocks(){
+    return this._blockComp.getAttachedBlocks().map(x => new Block(x));
+  }
+
   /**
    *
    * @param {Block} block
@@ -299,8 +284,6 @@ class BlockPistonComponent {
   constructor(block) {
     try {
       this._blockComp = block.getMCBlock().getComponent(this.typeId);
-      this.location = this._blockComp.location;
-      this.attachedBlocks = this._blockComp.attachedBlocks;
       this.isExpanded = this._blockComp.isExpanded;
       this.isExpanding = this._blockComp.isExpanding;
       this.isMoving = this._blockComp.isMoving;
@@ -317,12 +300,6 @@ class BlockPotionContainerComponent {
    * コンポーネントID
    */
   typeId = "minecraft:potionContainer";
-  /**
-   * ブロックの座標データが格納されています。
-   * @type {BlockLocation}
-   * @readonly
-   */
-  location;
   /**
    * 大釜に入っている量を設定・確認できます。
    * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
@@ -345,7 +322,6 @@ class BlockPotionContainerComponent {
   constructor(block) {
     try {
       this._blockComp = block.getMCBlock().getComponent(this.typeId);
-      this.location = this._blockComp.location;
     } catch (e) {}
   }
 }
@@ -358,31 +334,25 @@ class BlockRecordPlayerComponent {
    * コンポーネントID
    */
   typeId = "minecraft:recordPlayer";
-  /**
-   * ブロックの座標データが格納されています。
-   * @type {BlockLocation}
-   * @readonly
-   */
-  location;
 
   /**
    * 流しているレコードをクリアします。
    */
-  clearRecord(){
+  clearRecord() {
     this._blockComp.clearRecord();
   }
   /**
    * 現在レコードがなっているかを取得できます。
    * @returns {boolean}
    */
-  isPlaying(){
+  isPlaying() {
     return this._blockComp.isPlaying();
   }
   /**
    * レコードをセットします。
    * @param {ItemType} recordItemType
    */
-  setRecord(recordItemType){
+  setRecord(recordItemType) {
     this._blockComp.setRecord(recordItemType.getMCItemType());
   }
   /**
@@ -392,125 +362,103 @@ class BlockRecordPlayerComponent {
   constructor(block) {
     try {
       this._blockComp = block.getMCBlock().getComponent(this.typeId);
-      this.location = this._blockComp.location;
     } catch (e) {}
   }
 }
 
 /**
- * 
+ *
  */
 class BlockSignComponent {
-    /**
-     * @readonly
-     * コンポーネントID
-     */
-    typeId = "minecraft:sign";
-    /**
-     * ブロックの座標データが格納されています。
-     * @type {BlockLocation}
-     * @readonly
-     */
-    location;
-    /**
-     * 看板のデータが格納されています。
-     * @readonly
-     * @type {string}
-     */
-    text;
-    /**
-     *
-     * @param {Block} block
-     */
-    constructor(block) {
-      try {
-        this._blockComp = block.getMCBlock().getComponent(this.typeId);
-        this.location = this._blockComp.location;
-        this.text = this._blockComp.text;
-      } catch (e) {}
-    }
-  }
   /**
+   * @readonly
+   * コンポーネントID
+   */
+  typeId = "minecraft:sign";
+  /**
+   * 看板のデータが格納されています。
+   * @readonly
+   * @type {string}
+   */
+  text;
+  /**
+   *
+   * @param {Block} block
+   */
+  constructor(block) {
+    try {
+      this._blockComp = block.getMCBlock().getComponent(this.typeId);
+      this.text = this._blockComp.text;
+    } catch (e) {}
+  }
+}
+/**
  * 大釜に粉雪が入ってる際に使用可能なコンポーネントです。
  */
 class BlockSnowContainerComponent {
-    /**
-     * @readonly
-     * コンポーネントID
-     */
-    typeId = "minecraft:snowContainer";
-    /**
-     * ブロックの座標データが格納されています。
-     * @type {BlockLocation}
-     * @readonly
-     */
-    location;
-    /**
-     * 大釜に入っている量を設定・確認できます。
-     * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
-     */
-    FillLevel(value = undefined) {
-      if (!value) return this._blockComp.fillLevel;
-      else if (typeof value === "number") this._blockComp.fillLevel = value;
-    }
-    /**
-     *
-     * @param {Block} block
-     */
-    constructor(block) {
-      try {
-        this._blockComp = block.getMCBlock().getComponent(this.typeId);
-        this.location = this._blockComp.location;
-      } catch (e) {}
-    }
+  /**
+   * @readonly
+   * コンポーネントID
+   */
+  typeId = "minecraft:snowContainer";
+  /**
+   * 大釜に入っている量を設定・確認できます。
+   * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
+   */
+  FillLevel(value = undefined) {
+    if (!value) return this._blockComp.fillLevel;
+    else if (typeof value === "number") this._blockComp.fillLevel = value;
   }
   /**
+   *
+   * @param {Block} block
+   */
+  constructor(block) {
+    try {
+      this._blockComp = block.getMCBlock().getComponent(this.typeId);
+    } catch (e) {}
+  }
+}
+/**
  * 大釜に水が入ってる際に使用可能なコンポーネントです。
  */
 class BlockWaterContainerComponent {
-    /**
-     * @readonly
-     * コンポーネントID
-     */
-    typeId = "minecraft:waterContainer";
-    /**
-     * ブロックの座標データが格納されています。
-     * @type {BlockLocation}
-     * @readonly
-     */
-    location;
-    /**
-     * 指定した染料で色を染めます。
-     * @param {ItemType} itemType 
-     */
-    addDye(itemType){
-        this._blockComp.addDye(itemType);
-    }
-    /**
-     * 大釜に入っている量を設定・確認できます。
-     * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
-     */
-    FillLevel(value = undefined) {
-      if (!value) return this._blockComp.fillLevel;
-      else if (typeof value === "number") this._blockComp.fillLevel = value;
-    }
-    /**
-     * 大釜に入っている水を好きな色に設定・または取得可能です。
-     * 
-     * @param {Color} color ここに何も入れなかった場合データ取得で、Colorを入れた場合は設定されます。
-     */
-    CustomColor(color = undefined){
-        if(!color) return new Color(this._blockComp.customColor);
-        this._blockComp.customColor = color.getMCColor();
-    }
-    /**
-     *
-     * @param {Block} block
-     */
-    constructor(block) {
-      try {
-        this._blockComp = block.getMCBlock().getComponent(this.typeId);
-        this.location = this._blockComp.location;
-      } catch (e) {}
-    }
+  /**
+   * @readonly
+   * コンポーネントID
+   */
+  typeId = "minecraft:waterContainer";
+  /**
+   * 指定した染料で色を染めます。
+   * @param {ItemType} itemType
+   */
+  addDye(itemType) {
+    this._blockComp.addDye(itemType);
   }
+  /**
+   * 大釜に入っている量を設定・確認できます。
+   * @param {number} value 値を入れると設定されますが、何も入れないと取得できます。
+   */
+  FillLevel(value = undefined) {
+    if (!value) return this._blockComp.fillLevel;
+    else if (typeof value === "number") this._blockComp.fillLevel = value;
+  }
+  /**
+   * 大釜に入っている水を好きな色に設定・または取得可能です。
+   *
+   * @param {Color} color ここに何も入れなかった場合データ取得で、Colorを入れた場合は設定されます。
+   */
+  CustomColor(color = undefined) {
+    if (!color) return new Color(this._blockComp.customColor);
+    this._blockComp.customColor = color.getMCColor();
+  }
+  /**
+   *
+   * @param {Block} block
+   */
+  constructor(block) {
+    try {
+      this._blockComp = block.getMCBlock().getComponent(this.typeId);
+    } catch (e) {}
+  }
+}

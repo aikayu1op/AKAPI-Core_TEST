@@ -1,5 +1,4 @@
-import { WorldInitializeEvent } from "@minecraft/server";
-import { world } from "../World/index.js";
+
 import { NumberRange } from "./NumberRange.js";
 
 /**

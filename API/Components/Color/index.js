@@ -67,10 +67,15 @@ export class Color{
     /**
      * マイクラ公式のColorクラスを返します。
      * @deprecated
-     * @returns {mc.Color}
+     * @returns {{}}
      */
     getMCColor(){
-        return new mc.Color(this.red,this.green,this.blue,this.alpha)
+        return {
+            red: this.red,
+            green: this.green,
+            blue: this.blue,
+            alpha: this.alpha
+        }
     }
     /**
      * 色を生成します。

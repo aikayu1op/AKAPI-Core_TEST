@@ -34,13 +34,13 @@ class BeforeChatEvents {
     }
 }
 mc.world.events.beforeChat.subscribe(ev =>{
-    const { sender: s, message, sendToTargets, targets: t } = ev;
-    let targets = [];
-    t.forEach(x => targets.push(new Player(x)));
+    const { sender: s, message, sendToTargets, getTargets: t } = ev;
+    let getTargets = () => {return t().map(x => new Player(x));}
     const sender = new Player(s);
-    let cancel = () => ev.cancel = true;
+    let setTargets = (players) => ev.setTargets(players)
+    let cancel = (value) => ev.cancel = value;
     _listener.forEach(f =>{
-        f({sender, cancel, message, sendToTargets, targets});
+        f({sender, cancel, message, sendToTargets, getTargets, setTargets});
     })
 })
 

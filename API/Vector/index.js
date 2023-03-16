@@ -1,6 +1,4 @@
 import * as mc from "@minecraft/server";
-import { BlockLocation } from "./BlockLocation.js";
-import { Location } from "./Location.js";
 
 export class Vector {
   /**
@@ -106,34 +104,6 @@ export class Vector {
     };
   }
   /**
-   * マイクラが提供しているLocationクラスを返します。
-   * @deprecated
-   */
-  getMCLocation() {
-    return new mc.Location(this.x, this.y, this.z);
-  }
-  /**
-   * マイクラが提供しているBlockLocationクラスを返します。
-   * @deprecated
-   */
-  getMCBlockLocation() {
-    return new mc.BlockLocation(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
-  }
-  /**
-   * AKAPIのLocationクラスを返します。
-   * @returns {Location}
-   */
-  convertLocation() {
-    return new Location(this);
-  }
-  /**
-   * AKAPIのBlockLocationクラスを返します。
-   * @returns {BlockLocation}
-   */
-  convertBlockLocation() {
-    return new BlockLocation(this);
-  }
-  /**
    * Vectorのオフセットを変更します。
    * @param {number} x
    * @param {number} y
@@ -148,26 +118,25 @@ export class Vector {
 
   /**
    * ベクターを生成します。
-   * x部分にマイクラ公式のVector3を入れることや、APIのLocationも可能です。
-   * @param {number | mc.Vector3 | mc.Vector | mc.Location | Location | BlockLocation} x
+   * x部分にマイクラ公式のVector3を入れることも可能です。
+   * @param {number | mc.Vector3 | mc.Vector} x
    * @param {number} y
    * @param {number} z
    */
   constructor(x, y, z) {
-    if (
-      x instanceof mc.Vector ||
-      x instanceof mc.Location ||
-      x instanceof Location ||
-      x instanceof BlockLocation ||
-      "x" in x
-    ) {
-      this.x = x.x;
-      this.y = x.y;
-      this.z = x.z;
-    } else {
-      this.x = x;
-      this.y = y;
-      this.z = z;
+    if(x instanceof mc.Vector){
+        this.x = x.x;
+        this.y = x.y;
+        this.z = x.z;
+    }
+    else if(typeof x == "object" && "x" in x && "y" in x && "z" in x){
+        this.x = x.x;
+        this.y = x.y;
+        this.z = x.z;
+    }else{
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
   }
 }
