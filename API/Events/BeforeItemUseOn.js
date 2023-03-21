@@ -42,7 +42,7 @@ mc.world.events.beforeItemUseOn.subscribe((ev) => {
   let source;
   if (ev.source.typeId == "minecraft:player") source = new Player(ev.source);
   else source = new Entity(source);
-  let cancel = (value) => {if(typeof value == "boolean") ev.cancel = value};
+  let cancel = (value) => {if(typeof value == "boolean") ev.cancel = value; else if(!value) ev.cancel = true;};
   let item = (itemStack) => {
     if (!itemStack) {
       if (!ev.item?.typeId) return undefined;

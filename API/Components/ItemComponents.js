@@ -1,4 +1,5 @@
 import * as mc from "@minecraft/server";
+import { NumberRange } from "../Interfaces/NumberRange.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 
 export class ItemComponentBase {
@@ -116,6 +117,12 @@ class ItemDurabilityComponent {
     this.damage = value;
   }
   /**
+   * 
+   */
+  getDamageRange(){
+    return new NumberRange(this.itemComp.getDamageRange());
+  }
+  /**
    *
    * @param {ItemStack} itemStack
    */
@@ -127,11 +134,6 @@ class ItemDurabilityComponent {
        */
       this.itemComp = this._itemStack.getItemStack().getComponent(this.typeId);
       this.damage = this.itemComp.damage;
-      /**
-       * @readonly
-       * @type {mc.NumberRange}
-       */
-      this.damageRange = this.itemComp.damageRange;
       /**
        * @readonly
        * @type {number}

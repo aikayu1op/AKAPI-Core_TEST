@@ -3,13 +3,13 @@ import {
   Entity,
   EntityDefinitionFeedItem,
   Trigger,
-  BlockPermutation,
   FilterGroup,
   FeedItem,
   Seat,
   Container,
   Items,
 } from "@minecraft/server";
+import { BlockPermutation } from "../Block/BlockPermutation.js";
 import { ItemQueryOptions } from "../Interfaces/ItemQueryOptions.js";
 import { NumberRange } from "../Interfaces/NumberRange.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
@@ -1140,6 +1140,20 @@ class PlayerBreathableComponent {
     this.playerComp.setAirSupply(value);
   }
   /**
+   * 
+   * @returns {BlockPermutation[]}
+   */
+  getBreatheBlocks(){
+    return this.playerComp.getBreatheBlocks().map(x => new BlockPermutation(x));
+  }
+  /**
+   * 
+   * @returns {BlockPermutation[]}
+   */
+  getNonBreatheBlocks(){
+    return this.playerComp.getNonBreatheBlocks().map(x => new BlockPermutation(x));
+  }
+  /**
    *
    * @param {Player} player
    */
@@ -1410,6 +1424,20 @@ class PlayerRideableComponent {
     } catch (e) {
       return false;
     }
+  }
+  /**
+   * 
+   * @returns {string[]}
+   */
+  getFamilyTypes(){
+    return this.playerComp.getFamilyTypes();
+  }
+  /**
+   * 
+   * @returns {Seat[]}
+   */
+  getSeats(){
+    return this.playerComp.getSeats();
   }
   /**
    *
@@ -2288,6 +2316,12 @@ class EntityBreathableComponent {
   setAirSupply(value) {
     this.entityComp.setAirSupply(value);
   }
+  getBreatheBlocks(){
+    return this.entityComp.getBreatheBlocks().map(x => new BlockPermutation(x));
+  }
+  getNonBreatheBlocks(){
+    return this.entityComp.getNonBreatheBlocks().map(x => new BlockPermutation(x));
+  }
   /**
    *
    * @param {Entity} entity
@@ -2613,6 +2647,9 @@ class EntityHealableComponent {
     if (this._entity.hasComponent(this.typeId)) return true;
     else return false;
   }
+  getFeedItems(){
+    return this.entityComp.getFeedItems();
+  }
 
   /**
    *
@@ -2638,11 +2675,6 @@ class EntityHealableComponent {
        * @type {boolean}
        */
       this.forceUse = this.entityComp.forceUse;
-      /**
-       * @readonly
-       * @type {FeedItem[]}
-       */
-      this.items = this.entityComp.items;
     } catch (e) {}
   }
 }
@@ -4467,6 +4499,21 @@ class EntityRideableComponent {
       return false;
     }
   }
+
+  /**
+   * 
+   * @returns {string[]}
+   */
+  getFamilyTypes(){
+    return this.entityComp.getFamilyTypes();
+  }
+  /**
+   * 
+   * @returns {Seat[]}
+   */
+  getSeats(){
+    return this.entityComp.getSeats();
+  }
   /**
    *
    * @param {Entity} entity
@@ -4490,11 +4537,6 @@ class EntityRideableComponent {
       this.crouchingSkipInteract = this.entityComp.crouchingSkipInteract;
       /**
        * @readonly
-       * @type {string[]}
-       */
-      this.familyTypes = this.entityComp.familyTypes;
-      /**
-       * @readonly
        * @type {string}
        */
       this.interactText = this.entityComp.interactText;
@@ -4513,11 +4555,6 @@ class EntityRideableComponent {
        * @type {number}
        */
       this.seatCount = this.entityComp.seatCount;
-      /**
-       * @readonly
-       * @type {Seat[]}
-       */
-      this.seats = this.entityComp.seats;
     } catch (e) {}
   }
 }
@@ -4666,6 +4703,12 @@ class EntityTamableComponent {
     }
   }
   /**
+   * @returns {string[]}
+   */
+  getTameItems(){
+    return this.entityComp.getTameItems();
+  }
+  /**
    *
    * @param {Entity} entity
    */
@@ -4689,11 +4732,6 @@ class EntityTamableComponent {
        * @type {Trigger}
        */
       this.tameEvent = this.entityComp.tameEvent;
-      /**
-       * @readonly
-       * @type {string[]}
-       */
-      this.tameItems = this.entityComp.tameItems;
     } catch (e) {}
   }
 }

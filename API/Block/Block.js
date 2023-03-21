@@ -1,7 +1,7 @@
 import * as mc from "@minecraft/server";
 import { Dimension } from "../Dimension/index.js";
 import { Vector } from "../Vector/index.js";
-import { BaseBlockComponent } from "./BlockComponent.js";
+import { BaseBlockComponent } from "../Components/BlockComponent.js";
 import { BlockPermutation } from "./BlockPermutation.js";
 import { BlockType } from "./BlockType.js";
 export class Block {
@@ -107,19 +107,19 @@ export class Block {
   /**
    * 空気かどうかを返します。
    */
-  isAir(){
+  isAir() {
     return this._block.isAir();
   }
   /**
    * 液体かどうかを返します。
    */
-  isLiquid(){
+  isLiquid() {
     return this._block.isLiquid();
   }
   /**
    * 固体かどうかを返します。
    */
-  isSolid(){
+  isSolid() {
     return this._block.isSolid();
   }
 

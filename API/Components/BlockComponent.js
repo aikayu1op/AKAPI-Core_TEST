@@ -1,7 +1,8 @@
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { ItemType } from "../ItemStack/ItemType.js";
-import { Block } from "./Block.js";
-import { Color } from "../Components/Color/index.js";
+import { Block } from "../Block/Block.js";
+import { Color } from "./Color/index.js";
+import { Vector } from "../Vector/index.js";
 /**
  * ブロックのコンポーネントがすべて詰まっているクラスです。
  */
@@ -208,11 +209,11 @@ class BlockInventoryComponentContainer {
     /**
      * @private
      */
-    try{
+    try {
       this._blockComp = block.getMCBlock().getComponent("minecraft:inventory").container;
       this.size = this._blockComp.size;
       this.emptySlotsCount = this._blockComp.emptySlotsCount;
-    }catch(e){}
+    } catch (e) {}
   }
 }
 /**
@@ -270,11 +271,11 @@ class BlockPistonComponent {
   isRetracting;
 
   /**
-   * 
-   * @returns {Block[]}
+   *
+   * @returns {Vector[]}
    */
-  getAttachedBlocks(){
-    return this._blockComp.getAttachedBlocks().map(x => new Block(x));
+  getAttachedBlocks() {
+    return this._blockComp.getAttachedBlocks().map((x) => new Vector(x));
   }
 
   /**
@@ -451,6 +452,9 @@ class BlockWaterContainerComponent {
   CustomColor(color = undefined) {
     if (!color) return new Color(this._blockComp.customColor);
     this._blockComp.customColor = color.getMCColor();
+  }
+  getHeadLocation(){
+    return new Vector(this._blockComp.getHeadLocation());
   }
   /**
    *
