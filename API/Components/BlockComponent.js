@@ -3,6 +3,7 @@ import { ItemType } from "../ItemStack/ItemType.js";
 import { Block } from "../Block/Block.js";
 import { Color } from "./Color/index.js";
 import { Vector } from "../Vector/index.js";
+import { DyeColor } from "@minecraft/server";
 /**
  * ブロックのコンポーネントがすべて詰まっているクラスです。
  */
@@ -74,6 +75,66 @@ export class BaseBlockComponent {
     this._block = block;
   }
 }
+/**
+ * 看板のコンポーネントを取得します。
+ */
+class BlockSignComponent{
+
+  /**
+   * コンポーネントの名前が入っています。
+   * @readonly
+   */
+  typeId = "minecraft:sign";
+  /**
+   * 看板の文字をstring型で返します。
+   * @returns {string}
+   */
+  getText(){
+    return this._blockComp.getText();
+  }
+  /**
+   * 看板の文字をRawText型(Object)で返します。
+   * @returns {import("@minecraft/server").RawText}
+   */
+  getRawText(){
+    return this._blockComp.getRawText();
+  }
+  /**
+   * 看板の文字の色を取得します。
+   * @returns {DyeColor | undefined}
+   */
+  getTextDyeColor(){
+    return this._blockComp.getTextDyeColor();
+  }
+  /**
+   * 看板の文字をセットします。
+   * @param {string | import("@minecraft/server").RawText | import("@minecraft/server").RawMessage} text 
+   */
+  setText(text){
+    this._blockComp.setText(text);
+  }
+  /**
+   * 看板の全体の文字の色を設定します。
+   * @param {DyeColor} color 
+   */
+  setTextDyeColor(color){
+    this._blockComp.setTextDyeColor(color);
+  }
+
+
+  /**
+   * @param {Block} block
+   */
+  constructor(block) {
+    try {
+      /**
+       * @private
+       */
+      this._blockComp = block.getMCBlock().getComponent(this.typeId);
+    } catch (e) {}
+  }
+}
+
 /**
  * コンテナー機能が追加されているブロックの中身を変更することができます。(例: チェスト、シュルカーボックス等)
  */

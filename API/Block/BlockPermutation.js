@@ -1,5 +1,6 @@
 import * as mc from "@minecraft/server";
 import { BlockType } from "./BlockType.js";
+import { ItemStack } from "../ItemStack/ItemStack.js";
 export class BlockPermutation{
     /**
      * @readonly
@@ -30,6 +31,12 @@ export class BlockPermutation{
      */
     getTags(){
         return this._permutation.getTags()
+    }
+    /**
+     * ブロックのデータを保持したままItemStackを返します。
+     */
+    getItemStack(){
+        return new ItemStack(this._permutation.getItemStack())
     }
     /**
      * ブロックに本当にタグがついてるか検証します。

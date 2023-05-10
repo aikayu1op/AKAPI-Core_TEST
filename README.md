@@ -33,3 +33,7 @@
 # ChangeLog
 > ver 1.1β
 1.19.70で一応はエラーが吐かないように変更した。
+> ver 1.1.1β
+1.19.80でおおよそエラーが吐かないように変更した。
+コンポーネントの追加(BlockSignComponent)
+BlockPermutationのgetItemStackの追加
