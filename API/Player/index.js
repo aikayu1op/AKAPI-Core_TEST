@@ -58,7 +58,7 @@ export class Player {
    * ```
    * import { world } from "@minecraft/server";
    *
-   * world.events.beforeChat.subscribe((ev) =>{
+   * world.beforeEvents.chatSend.subscribe((ev) =>{
    *    let score = world.scoreboard.getObjective("スコアの名前").getScore(ev.sender.scoreboard);
    *    if(score >= 10) ev.sender.sendMessage("スコア10以上あります。");
    * })
@@ -92,7 +92,7 @@ export class Player {
    * ```
    * import { world, Player, MinecraftEffectTypes } from "@minecraft/server";
    *
-   * world.events.beforeChat.subscribe((ev) =>{
+   * world.beforeEvents.chatSend.subscribe((ev) =>{
    *    //スピードエフェクト付与
    *    ev.sender.addEffect(MinecraftEffectTypes.speed, 20, 1, false);
    * })
@@ -261,44 +261,44 @@ export class Player {
   /**
    * 動いている方向の速度を返します。
    */
-  getVelocity(){
+  getVelocity() {
     return new Vector(this._player.getVelocity());
   }
   /**
-   * 
+   *
    */
-  getViewDirection(){
+  getViewDirection() {
     return new Vector(this._player.getViewDirection());
   }
   /**
    * 現在向いている方向を返します。
    * xが上下、yが左右の向きを表します。
    */
-  getRotation(){
+  getRotation() {
     return this._player.getRotation();
   }
   /**
    * 死んだ際にスポーンする座標が個別に設定されている場合、座標を取得できます。
    */
-  getSpawnPosition(){
+  getSpawnPosition() {
     return new Vector(this._player.getSpawnPosition());
   }
   /**
    * 死んだ際にスポーンする座標が個別に設定されている場合に、そのスポーンするディメンションを取得できます。
    */
-  get spawnDimension(){
+  get spawnDimension() {
     return new Dimension(this._player.spawnDimension);
   }
   /**
    * 死んだ際にスポーンする場所を設定できます。
    */
-  setSpawn(spawnPosition = this.location, spawnDimension = this.dimension){
+  setSpawn(spawnPosition = this.location, spawnDimension = this.dimension) {
     this._player.setSpawn(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
   }
   /**
    * スポーンポイントをリセットします。
    */
-  clearSpawn(){
+  clearSpawn() {
     this._player.clearSpawn();
   }
   /**
@@ -366,7 +366,7 @@ export class Player {
    * ```
    * import { world } from "@minecraft/server";
    *
-   * world.events.beforeChat.subscribe((ev) =>{
+   * world.beforeEvents.chatSend.subscribe((ev) =>{
    *    ev.sender.playSound("random.levelup", {pitch: 2});
    * })
    * ```
@@ -496,15 +496,15 @@ export class Player {
   /**
    * プレイヤーが右手に持っているスロット番号を返します。
    */
-  get selectedSlot(){
+  get selectedSlot() {
     return this._player.selectedSlot;
   }
   /**
    * プレイヤーが右手に持っているスロット番号を返します。
    * @param {number} value 0~9の値を入れることで、ホットバーに指定された数値の場所にカーソルを合わせてくれます。
    */
-  set selectedSlot(value){
-    if(typeof value == "number") this._player.selectedSlot = value;
+  set selectedSlot(value) {
+    if (typeof value == "number") this._player.selectedSlot = value;
   }
 
   /**
@@ -519,14 +519,14 @@ export class Player {
   /**
    * プレイヤーのネームタグを取得します。
    */
-  get nameTag(){
+  get nameTag() {
     return this._player.nameTag;
   }
   /**
    * プレイヤーのネームタグを取得します。
    * @param {string} value 文字列を指定することで、名前を変更することができます。
    */
-  set nameTag(value){
+  set nameTag(value) {
     this._player.nameTag = value;
   }
   /**
@@ -565,10 +565,10 @@ export class Player {
   }
   /**
    * 右から左へ流れるactionbarを作ることができます。
-   * 
+   *
    * sendActionbarや、コマンドによるactionbarは併用不可能です。
-   * @param {string} id 
-   * @param {string} message 
+   * @param {string} id
+   * @param {string} message
    */
   setSliderActionbar(id = "test", message = "undefined") {
     SliderActionbar.setData(this, id, message);

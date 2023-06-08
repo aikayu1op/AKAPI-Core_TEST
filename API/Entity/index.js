@@ -39,7 +39,7 @@ export class Entity {
    * ```
    * import { world } from "@minecraft/server";
    *
-   * world.events.beforeChat.subscribe((ev) =>{
+   * world.beforeEvents.chatSend.subscribe((ev) =>{
    *    let score = world.scoreboard.getObjective("スコアの名前").getScore(ev.sender.scoreboard);
    *    if(score >= 10) ev.sender.tell("スコア10以上あります。");
    * })
@@ -61,7 +61,7 @@ export class Entity {
    * ```
    * import { world, Player, MinecraftEffectTypes } from "@minecraft/server";
    *
-   * world.events.beforeChat.subscribe((ev) =>{
+   * world.beforeEvents.chatSend.subscribe((ev) =>{
    *    //スピードエフェクト付与
    *    ev.sender.addEffect(MinecraftEffectTypes.speed, 20, 1, false);
    * })
@@ -83,33 +83,34 @@ export class Entity {
   }
   /**
    * 現在の速度に衝撃を与えたベクトルを追加します。
-   * @param {Vector} vector 
+   * @param {Vector} vector
    */
-  applyImpulse(vector){
+  applyImpulse(vector) {
     this._entity.applyImpulse(vector.getMCVector3());
   }
   /**
-   * 
-   * @param {number} directionX 
-   * @param {number} directionZ 
-   * @param {number} horizontalStrength 
-   * @param {number} verticalStrength 
+   *
+   * @param {number} directionX
+   * @param {number} directionZ
+   * @param {number} horizontalStrength
+   * @param {number} verticalStrength
    */
-  applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength){
+  applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength) {
     this._entity.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
   }
   /**
    * 速度をリセットさせます。
    */
-  clearVelocity(){
+  clearVelocity() {
     this._entity.clearVelocity();
   }
   /**
    * エンティティが向いている方向のブロッククラスを返します。
-   * @param {{} || BlockRaycastOptions} options 距離等のオプションの設定
+   * @param { BlockRaycastOptions || {} } options 距離等のオプションの設定
    */
   getBlockFromViewDirection(options = {}) {
-    if (options instanceof BlockRaycastOptions) return new Block(this._entity.getBlockFromViewDirection(options.getOptions()));
+    if (options instanceof BlockRaycastOptions)
+      return new Block(this._entity.getBlockFromViewDirection(options.getOptions()));
     else return new Block(this._entity.getBlockFromViewDirection(options));
   }
   /**
@@ -156,7 +157,7 @@ export class Entity {
    * @param {mc.EntityRaycastOptions} options 範囲の設定ができます。
    */
   getEntitiesFromViewDirection(options = {}) {
-    return this._entity.getEntitiesFromViewDirection(options).map(x => new Entity(x));
+    return this._entity.getEntitiesFromViewDirection(options).map((x) => new Entity(x));
   }
   /**
    * マイクラ公式のEntityクラスを返します。
@@ -195,26 +196,26 @@ export class Entity {
   /**
    * 頭からの座標を返します。
    */
-  getHeadLocation(){
+  getHeadLocation() {
     return new Vector(this._entity.getHeadLocation());
   }
   /**
    * 動いている方向の速度を返します。
    */
-  getVelocity(){
+  getVelocity() {
     return new Vector(this._entity.getVelocity());
   }
   /**
    * 向いている方向のベクターを返します。
    */
-  getViewDirection(){
+  getViewDirection() {
     return new Vector(this._entity.getViewDirection());
   }
   /**
    * 現在向いている方向を返します。
    * xが上下、yが左右の向きを表します。
    */
-  getRotation(){
+  getRotation() {
     return this._entity.getRotation();
   }
   /**
@@ -244,10 +245,10 @@ export class Entity {
   }
   /**
    * アニメーションを実行します。
-   * @param {string} animationName 
-   * @param {{}} options 
+   * @param {string} animationName
+   * @param {{}} options
    */
-  playAnimation(animationName, options){
+  playAnimation(animationName, options) {
     this._entity.playAnimation(animationName, options);
   }
   /**
@@ -340,14 +341,14 @@ export class Entity {
   /**
    * エンティティのネームタグを設定・変更します。
    */
-  get nameTag(){
+  get nameTag() {
     return this._entity.nameTag;
   }
   /**
    * エンティティのネームタグを設定・変更します。
    * @param {string} value ここに文字列を入れることで、名前が変更されます。
    */
-  set nameTag(value){
+  set nameTag(value) {
     this._entity.nameTag = value;
   }
   /**

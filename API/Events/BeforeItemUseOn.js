@@ -17,7 +17,7 @@ import { Vector } from "../Vector/index.js";
 var _listener = [];
 export class BeforeItemUseOnEvent {
   /**
-   * 地面に右クリック、またはタップではタッチした瞬間に発火するイベントです。
+   * ブロックに対して右クリック、またはタップではタッチした瞬間に発火するイベントです。
    * アイテムを持っていなくても発火させることが可能です。
    * @param {BeforeItemUseOnEventSignal} callback
    * @returns {(arg: BeforeItemUseOnEventSignal) => void}

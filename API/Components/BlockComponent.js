@@ -427,33 +427,6 @@ class BlockRecordPlayerComponent {
     } catch (e) {}
   }
 }
-
-/**
- *
- */
-class BlockSignComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:sign";
-  /**
-   * 看板のデータが格納されています。
-   * @readonly
-   * @type {string}
-   */
-  text;
-  /**
-   *
-   * @param {Block} block
-   */
-  constructor(block) {
-    try {
-      this._blockComp = block.getMCBlock().getComponent(this.typeId);
-      this.text = this._blockComp.text;
-    } catch (e) {}
-  }
-}
 /**
  * 大釜に粉雪が入ってる際に使用可能なコンポーネントです。
  */
