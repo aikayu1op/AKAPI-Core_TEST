@@ -1,6 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Dimension } from "../Dimension/index.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 import { BaseBlockComponent } from "../Components/BlockComponent.js";
 import { BlockPermutation } from "./BlockPermutation.js";
 import { BlockType } from "./BlockType.js";

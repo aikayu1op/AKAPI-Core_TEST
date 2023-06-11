@@ -1,6 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Player } from "../Player/index.js";
-import { IBeforeChatEventSignal } from "./interface";
+import { IBeforeChatEventSignal } from "./interface.js";
 
 /**
  * @type {Function[]}
@@ -39,8 +39,14 @@ mc.world.beforeEvents.chatSend.subscribe((ev) => {
     return t().map((x) => new Player(x));
   };
   const sender = new Player(s);
-  let setTargets = (players) => ev.setTargets(players);
-  let cancel = (value) => (ev.cancel = value);
+  /**
+   * @param {Player[]} players
+   */
+  let setTargets = (players) => ev.setTargets(players.map((x) => x.getMCPlayer()));
+  let cancel = (value) => {
+    if (!!value && typeof value === "boolean") ev.cancel = value;
+    else ev.cancel = true;
+  };
   _listener.forEach((f) => {
     f({ sender, cancel, message, sendToTargets, getTargets, setTargets });
   });

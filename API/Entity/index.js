@@ -1,10 +1,11 @@
 import * as mc from "@minecraft/server";
 import { Components } from "../Components/EntityComponents.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { Dimension } from "../Dimension/index.js";
 import { world } from "../World/index.js";
 import { Block } from "../Block/Block.js";
+import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 
 export class Entity {
   /**
@@ -292,33 +293,23 @@ export class Entity {
   /**
    * エンティティをテレポートさせます。
    * @param {Vector} location
-   * @param {boolean} keepVelocity
-   * @param {Dimension} dimension
-   * @param {number} xRotation
-   * @param {number} yRotation
+   * @param {TeleportOptions} options
    */
   teleport(
     location,
-    keepVelocity = false,
-    dimension = this.dimension,
-    xRotation = this._entity.rotation.x,
-    yRotation = this._entity.rotation.y
+    options
   ) {
-    this._entity.teleport(location.getMCVector3(), dimension.getMCDimension(), xRotation, yRotation, keepVelocity);
+    this._entity.teleport(location.getMCVector3(), options.toObject());
   }
   /**
    * エンティティをテレポートさせます。
    * @param {Vector} location
-   * @param {Dimension} dimension
-   * @param {Vector} facing
-   * @param {boolean} keepVelocity
+   * @param {TeleportOptions} options
    */
-  teleportFacing(location, dimension = this.dimension, facing, keepVelocity = false) {
+  teleportFacing(location, options) {
     this._entity.teleportFacing(
       location.getMCVector3(),
-      dimension.getMCDimension(),
-      facing.getMCVector3(),
-      keepVelocity
+      options.toObject()
     );
   }
   /**

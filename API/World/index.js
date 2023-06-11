@@ -2,14 +2,19 @@ import { world as w } from "@minecraft/server";
 import { Player } from "../Player/index.js";
 import * as myOptions from "../Interfaces/index.js";
 import { Dimension } from "../Dimension/index.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 
 class World {
   /**
    * イベントを格納しているプロパティ
    * @readonly
    */
-  events = w.events;
+  beforeEvents = w.beforeEvents;
+  /**
+   * イベントを格納しているプロパティ
+   * @readonly
+   */
+  afterEvents = w.afterEvents;
   /**
    * スコアボードを取得したい場合に使用するプロパティ
    * @readonly
@@ -33,7 +38,7 @@ class World {
    * すべてのプレイヤーを返します。
    */
   getAllPlayers() {
-    return w.getAllPlayers().map(p => new Player(p));
+    return w.getAllPlayers().map((p) => new Player(p));
   }
   /**
    * 指定されたIDのDimensionクラスを返します。
@@ -45,14 +50,14 @@ class World {
   /**
    * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
    */
-  get defaultSpawnPosition(){
+  get defaultSpawnPosition() {
     return new Vector(w.getDefaultSpawnPosition());
   }
   /**
    * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
    * @param {Vector} vector 指定された場所が初期設定のスポーンポイントになります。
    */
-  set defaultSpawnPosition(vector){
+  set defaultSpawnPosition(vector) {
     w.setDefaultSpawn(vector.getMCVector3());
   }
   /**
@@ -68,8 +73,9 @@ class World {
    * @returns {Player[]}
    */
   getPlayers(options = {}) {
-    if (options instanceof myOptions.EntityQueryOptions) return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
-    else if (typeof options === "object") return [...w.getPlayers(options)].map(p => new Player(p));
+    if (options instanceof myOptions.EntityQueryOptions)
+      return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
+    else if (typeof options === "object") return [...w.getPlayers(options)].map((p) => new Player(p));
   }
   /**
    * 音楽を再生します。

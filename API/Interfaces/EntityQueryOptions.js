@@ -1,5 +1,5 @@
 import * as mc from "@minecraft/server";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 
 /**
  * world.getPlayers()や\<Dimension\>.getEntities() の判定範囲を限定化するオプションです。
@@ -73,5 +73,5 @@ export class EntityQueryOptions {
     if (this.type != "") this.alldata.type = this.type;
     return this.alldata;
   }
-  constructor(){}
+  constructor() {}
 }

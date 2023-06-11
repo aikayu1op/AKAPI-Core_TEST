@@ -7,13 +7,18 @@ import {
   FeedItem,
   Seat,
   Container,
-  Items,
+  ItemTypes,
 } from "@minecraft/server";
 import { BlockPermutation } from "../Block/BlockPermutation.js";
 import { ItemQueryOptions } from "../Interfaces/ItemQueryOptions.js";
 import { NumberRange } from "../Interfaces/NumberRange.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { BaseComponent } from "./BaseComponent.js";
+import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
+/**
+ * @template T
+ * @typedef {T[keyof T]} ValueOf
+ */
 
 /**
  * コンポーネントメインクラスです。
@@ -60,6 +65,12 @@ class PlayerComponentBase {
    */
   getBreathable() {
     return new PlayerBreathableComponent(this._player);
+  }
+  /**
+   * プレイヤーの装備品等を取得するコンポーネント関数
+   */
+  getEquipmentInventory(){
+    return new PlayerEquipmentSlot(this._player);
   }
   /**
    * プレイヤーの体力に関するコンポーネント関数
@@ -672,7 +683,7 @@ class PlayerInventoryComponent {
    * インベントリに入っているアイテムをすべて取得します。
    *
    * optionsにデータを入れることで条件を絞ることができます。
-   * 
+   *
    * optionsのslotに値を設定すると、withEmptyが強制的にtrueになります。
    *
    * 戻り値はItemStackの配列です。
@@ -684,77 +695,105 @@ class PlayerInventoryComponent {
      * @type {ItemStack[]}
      */
     let allItem = [];
-    if(options instanceof Array){
+    if (options instanceof Array) {
       /**
        * @type {ItemStack[][]}
        */
       let returnData = [];
-      options.forEach(option =>{
-        if(option instanceof ItemQueryOptions){
+      options.forEach((option) => {
+        if (option instanceof ItemQueryOptions) {
           const getData = option.getOptions();
-          if(getData.withEmpty) allItem = Array(36);
+          if (getData.withEmpty) allItem = Array(36);
           else allItem = [];
           //#region mainhandのチェック
-          if(JSON.stringify(getData.location.mainhand) != "{}"){
+          if (JSON.stringify(getData.location.mainhand) != "{}") {
             const ITEM = this.getItem(this._player.selectedSlot);
             let lore;
-            let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-            if(getData.location.mainhand.amount instanceof NumberRange){
-              if(!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
-              else if(getData.location.mainhand.lore instanceof Array && getData.location.mainhand.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+            let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+            if (getData.location.mainhand.amount instanceof NumberRange) {
+              if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
+              else if (
+                getData.location.mainhand.lore instanceof Array &&
+                getData.location.mainhand.lore.length == 0 &&
+                !!ITEM
+              )
+                lore = ITEM.getLore();
               else lore = getData.location.mainhand.lore;
-              if(!!ITEM &&
+              if (
+                !!ITEM &&
                 (getData.location.mainhand.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                 !(getData.location.mainhand.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                 amount.min <= ITEM.Amount() &&
                 amount.max >= ITEM.Amount() &&
                 (getData.location.mainhand.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                 lore.join() === ITEM.getLore().join()
-              ) option.withEmpty ? allItem[this._player.selectedSlot] = ITEM : allItem.push(ITEM);
-            }else{
-              if(!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
-              else if(getData.location.mainhand.lore instanceof Array && getData.location.mainhand.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+              )
+                option.withEmpty ? (allItem[this._player.selectedSlot] = ITEM) : allItem.push(ITEM);
+            } else {
+              if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
+              else if (
+                getData.location.mainhand.lore instanceof Array &&
+                getData.location.mainhand.lore.length == 0 &&
+                !!ITEM
+              )
+                lore = ITEM.getLore();
               else lore = getData.location.mainhand.lore;
-              if(!!ITEM &&
+              if (
+                !!ITEM &&
                 (getData.location.mainhand.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                 !(getData.location.mainhand.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                 amount == ITEM.Amount() &&
                 (getData.location.mainhand.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                 lore.join() === ITEM.getLore().join()
-              ) option.withEmpty ? allItem[this._player.selectedSlot] = ITEM : allItem.push(ITEM);
+              )
+                option.withEmpty ? (allItem[this._player.selectedSlot] = ITEM) : allItem.push(ITEM);
             }
           }
           //#endregion
 
           //#region hotbarのチェック
-          if(JSON.stringify(getData.location.hotbar) != "{}"){
-            for(let i = 0; i < 9; i++){
+          if (JSON.stringify(getData.location.hotbar) != "{}") {
+            for (let i = 0; i < 9; i++) {
               const ITEM = this.getItem(i);
               let lore;
-              let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-              if(getData.location.hotbar.amount instanceof NumberRange){
-                if(!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
-                else if(getData.location.hotbar.lore instanceof Array && getData.location.hotbar.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+              let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+              if (getData.location.hotbar.amount instanceof NumberRange) {
+                if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
+                else if (
+                  getData.location.hotbar.lore instanceof Array &&
+                  getData.location.hotbar.lore.length == 0 &&
+                  !!ITEM
+                )
+                  lore = ITEM.getLore();
                 else lore = getData.location.hotbar.lore;
-                if(!!ITEM &&
+                if (
+                  !!ITEM &&
                   (getData.location.hotbar.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                   !(getData.location.hotbar.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                   amount.min <= ITEM.Amount() &&
                   amount.max >= ITEM.Amount() &&
                   (getData.location.hotbar.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                   lore.join() === ITEM.getLore().join()
-                ) option.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
-              }else{
-                if(!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
-                else if(getData.location.hotbar.lore instanceof Array && getData.location.hotbar.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+                )
+                  option.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
+              } else {
+                if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
+                else if (
+                  getData.location.hotbar.lore instanceof Array &&
+                  getData.location.hotbar.lore.length == 0 &&
+                  !!ITEM
+                )
+                  lore = ITEM.getLore();
                 else lore = getData.location.hotbar.lore;
-                if(!!ITEM &&
+                if (
+                  !!ITEM &&
                   (getData.location.hotbar.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                   !(getData.location.hotbar.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                   amount == ITEM.Amount() &&
                   (getData.location.hotbar.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                   lore.join() === ITEM.getLore().join()
-                ) option.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
+                )
+                  option.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
               }
             }
           }
@@ -762,111 +801,152 @@ class PlayerInventoryComponent {
           //#endregion
 
           //#region inventoryのチェック
-          if(JSON.stringify(getData.location.inventory) != "{}"){
-            for(let i = 9; i < 36; i++){
+          if (JSON.stringify(getData.location.inventory) != "{}") {
+            for (let i = 9; i < 36; i++) {
               const ITEM = this.getItem(i);
               let lore;
-              let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-              if(getData.location.inventory.amount instanceof NumberRange){
-                if(!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
-                else if(getData.location.inventory.lore instanceof Array && getData.location.inventory.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+              let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+              if (getData.location.inventory.amount instanceof NumberRange) {
+                if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
+                else if (
+                  getData.location.inventory.lore instanceof Array &&
+                  getData.location.inventory.lore.length == 0 &&
+                  !!ITEM
+                )
+                  lore = ITEM.getLore();
                 else lore = getData.location.inventory.lore;
-                if(!!ITEM &&
+                if (
+                  !!ITEM &&
                   (getData.location.inventory.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                   !(getData.location.inventory.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                   amount.min <= ITEM.Amount() &&
                   amount.max >= ITEM.Amount() &&
                   (getData.location.inventory.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                   lore.join() === ITEM.getLore().join()
-                ) option.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
-              }else{
-                if(!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
-                else if(getData.location.inventory.lore instanceof Array && getData.location.inventory.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+                )
+                  option.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
+              } else {
+                if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
+                else if (
+                  getData.location.inventory.lore instanceof Array &&
+                  getData.location.inventory.lore.length == 0 &&
+                  !!ITEM
+                )
+                  lore = ITEM.getLore();
                 else lore = getData.location.inventory.lore;
-                if(!!ITEM &&
+                if (
+                  !!ITEM &&
                   (getData.location.inventory.item ?? ITEM.typeId).includes(ITEM.typeId) &&
                   !(getData.location.inventory.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
                   amount.min <= ITEM.Amount() &&
                   amount.max >= ITEM.Amount() &&
                   (getData.location.inventory.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
                   lore.join() === ITEM.getLore().join()
-                ) option.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
+                )
+                  option.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
               }
             }
           }
-          if(allItem.length == 0) allItem.push(null);
+          if (allItem.length == 0) allItem.push(null);
           returnData.push(allItem);
 
           //#endregion
-
         }
-      })
+      });
 
       return returnData;
-    }else if(options instanceof ItemQueryOptions){
+    } else if (options instanceof ItemQueryOptions) {
       const getData = options.getOptions();
-      if(getData.withEmpty) allItem = Array(36);
+      if (getData.withEmpty) allItem = Array(36);
       //#region mainhandのチェック
-      if(JSON.stringify(getData.location.mainhand) != "{}"){
+      if (JSON.stringify(getData.location.mainhand) != "{}") {
         const ITEM = this.getItem(this._player.selectedSlot);
         let lore;
-        let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-        if(amount instanceof NumberRange){
-          if(!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
-          else if(getData.location.mainhand.lore instanceof Array && getData.location.mainhand.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+        let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+        if (amount instanceof NumberRange) {
+          if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
+          else if (
+            getData.location.mainhand.lore instanceof Array &&
+            getData.location.mainhand.lore.length == 0 &&
+            !!ITEM
+          )
+            lore = ITEM.getLore();
           else lore = getData.location.mainhand.lore;
-          if(!!ITEM &&
+          if (
+            !!ITEM &&
             (getData.location.mainhand.item ?? ITEM.typeId).includes(ITEM.typeId) &&
             !(getData.location.mainhand.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
             amount.min <= ITEM.Amount() &&
             amount.max >= ITEM.Amount() &&
             (getData.location.mainhand.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
             lore.join() === ITEM.getLore().join()
-          ) options.withEmpty ? allItem[this._player.selectedSlot] = ITEM : allItem.push(ITEM);
-        }else{
-          if(!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
-          else if(getData.location.mainhand.lore instanceof Array && getData.location.mainhand.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+          )
+            options.withEmpty ? (allItem[this._player.selectedSlot] = ITEM) : allItem.push(ITEM);
+        } else {
+          if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
+          else if (
+            getData.location.mainhand.lore instanceof Array &&
+            getData.location.mainhand.lore.length == 0 &&
+            !!ITEM
+          )
+            lore = ITEM.getLore();
           else lore = getData.location.mainhand.lore;
-          if(!!ITEM &&
+          if (
+            !!ITEM &&
             (getData.location.mainhand.item ?? ITEM.typeId).includes(ITEM.typeId) &&
             !(getData.location.mainhand.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
             amount == ITEM.Amount() &&
             (getData.location.mainhand.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
             lore.join() === ITEM.getLore().join()
-          ) options.withEmpty ? allItem[this._player.selectedSlot] = ITEM : allItem.push(ITEM);
+          )
+            options.withEmpty ? (allItem[this._player.selectedSlot] = ITEM) : allItem.push(ITEM);
         }
       }
       //#endregion
 
       //#region hotbarのチェック
-      if(JSON.stringify(getData.location.hotbar) != "{}"){
-        for(let i = 0; i < 9; i++){
+      if (JSON.stringify(getData.location.hotbar) != "{}") {
+        for (let i = 0; i < 9; i++) {
           const ITEM = this.getItem(i);
           let lore;
-          let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-          if(amount instanceof NumberRange){
-            if(!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
-            else if(getData.location.hotbar.lore instanceof Array && getData.location.hotbar.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+          let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+          if (amount instanceof NumberRange) {
+            if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
+            else if (
+              getData.location.hotbar.lore instanceof Array &&
+              getData.location.hotbar.lore.length == 0 &&
+              !!ITEM
+            )
+              lore = ITEM.getLore();
             else lore = getData.location.hotbar.lore;
-            if(!!ITEM &&
+            if (
+              !!ITEM &&
               (getData.location.hotbar.item ?? ITEM.typeId).includes(ITEM.typeId) &&
               !(getData.location.hotbar.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
               amount.min <= ITEM.Amount() &&
               amount.max >= ITEM.Amount() &&
               (getData.location.hotbar.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
               lore.join() === ITEM.getLore().join()
-            ) options.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
-          }else{
-            if(!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
-            else if(getData.location.hotbar.lore instanceof Array && getData.location.hotbar.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+            )
+              options.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
+          } else {
+            if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
+            else if (
+              getData.location.hotbar.lore instanceof Array &&
+              getData.location.hotbar.lore.length == 0 &&
+              !!ITEM
+            )
+              lore = ITEM.getLore();
             else lore = getData.location.hotbar.lore;
-            if(!!ITEM &&
+            if (
+              !!ITEM &&
               (getData.location.hotbar.item ?? ITEM.typeId).includes(ITEM.typeId) &&
               !(getData.location.hotbar.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
               amount == ITEM.Amount() &&
               (getData.location.hotbar.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
               lore.join() === ITEM.getLore().join()
-            ) options.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
+            )
+              options.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
           }
         }
       }
@@ -874,43 +954,57 @@ class PlayerInventoryComponent {
       //#endregion
 
       //#region inventoryのチェック
-      if(JSON.stringify(getData.location.inventory) != "{}"){
-        for(let i = 9; i < 36; i++){
+      if (JSON.stringify(getData.location.inventory) != "{}") {
+        for (let i = 9; i < 36; i++) {
           const ITEM = this.getItem(i);
           let lore;
-          let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, {min: 1, max: 64});
-          if(amount instanceof NumberRange){
-            if(!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
-            else if(getData.location.inventory.lore instanceof Array && getData.location.inventory.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+          let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+          if (amount instanceof NumberRange) {
+            if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
+            else if (
+              getData.location.inventory.lore instanceof Array &&
+              getData.location.inventory.lore.length == 0 &&
+              !!ITEM
+            )
+              lore = ITEM.getLore();
             else lore = getData.location.inventory.lore;
-            if(!!ITEM &&
+            if (
+              !!ITEM &&
               (getData.location.inventory.item ?? ITEM.typeId).includes(ITEM.typeId) &&
               !(getData.location.inventory.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
               amount.min <= ITEM.Amount() &&
               amount.max >= ITEM.Amount() &&
               (getData.location.inventory.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
               lore.join() === ITEM.getLore().join()
-            ) options.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
-          }else{
-            if(!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
-            else if(getData.location.inventory.lore instanceof Array && getData.location.inventory.lore.length == 0 && !!ITEM) lore = ITEM.getLore();
+            )
+              options.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
+          } else {
+            if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
+            else if (
+              getData.location.inventory.lore instanceof Array &&
+              getData.location.inventory.lore.length == 0 &&
+              !!ITEM
+            )
+              lore = ITEM.getLore();
             else lore = getData.location.inventory.lore;
-            if(!!ITEM &&
+            if (
+              !!ITEM &&
               (getData.location.inventory.item ?? ITEM.typeId).includes(ITEM.typeId) &&
               !(getData.location.inventory.excludeItem ?? "noneItem").includes(ITEM.typeId) &&
               amount == ITEM.Amount() &&
               (getData.location.inventory.nameTag ?? ITEM.NameTag()) === ITEM.NameTag() &&
               lore.join() === ITEM.getLore().join()
-            ) options.withEmpty ? allItem[i] = ITEM : allItem.push(ITEM);
+            )
+              options.withEmpty ? (allItem[i] = ITEM) : allItem.push(ITEM);
           }
         }
       }
 
       //#endregion
     }
-      if(allItem.length == 0) allItem.push(null);
+    if (allItem.length == 0) allItem.push(null);
 
-      return allItem;
+    return allItem;
   }
   /**
    * アイテムを指定されたスロットに設定します。
@@ -1082,7 +1176,7 @@ class PlayerHealthComponent {
     try {
       this.playerComp.resetToMinValue();
       return true;
-    } catch{
+    } catch {
       return false;
     }
   }
@@ -1090,14 +1184,14 @@ class PlayerHealthComponent {
    * 現在の体力の値を返します。
    * @returns {number}
    */
-  getCurrent(){
+  getCurrent() {
     return this.playerComp.current;
   }
   /**
    * プレイヤーの現時点での最高体力を返します。
    * @type {number}
    */
-  getValue(){
+  getValue() {
     return this.playerComp.value;
   }
   /**
@@ -1109,7 +1203,7 @@ class PlayerHealthComponent {
     try {
       this.playerComp.setCurrent(value);
       return true;
-    } catch{
+    } catch {
       return false;
     }
   }
@@ -1140,18 +1234,18 @@ class PlayerBreathableComponent {
     this.playerComp.setAirSupply(value);
   }
   /**
-   * 
+   *
    * @returns {BlockPermutation[]}
    */
-  getBreatheBlocks(){
-    return this.playerComp.getBreatheBlocks().map(x => new BlockPermutation(x));
+  getBreatheBlocks() {
+    return this.playerComp.getBreatheBlocks().map((x) => new BlockPermutation(x));
   }
   /**
-   * 
+   *
    * @returns {BlockPermutation[]}
    */
-  getNonBreatheBlocks(){
-    return this.playerComp.getNonBreatheBlocks().map(x => new BlockPermutation(x));
+  getNonBreatheBlocks() {
+    return this.playerComp.getNonBreatheBlocks().map((x) => new BlockPermutation(x));
   }
   /**
    *
@@ -1221,6 +1315,51 @@ class PlayerBreathableComponent {
      * コンポーネントID
      */
     this.typeId = "minecraft:breathable";
+  }
+}
+class PlayerEquipmentSlot {
+  /**
+   * @readonly
+   * コンポーネントID
+   */
+  typeId = "minecraft:equipment_inventory";
+  /**
+   * プレイヤーがコンポーネントを持っているか確認できます。
+   * @returns 持っている場合はtrueを、持っていない場合はfalseが返ります
+   */
+  hasComponent() {
+    if (this._player.hasComponent(this.typeId)) return true;
+    else return false;
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   */
+  getEquipment(equipmentSlot){
+    
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   */
+  getEquipmentSlot(equipmentSlot){
+
+  }
+  /**
+   *
+   * @param {Player} player
+   */
+  constructor(player) {
+    try {
+      /**
+       * @private
+       */
+      this._player = player;
+      /**
+       * @private
+       */
+      this.playerComp = player.getComponent(this.typeId);
+    } catch (e) {}
   }
 }
 class PlayerCanClimbComponent {
@@ -1426,17 +1565,17 @@ class PlayerRideableComponent {
     }
   }
   /**
-   * 
+   *
    * @returns {string[]}
    */
-  getFamilyTypes(){
+  getFamilyTypes() {
     return this.playerComp.getFamilyTypes();
   }
   /**
-   * 
+   *
    * @returns {Seat[]}
    */
-  getSeats(){
+  getSeats() {
     return this.playerComp.getSeats();
   }
   /**
@@ -2174,14 +2313,14 @@ class EntityHealthComponent {
    * 現在の体力を返します。
    * @returns {number}
    */
-  getCurrent(){
+  getCurrent() {
     return this.entityComp.current;
   }
   /**
    * エンティティの現在の最大体力を返します。
    * @returns {number}
    */
-  getValue(){
+  getValue() {
     return this.entityComp.value;
   }
 
@@ -2258,17 +2397,17 @@ class EntityAgeableComponent {
     else return false;
   }
   /**
-   * 
+   *
    * @returns {string[]}
    */
-  getDropItems(){
+  getDropItems() {
     return this.entityComp.dropItems;
   }
   /**
-   * 
+   *
    * @returns {EntityDefinitionFeedItem[]}
    */
-  getFeedItems(){
+  getFeedItems() {
     return this.entityComp.feedItems;
   }
   /**
@@ -2316,11 +2455,11 @@ class EntityBreathableComponent {
   setAirSupply(value) {
     this.entityComp.setAirSupply(value);
   }
-  getBreatheBlocks(){
-    return this.entityComp.getBreatheBlocks().map(x => new BlockPermutation(x));
+  getBreatheBlocks() {
+    return this.entityComp.getBreatheBlocks().map((x) => new BlockPermutation(x));
   }
-  getNonBreatheBlocks(){
-    return this.entityComp.getNonBreatheBlocks().map(x => new BlockPermutation(x));
+  getNonBreatheBlocks() {
+    return this.entityComp.getNonBreatheBlocks().map((x) => new BlockPermutation(x));
   }
   /**
    *
@@ -2647,7 +2786,7 @@ class EntityHealableComponent {
     if (this._entity.hasComponent(this.typeId)) return true;
     else return false;
   }
-  getFeedItems(){
+  getFeedItems() {
     return this.entityComp.getFeedItems();
   }
 
@@ -4501,17 +4640,17 @@ class EntityRideableComponent {
   }
 
   /**
-   * 
+   *
    * @returns {string[]}
    */
-  getFamilyTypes(){
+  getFamilyTypes() {
     return this.entityComp.getFamilyTypes();
   }
   /**
-   * 
+   *
    * @returns {Seat[]}
    */
-  getSeats(){
+  getSeats() {
     return this.entityComp.getSeats();
   }
   /**
@@ -4705,7 +4844,7 @@ class EntityTamableComponent {
   /**
    * @returns {string[]}
    */
-  getTameItems(){
+  getTameItems() {
     return this.entityComp.getTameItems();
   }
   /**

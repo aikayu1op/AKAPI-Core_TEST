@@ -52,5 +52,13 @@ class System{
     runInterval(callback, delayTicks = 0){
         return mc.system.runInterval(callback, delayTicks)
     }
+    /**
+     * 
+     * @param {Function} callback 
+     * @param {number} delayTicks 
+     */
+    runTimeout(callback, delayTicks = 0){
+        return mc.system.runTimeout(callback, delayTicks);
+    }
 }
 export const system = new System();

@@ -5,14 +5,34 @@ import { Entity } from "../Entity/index.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { SoundOptions } from "../Interfaces/SoundOptions.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 import { world } from "../World/index.js";
 import { EntityDamageSource } from "../Interfaces/EntityDamageSource.js";
 import { onScreenDisplay } from "./onScreenDisplay.js";
 import { MultiLineActionbar } from "../Utils/ExtendsActionbar/MultiLineActionbar/index.js";
 import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index.js";
+import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
+import { EntityLifetimeState } from "../Interfaces/EntityLIfetimeState.js";
+import { Vector2 } from "../Vector/Vector2.js";
 
 export class Player {
+
+  /**
+   * @private
+   */
+  _player;
+  /**
+   * 復活地点に設定されているDimensionを取得します。
+   * @type {Dimension}
+   * @readonly
+   */
+  spawnDimension;
+  /**
+   * プレイヤーの現在のレベルです。
+   * @type {number}
+   * @readonly
+   */
+  level;
   /**
    * プレイヤーの足元からの座標クラスが返ります。
    * @type {Vector}
@@ -85,6 +105,12 @@ export class Player {
    * @type {Vector}
    */
   viewVector;
+  /**
+   * 現在のプレイヤーが参照できる状態なのかを取得します。
+   * @type {EntityLifetimeState}
+   * @readonly
+   */
+  lifetimeState;
 
   /**
    * プレイヤーにエフェクトを追加します。
@@ -140,6 +166,12 @@ export class Player {
    */
   convertPlayer() {
     return this;
+  }
+  /**
+   * 復活地点を削除します。削除されたあとは、worldに指定されている初期スポーンを復活地点とします。
+   */
+  clearSpawn(){
+    this._player.clearSpawn();
   }
   /**
    *
@@ -211,6 +243,16 @@ export class Player {
     return this._player.getItemCooldown(itemCategory);
   }
   /**
+   * 個々に指定された復活地点の座標を返します。
+   * 指定がない場合は、undefinedを返します。
+   * @returns {Vector | undefined}
+   */
+  getSpawnPosition(){
+    const location = this._player.getSpawnPosition();
+    if(!location) return undefined;
+    return new Vector(location);
+  }
+  /**
    * マイクラ公式のPlayerクラスを返します。
    * @deprecated
    */
@@ -259,6 +301,13 @@ export class Player {
     return this._player.getTags();
   }
   /**
+   * 現在の総経験値量を取得します。
+   * @returns {number}
+   */
+  getTotalXp(){
+    return this._player.getTotalXp();
+  }
+  /**
    * 動いている方向の速度を返します。
    */
   getVelocity() {
@@ -275,7 +324,7 @@ export class Player {
    * xが上下、yが左右の向きを表します。
    */
   getRotation() {
-    return this._player.getRotation();
+    return new Vector2(this._player.getRotation());
   }
   /**
    * 死んだ際にスポーンする座標が個別に設定されている場合、座標を取得できます。
@@ -347,9 +396,9 @@ export class Player {
    * @returns {ItemStack | undefined}
    */
   MainhandItem(itemStack = undefined) {
-    if (!itemStack) return this.getComponent().getInventory().container.getItem(this.SelectedSlot());
+    if (!itemStack) return this.getComponent().getInventory().container.getItem(this.selectedSlot);
     else if (itemStack instanceof ItemStack)
-      this.getComponent().getInventory().container.setItem(this.SelectedSlot(), itemStack);
+      this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
   }
   /**
    * プレイヤーにopを設定・確認出来ます。
@@ -401,7 +450,20 @@ export class Player {
     return this._player.removeTag(tag);
   }
   /**
-   * 指定されたコマンドを実行します。
+   * プレイヤーのレベルを初期値に戻します。
+   */
+  resetLevel(){
+    this._player.resetLevel();
+  }
+  /**
+   * 指定されたコマンドを実行します。(同期処理)
+   * @param {String} command 
+   */
+  runCommand(command){
+    return this._player.runCommand(command);
+  }
+  /**
+   * 指定されたコマンドを実行します。(非同期処理)
    * @param {String} command
    */
   runCommandAsync(command) {
@@ -415,6 +477,12 @@ export class Player {
     this.onScreenDisplay.setActionbar(message);
   }
   /**
+   * プレイヤーのカメラを設定します。
+   */
+  setCamera(){
+
+  }
+  /**
    * プロパティにデータをセットします。
    * @param {String} identifier
    * @param {boolean | String | number} value
@@ -423,11 +491,19 @@ export class Player {
     this._player.setDynamicProperty(identifier, value);
   }
   /**
+   * @param {"survival" | "creative" | "adventure" | "spectator"} gameMode
+   */
+  setGamemode(gameMode){
+    try{this.runCommand(`gamemode ${gameMode}`);}catch{
+      throw "This Gamemode has incorrect.";
+    }
+  }
+  /**
    * ゲームモードを設定します。
    * @param {"survival" | "creative" | "adventure" | "spectator"} gameMode
    * @returns {void}
    */
-  async setGameMode(gameMode) {
+  async setGameModeAsync(gameMode) {
     try {
       await this.runCommandAsync(`gamemode ${gameMode}`);
     } catch (e) {
@@ -454,29 +530,21 @@ export class Player {
   /**
    * プレイヤーをテレポートさせます。
    * @param {Vector} location
-   * @param {Dimension} dimension
-   * @param {boolean} keepVelocity
-   * @param {number} xRotation
-   * @param {number} yRotation
+   * @param {TeleportOptions} options
    */
-  teleport(
-    location,
-    keepVelocity = false,
-    dimension = this.dimension,
-    xRotation = this._player.rotation.x,
-    yRotation = this._player.rotation.y
-  ) {
-    this._player.teleport(location.getMCVector3(), dimension.getMCDimension(), xRotation, yRotation, keepVelocity);
+  teleport(location, options = undefined) {
+    if(!options || !options instanceof TeleportOptions)
+      this._player.teleport(location.getMCVector3());
+    else
+      this._player.teleport(location.getMCVector3(), options.toObject());
   }
   /**
    * プレイヤーをテレポートさせます。
    * @param {Vector} location
-   * @param {boolean} keepVelocity
-   * @param {Dimension} dimension
-   * @param {Vector} facing
+   * @param {TeleportOptions} options
    */
-  teleportFacing(location, keepVelocity = false, dimension = this.dimension, facing) {
-    this._player.teleportFacing(location.getMCVector3(), dimension, facing.getMCVector3(), keepVelocity);
+  teleportFacing(location, options) {
+    this._player.teleportFacing(location.getMCVector3(), options.toObject());
   }
   /**
    * プレイヤーにメッセージを送信します。
@@ -549,10 +617,10 @@ export class Player {
    * system.run(function test(){
    *    system.run(test);
    *    for(const player of world.getPlayers()){
-   *        player.addExActionbar("test", "this is test message");
-   *        player.addExActionbar("test2", "two line message");
-   *        player.addExActionbar("main", "this is main message");
-   *        player.addExActionbar("last", "this is last message");
+   *        player.setMultiLineActionbar("test", "this is test message");
+   *        player.setMultiLineActionbar("test2", "two line message");
+   *        player.setMultiLineActionbar("main", "this is main message");
+   *        player.setMultiLineActionbar("last", "this is last message");
    *    }
    * })
    * ```
@@ -586,11 +654,7 @@ export class Player {
    */
   constructor(player) {
     try {
-      /**
-       * @private
-       */
       this._player = player;
-
       this.dimension = new Dimension(this._player.dimension);
       this.id = this._player.id;
       this.location = new Vector(this._player.location);
@@ -599,6 +663,13 @@ export class Player {
       this.scoreboard = this._player.scoreboard;
       this.target = new Entity(this._player.target);
       this.typeId = this._player.typeId;
+      if(!!this._player.spawnDimension)
+        this.spawnDimension = new Dimension(this._player.spawnDimension);
+      else
+        this.spawnDimension = undefined;
+      this.level = this._player.level;
+      this.lifetimeState = this._player.lifetimeState;
+
     } catch (e) {}
   }
 }

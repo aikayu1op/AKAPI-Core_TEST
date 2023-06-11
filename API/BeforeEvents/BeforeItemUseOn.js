@@ -3,7 +3,8 @@ import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Player } from "../Player/index.js";
 import { IBeforeItemUseOnEventSignal } from "./interface";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
+import { Block } from "../Block/Block.js";
 
 /**
  * 地面に右クリック、またはタップではタッチした瞬間に発火するイベントです。アイテムを持っていなくても発火させることが可能です。
@@ -37,24 +38,27 @@ export class BeforeItemUseOnEvent {
   }
   constructor() {}
 }
-mc.world.events.beforeItemUseOn.subscribe((ev) => {
+mc.world.beforeEvents.itemUseOn.subscribe((ev) => {
   const { faceLocationX, faceLocationY, blockFace } = ev;
   let source;
   if (ev.source.typeId == "minecraft:player") source = new Player(ev.source);
   else source = new Entity(source);
-  let cancel = (value) => {if(typeof value == "boolean") ev.cancel = value; else if(!value) ev.cancel = true;};
+  let cancel = (value) => {
+    if (typeof value == "boolean") ev.cancel = value;
+    else if (!value) ev.cancel = true;
+  };
   let item = (itemStack) => {
     if (!itemStack) {
-      if (!ev.item?.typeId) return undefined;
-      else return new ItemStack(ev.item);
+      if (!ev.itemStack?.typeId) return undefined;
+      else return new ItemStack(ev.itemStack);
     }
     if (source instanceof Entity && itemStack instanceof ItemStack)
       source.getComponent().getInventory().container.setItem(0, itemStack);
     else if (source instanceof Player && itemStack instanceof ItemStack)
       source.getComponent().getInventory().container.setItem(source.SelectedSlot(), itemStack);
   };
-  let getBlockLocation = () => {return new Vector(ev.getBlockLocation())};
-  _listener.forEach((f) => f({ source, getBlockLocation, cancel, item, faceLocationX, faceLocationY, blockFace }));
+  let block = new Block(ev.block);
+  _listener.forEach((f) => f({ source, block, cancel, item, faceLocationX, faceLocationY, blockFace }));
 });
 
 export const BeforeItemUseOn = new BeforeItemUseOnEvent();

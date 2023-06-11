@@ -1,7 +1,7 @@
 import * as mc from "@minecraft/server";
 import { Entity } from "../Entity/index.js";
 import { Player } from "../Player/index.js";
-import { IPlayerDeathEventSignal } from "./interface";
+import { IPlayerDeathEventSignal } from "./interface.js";
 
 /**
  * 地面に右クリック、またはタップではタッチした瞬間に発火するイベントです。アイテムを持っていなくても発火させることが可能です。
@@ -15,8 +15,6 @@ import { IPlayerDeathEventSignal } from "./interface";
 var _listener = [];
 class PlayerDeathEvent{
     /**
-     * 地面に右クリック、またはタップではタッチした瞬間に発火するイベントです。
-     * アイテムを持っていなくても発火させることが可能です。
      * @param {PlayerDeathEventSignal} callback
      * @returns {(arg: PlayerDeathEventSignal) => void}
      */
@@ -35,7 +33,7 @@ class PlayerDeathEvent{
     }
     constructor(){}
 }
-mc.world.events.entityHurt.subscribe(ev =>{
+mc.world.afterEvents.entityHurt.subscribe(ev =>{
     if(ev.hurtEntity.typeId != "minecraft:player") return;
     let player = new Player(ev.hurtEntity);
     let damagingEntity = new Entity(ev.damagingEntity);

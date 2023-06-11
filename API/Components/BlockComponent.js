@@ -2,7 +2,7 @@ import { ItemStack } from "../ItemStack/ItemStack.js";
 import { ItemType } from "../ItemStack/ItemType.js";
 import { Block } from "../Block/Block.js";
 import { Color } from "./Color/index.js";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 import { DyeColor } from "@minecraft/server";
 /**
  * ブロックのコンポーネントがすべて詰まっているクラスです。
@@ -78,8 +78,7 @@ export class BaseBlockComponent {
 /**
  * 看板のコンポーネントを取得します。
  */
-class BlockSignComponent{
-
+class BlockSignComponent {
   /**
    * コンポーネントの名前が入っています。
    * @readonly
@@ -89,38 +88,37 @@ class BlockSignComponent{
    * 看板の文字をstring型で返します。
    * @returns {string}
    */
-  getText(){
+  getText() {
     return this._blockComp.getText();
   }
   /**
    * 看板の文字をRawText型(Object)で返します。
    * @returns {import("@minecraft/server").RawText}
    */
-  getRawText(){
+  getRawText() {
     return this._blockComp.getRawText();
   }
   /**
    * 看板の文字の色を取得します。
    * @returns {DyeColor | undefined}
    */
-  getTextDyeColor(){
+  getTextDyeColor() {
     return this._blockComp.getTextDyeColor();
   }
   /**
    * 看板の文字をセットします。
-   * @param {string | import("@minecraft/server").RawText | import("@minecraft/server").RawMessage} text 
+   * @param {string | import("@minecraft/server").RawText | import("@minecraft/server").RawMessage} text
    */
-  setText(text){
+  setText(text) {
     this._blockComp.setText(text);
   }
   /**
    * 看板の全体の文字の色を設定します。
-   * @param {DyeColor} color 
+   * @param {DyeColor} color
    */
-  setTextDyeColor(color){
+  setTextDyeColor(color) {
     this._blockComp.setTextDyeColor(color);
   }
-
 
   /**
    * @param {Block} block
@@ -487,7 +485,7 @@ class BlockWaterContainerComponent {
     if (!color) return new Color(this._blockComp.customColor);
     this._blockComp.customColor = color.getMCColor();
   }
-  getHeadLocation(){
+  getHeadLocation() {
     return new Vector(this._blockComp.getHeadLocation());
   }
   /**

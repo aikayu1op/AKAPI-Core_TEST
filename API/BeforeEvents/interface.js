@@ -1,6 +1,6 @@
 import { Player } from "../Player/index.js";
 import * as mc from "@minecraft/server";
-import { Vector } from "../Vector/index.js";
+import { Vector } from "../Vector/Vector.js";
 import { EntityDamageCause } from "../Interfaces/EntityDamageCause.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Entity } from "../Entity/index.js";
@@ -28,11 +28,11 @@ export class IBeforeChatEventSignal {
   /**
    * @param {Player[]} value
    */
-  setTargets(value){}
+  setTargets(value) {}
   /**
    * @returns {Player[]}
    */
-  getTargets(){}
+  getTargets() {}
 
   constructor() {}
 }
@@ -76,38 +76,4 @@ export class IBeforeItemUseOnEventSignal {
    * @readonly
    */
   source;
-}
-export class IPlayerDeathEventSignal {
-  /**
-   * 死んだプレイヤーのデータが返ります。
-   * @type {Player}
-   * @readonly
-   */
-  player;
-  /**
-   * どういう原因で死んだかを返します。
-   * @type {EntityDamageCause}
-   * @readonly
-   */
-  reason;
-  /**
-   * 飛び道具で死んだ際に入るプロパティです。
-   * @type {Entity}
-   * @readonly
-   */
-  projectile;
-  /**
-   * 何ダメージで死んだかを取得できます。
-   * @type {number}
-   * @readonly
-   */
-  damage;
-  /**
-   * キルしたエンティティを返します。
-   *
-   * プレイヤーの場合も便宜上Entityで分類されています。
-   * @type {Entity}
-   * @readonly
-   */
-  damagingEntity;
 }
