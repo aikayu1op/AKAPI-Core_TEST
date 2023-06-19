@@ -16,5 +16,31 @@ export class SoundOptions {
     if (this.location != null && this.location instanceof Vector) this.alldata.location = this.location.getMCVector3();
     return this.alldata;
   }
-  constructor() {}
+  /**
+   * 
+   * @param {ISoundOptions} obj 
+   */
+  constructor(obj){
+    this.volume =   obj.volume;
+    this.pitch =    obj.pitch;
+    this.location = obj.location;
+  }
+}
+export class ISoundOptions{
+  /**
+   * @type {number}
+   */
+  volume;
+  /**
+   * @type {number}
+   */
+  pitch;
+  /**
+   * @type {Vector}
+   */
+  location;
+  /**
+   * @protected
+   */
+  constructor(){}
 }

@@ -4,6 +4,11 @@ import { Vector } from "../Vector/Vector.js";
 import { BaseBlockComponent } from "../Components/BlockComponent.js";
 import { BlockPermutation } from "./BlockPermutation.js";
 import { BlockType } from "./BlockType.js";
+import { MinecraftBlockTypes } from "../Type/index.js";
+/**
+ * @typedef {MinecraftBlockTypes[keyof MinecraftBlockTypes] blockTypes}
+ */
+
 export class Block {
   /**
    * ブロックのディメンションを返します。
@@ -31,7 +36,7 @@ export class Block {
   type;
   /**
    * ブロックのIDを返します。(例: minecraft:wool等)
-   * @type {string}
+   * @type {blockTypes}
    * @readonly
    */
   typeId;

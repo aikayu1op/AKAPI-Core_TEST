@@ -1,9 +1,9 @@
 import * as mc from "@minecraft/server";
-import { Components } from "../Components/EntityComponents.js";
+import { Components, PlayerEquipmentSlot } from "../Components/EntityComponents.js";
 import { Dimension } from "../Dimension/index.js";
 import { Entity } from "../Entity/index.js";
 import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
-import { SoundOptions } from "../Interfaces/SoundOptions.js";
+import { ISoundOptions, SoundOptions } from "../Interfaces/SoundOptions.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Vector } from "../Vector/Vector.js";
 import { world } from "../World/index.js";
@@ -14,6 +14,15 @@ import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { EntityLifetimeState } from "../Interfaces/EntityLIfetimeState.js";
 import { Vector2 } from "../Vector/Vector2.js";
+import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
+import { EntityEffectOptions } from "../Interfaces/EntityEffectOptions.js";
+import { GameMode } from "../Interfaces/GameMode.js";
+import { IRawMessage } from "../Interfaces/IRawMessage.js";
+
+/**
+ * @template T
+ * @typedef {T[keyof T]} ValueOf
+ */
 
 export class Player {
 
@@ -125,11 +134,11 @@ export class Player {
    * ```
    * @param {mc.EffectType} effectType エフェクトタイプを指定します。
    * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick)
-   * @param {number} amplifier 効果レベルを指定します。
-   * @param {boolean} showParticles パーティクルを表示するかどうか
+   * @param {keyof EntityEffectOptions | EntityEffectOptions} options
    */
-  addEffect(effectType, duration = 400, amplifier = 0, showParticles = false) {
-    this._player.addEffect(effectType, duration, amplifier, showParticles);
+  addEffect(effectType, duration = 400, options = {}) {
+    if(options instanceof EntityEffectOptions) return this._player.addEffect(effectType, duration, options.toObject());
+    return this._player.addEffect(effectType, duration, options);
   }
   /**
    * 経験値を増やせます。(Exp単位)
@@ -151,6 +160,20 @@ export class Player {
    */
   addTag(tag) {
     return this._player.addTag(tag);
+  }
+  /**
+   * プレイヤーにタグを設定します。
+   * 
+   * 複数のタグを同時に付与可能です。
+   * @param {...string} tag ここで指定された名前でタグを付与します。
+   */
+  addTags(...tags){
+    /**
+     * @type {boolean[]}
+     */
+    let bDatas = [];
+    tags.forEach(tag => {let bData=this.addTag(tag);bDatas.push(bData)});
+    return bDatas;
   }
   /**
    * ダメージを与えます。
@@ -182,7 +205,7 @@ export class Player {
   }
   /**
    * プレイヤーが向いている方向のブロッククラスを返します。
-   * @param {{} | BlockRaycastOptions} options 距離等のオプションの設定
+   * @param {keyof BlockRaycastOptions | BlockRaycastOptions} options 距離等のオプションの設定
    */
   getBlockFromViewDirection(options = {}) {
     if (options instanceof BlockRaycastOptions) return this._player.getBlockFromViewDirection(options.getOptions());
@@ -261,7 +284,7 @@ export class Player {
   }
   /**
    * 現在のゲームモードを取得します。
-   * @returns {"survival" | "creative" | "adventure" | "spectator"}
+   * @returns {ValueOf<GameMode>}
    */
   getGameMode() {
     for (const gamemodeName in mc.GameMode) {
@@ -327,12 +350,6 @@ export class Player {
     return new Vector2(this._player.getRotation());
   }
   /**
-   * 死んだ際にスポーンする座標が個別に設定されている場合、座標を取得できます。
-   */
-  getSpawnPosition() {
-    return new Vector(this._player.getSpawnPosition());
-  }
-  /**
    * 死んだ際にスポーンする座標が個別に設定されている場合に、そのスポーンするディメンションを取得できます。
    */
   get spawnDimension() {
@@ -356,7 +373,7 @@ export class Player {
    * @param {string | string[]} tag
    * @returns 返ってくる値はboolean、存在した場合はtrue,存在しない場合はfalseになります。
    */
-  hasTag(tag) {
+  hasTag(...tag) {
     if (tag instanceof Array) return tag.filter((x) => this._player.hasTag(String(x))).length == tag.length;
     return this._player.hasTag(tag);
   }
@@ -365,7 +382,7 @@ export class Player {
    * 配列ではない場合は、部分一致で数値を返します。
    * @param {string | string[]} tag
    */
-  hasTags(tag) {
+  hasTags(...tag) {
     if (tag instanceof Array) return this.getTags().filter((x) => tag.find((y) => x === y)).length;
     return this.getTags().filter((x) => x.match(tag)).length;
   }
@@ -420,11 +437,11 @@ export class Player {
    * })
    * ```
    * @param {String} soundID
-   * @param {mc.SoundOptions | SoundOptions} options
+   * @param {ISoundOptions | SoundOptions} options
    */
   playSound(soundID, options = {}) {
     if (options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
-    else if (typeof options == "object") this._player.playSound(soundID, options);
+    else if (typeof options == "object") this._player.playSound(soundID, new SoundOptions(options).getOptions());
   }
   /**
    *
@@ -491,7 +508,7 @@ export class Player {
     this._player.setDynamicProperty(identifier, value);
   }
   /**
-   * @param {"survival" | "creative" | "adventure" | "spectator"} gameMode
+   * @param {ValueOf<GameMode>} gameMode
    */
   setGamemode(gameMode){
     try{this.runCommand(`gamemode ${gameMode}`);}catch{
@@ -500,7 +517,7 @@ export class Player {
   }
   /**
    * ゲームモードを設定します。
-   * @param {"survival" | "creative" | "adventure" | "spectator"} gameMode
+   * @param {ValueOf<GameMode>} gameMode
    * @returns {void}
    */
   async setGameModeAsync(gameMode) {
@@ -530,7 +547,7 @@ export class Player {
   /**
    * プレイヤーをテレポートさせます。
    * @param {Vector} location
-   * @param {TeleportOptions} options
+   * @param {TeleportOptions | keyof TeleportOptions} options
    */
   teleport(location, options = undefined) {
     if(!options || !options instanceof TeleportOptions)
@@ -539,19 +556,12 @@ export class Player {
       this._player.teleport(location.getMCVector3(), options.toObject());
   }
   /**
-   * プレイヤーをテレポートさせます。
-   * @param {Vector} location
-   * @param {TeleportOptions} options
-   */
-  teleportFacing(location, options) {
-    this._player.teleportFacing(location.getMCVector3(), options.toObject());
-  }
-  /**
    * プレイヤーにメッセージを送信します。
-   * @param {{} | string} message
+   * @param {IRawMessage | string | (IRawMessage | string)[]} message
    */
-  sendMessage(message) {
-    if (typeof message == "object") this._player.sendMessage(message);
+  sendMessage(...message) {
+    if(message instanceof Array) message.forEach(msg => this._player.sendMessage(msg))
+    else if (typeof message == "object" && !(message instanceof Array)) this._player.sendMessage(message);
     else this._player.sendMessage(String(message));
   }
   /**
@@ -572,7 +582,7 @@ export class Player {
    * @param {number} value 0~9の値を入れることで、ホットバーに指定された数値の場所にカーソルを合わせてくれます。
    */
   set selectedSlot(value) {
-    if (typeof value == "number") this._player.selectedSlot = value;
+    if (typeof value == "number" && value <= 9) this._player.selectedSlot = value;
   }
 
   /**
@@ -663,6 +673,7 @@ export class Player {
       this.scoreboard = this._player.scoreboard;
       this.target = new Entity(this._player.target);
       this.typeId = this._player.typeId;
+      this.headLocation = new Vector(this._player.getHeadLocation());
       if(!!this._player.spawnDimension)
         this.spawnDimension = new Dimension(this._player.spawnDimension);
       else

@@ -1,3 +1,4 @@
+import { Dimension } from "../Dimension/index.js";
 import { world } from "../World/index.js";
 
 /**
@@ -9,16 +10,16 @@ export class MinecraftDimensionTypes{
      * @readonly
      * 現世のディメンションを返します。
      */
-    overworld = world.getDimension("minecraft:overworld");
+    overworld = new Dimension(world.getDimension("minecraft:overworld"));
     /**
      * @readonly
      * ネザーのディメンションを返します。
      */
-    nether = world.getDimension("minecraft:nether");
+    nether = new Dimension(world.getDimension("minecraft:nether"));
     /**
      * @readonly
      * エンドのディメンションを返します。
      */
-    theEnd = world.getDimension("minecraft:the_end");
+    theEnd = new Dimension(world.getDimension("minecraft:the_end"));
 
 }

@@ -1,7 +1,7 @@
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { ItemType } from "../ItemStack/ItemType.js";
 import { Block } from "../Block/Block.js";
-import { Color } from "./Color/index.js";
+import { Color } from "./Color/Color.js";
 import { Vector } from "../Vector/Vector.js";
 import { DyeColor } from "@minecraft/server";
 /**

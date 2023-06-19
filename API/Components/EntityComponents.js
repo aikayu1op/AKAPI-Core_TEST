@@ -167,7 +167,7 @@ class PlayerComponentBase {
 /**
  * エンティティが持つコンポーネントすべてが入っています。
  */
-class EntityComponentBase {
+export class EntityComponentBase {
   /**
    * 指定されたentityTypeでスポーンしているときに付与されるコンポーネント関数
    */
@@ -601,7 +601,7 @@ class EntityComponentBase {
 /**
  * プレイヤーのコンテナーを確認するクラス
  */
-class PlayerContainerComponent {
+export class PlayerContainerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -628,7 +628,7 @@ class PlayerContainerComponent {
 /**
  * プレイヤーのインベントリを設定したりするクラス
  */
-class PlayerInventoryComponent {
+export class PlayerInventoryComponent {
   /**
    *
    * @param {Player} player
@@ -999,12 +999,15 @@ class PlayerInventoryComponent {
           }
         }
       }
+      if (allItem.length == 0) allItem.push(null);
+
+      return allItem;
 
       //#endregion
+    }else{
+      for(let i = 0; i < 36; i++) allItem.push(this.getItem(i));
+      return allItem;
     }
-    if (allItem.length == 0) allItem.push(null);
-
-    return allItem;
   }
   /**
    * アイテムを指定されたスロットに設定します。
@@ -1138,7 +1141,7 @@ export class PlayerMovementComponent {
 /**
  * プレイヤーの体力を設定したりするクラス
  */
-class PlayerHealthComponent {
+export class PlayerHealthComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -1221,7 +1224,7 @@ class PlayerHealthComponent {
     } catch (e) {}
   }
 }
-class PlayerBreathableComponent {
+export class PlayerBreathableComponent {
   /**
    * プレイヤーがコンポーネントを持っているか確認できます。
    * @returns 持っている場合はtrueを、持っていない場合はfalseが返ります
@@ -1317,7 +1320,7 @@ class PlayerBreathableComponent {
     this.typeId = "minecraft:breathable";
   }
 }
-class PlayerEquipmentSlot {
+export class PlayerEquipmentSlot {
   /**
    * @readonly
    * コンポーネントID
@@ -1362,7 +1365,7 @@ class PlayerEquipmentSlot {
     } catch (e) {}
   }
 }
-class PlayerCanClimbComponent {
+export class PlayerCanClimbComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -1393,7 +1396,7 @@ class PlayerCanClimbComponent {
     } catch (e) {}
   }
 }
-class PlayerIsHiddenWhenInvisibleComponent {
+export class PlayerIsHiddenWhenInvisibleComponent {
   /**
    * @readonly
    */
@@ -1510,7 +1513,7 @@ export class PlayerLavaMovementComponent {
     } catch (e) {}
   }
 }
-class PlayerRideableComponent {
+export class PlayerRideableComponent {
   /**
    * @readonly
    */
@@ -1635,7 +1638,7 @@ class PlayerRideableComponent {
     } catch (e) {}
   }
 }
-class PlayerMarkVariantComponent {
+export class PlayerMarkVariantComponent {
   /**
    * @readonly
    */
@@ -1680,7 +1683,7 @@ class PlayerMarkVariantComponent {
     } catch (e) {}
   }
 }
-class PlayerMovementSwayComponent {
+export class PlayerMovementSwayComponent {
   /**
    * @readonly
    */
@@ -1725,7 +1728,7 @@ class PlayerMovementSwayComponent {
     } catch (e) {}
   }
 }
-class PlayerNavigationGenericComponent {
+export class PlayerNavigationGenericComponent {
   /**
    * @readonly
    */
@@ -1850,7 +1853,7 @@ class PlayerNavigationGenericComponent {
     } catch (e) {}
   }
 }
-class PlayerScaleComponent {
+export class PlayerScaleComponent {
   /**
    * @readonly
    */
@@ -1895,7 +1898,7 @@ class PlayerScaleComponent {
     } catch (e) {}
   }
 }
-class PlayerUnderwaterMovementComponent {
+export class PlayerUnderwaterMovementComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -1986,7 +1989,7 @@ class PlayerUnderwaterMovementComponent {
     } catch (e) {}
   }
 }
-class PlayerVariantComponent {
+export class PlayerVariantComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2025,7 +2028,7 @@ class PlayerVariantComponent {
 /**
  * エンティティのコンテナーを設定したり、持っているか確認したりするクラス
  */
-class EntityContainerComponent {
+export class EntityContainerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2055,7 +2058,7 @@ class EntityContainerComponent {
 /**
  * エンティティのインベントリを設定するクラス
  */
-class EntityInventoryComponent {
+export class EntityInventoryComponent {
   /**
    *
    * @param {Entity} entity
@@ -2245,7 +2248,7 @@ export class EntityMovementComponent {
 /**
  * エンティティの体力などの設定ができるクラス
  */
-class EntityHealthComponent {
+export class EntityHealthComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2341,7 +2344,7 @@ class EntityHealthComponent {
     } catch (e) {}
   }
 }
-class EntityAddRiderComponent {
+export class EntityAddRiderComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2382,7 +2385,7 @@ class EntityAddRiderComponent {
     } catch (e) {}
   }
 }
-class EntityAgeableComponent {
+export class EntityAgeableComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2437,7 +2440,7 @@ class EntityAgeableComponent {
     } catch (e) {}
   }
 }
-class EntityBreathableComponent {
+export class EntityBreathableComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2478,7 +2481,7 @@ class EntityBreathableComponent {
     } catch (e) {}
   }
 }
-class EntityCanClimbComponent {
+export class EntityCanClimbComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2505,7 +2508,7 @@ class EntityCanClimbComponent {
     } catch (e) {}
   }
 }
-class EntityCanFlyComponent {
+export class EntityCanFlyComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2536,7 +2539,7 @@ class EntityCanFlyComponent {
     } catch (e) {}
   }
 }
-class EntityCanPowerJumpComponent {
+export class EntityCanPowerJumpComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2567,7 +2570,7 @@ class EntityCanPowerJumpComponent {
     } catch (e) {}
   }
 }
-class EntityColorComponent {
+export class EntityColorComponent {
   /**
    * @readonly
    */
@@ -2605,7 +2608,7 @@ class EntityColorComponent {
     } catch (e) {}
   }
 }
-class EntityFireImmuneComponent {
+export class EntityFireImmuneComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2632,7 +2635,7 @@ class EntityFireImmuneComponent {
     } catch (e) {}
   }
 }
-class EntityFloatsInLiquidComponent {
+export class EntityFloatsInLiquidComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -2659,7 +2662,7 @@ class EntityFloatsInLiquidComponent {
     } catch (e) {}
   }
 }
-class EntityFlyingSpeedComponent {
+export class EntityFlyingSpeedComponent {
   /**
    * @readonly
    */
@@ -2697,7 +2700,7 @@ class EntityFlyingSpeedComponent {
     } catch (e) {}
   }
 }
-class EntityFrictionModifierComponent {
+export class EntityFrictionModifierComponent {
   /**
    * @readonly
    */
@@ -2735,7 +2738,7 @@ class EntityFrictionModifierComponent {
     } catch (e) {}
   }
 }
-class EntityGroundOffsetComponent {
+export class EntityGroundOffsetComponent {
   /**
    * @readonly
    */
@@ -2773,7 +2776,7 @@ class EntityGroundOffsetComponent {
     } catch (e) {}
   }
 }
-class EntityHealableComponent {
+export class EntityHealableComponent {
   /**
    * @readonly
    */
@@ -2817,7 +2820,7 @@ class EntityHealableComponent {
     } catch (e) {}
   }
 }
-class EntityIsBabyComponent {
+export class EntityIsBabyComponent {
   /**
    * @readonly
    */
@@ -2847,7 +2850,7 @@ class EntityIsBabyComponent {
     } catch (e) {}
   }
 }
-class EntityIsChargedComponent {
+export class EntityIsChargedComponent {
   /**
    * @readonly
    */
@@ -2877,7 +2880,7 @@ class EntityIsChargedComponent {
     } catch (e) {}
   }
 }
-class EntityIsChestedComponent {
+export class EntityIsChestedComponent {
   /**
    * @readonly
    */
@@ -2907,7 +2910,7 @@ class EntityIsChestedComponent {
     } catch (e) {}
   }
 }
-class EntityIsDyableComponent {
+export class EntityIsDyableComponent {
   /**
    * @readonly
    */
@@ -2937,7 +2940,7 @@ class EntityIsDyableComponent {
     } catch (e) {}
   }
 }
-class EntityIsHiddenWhenInvisibleComponent {
+export class EntityIsHiddenWhenInvisibleComponent {
   /**
    * @readonly
    */
@@ -2967,7 +2970,7 @@ class EntityIsHiddenWhenInvisibleComponent {
     } catch (e) {}
   }
 }
-class EntityIsIgnitedComponent {
+export class EntityIsIgnitedComponent {
   /**
    * @readonly
    */
@@ -2997,7 +3000,7 @@ class EntityIsIgnitedComponent {
     } catch (e) {}
   }
 }
-class EntityIsIllagerCaptainComponent {
+export class EntityIsIllagerCaptainComponent {
   /**
    * @readonly
    */
@@ -3027,7 +3030,7 @@ class EntityIsIllagerCaptainComponent {
     } catch (e) {}
   }
 }
-class EntityIsSaddledComponent {
+export class EntityIsSaddledComponent {
   /**
    * @readonly
    */
@@ -3057,7 +3060,7 @@ class EntityIsSaddledComponent {
     } catch (e) {}
   }
 }
-class EntityIsShakingComponent {
+export class EntityIsShakingComponent {
   /**
    * @readonly
    */
@@ -3087,7 +3090,7 @@ class EntityIsShakingComponent {
     } catch (e) {}
   }
 }
-class EntityIsShearedComponent {
+export class EntityIsShearedComponent {
   /**
    * @readonly
    */
@@ -3117,7 +3120,7 @@ class EntityIsShearedComponent {
     } catch (e) {}
   }
 }
-class EntityIsStackableComponent {
+export class EntityIsStackableComponent {
   /**
    * @readonly
    */
@@ -3147,7 +3150,7 @@ class EntityIsStackableComponent {
     } catch (e) {}
   }
 }
-class EntityIsStunnedComponent {
+export class EntityIsStunnedComponent {
   /**
    * @readonly
    */
@@ -3177,7 +3180,7 @@ class EntityIsStunnedComponent {
     } catch (e) {}
   }
 }
-class EntityIsTamedComponent {
+export class EntityIsTamedComponent {
   /**
    * @readonly
    */
@@ -3207,7 +3210,7 @@ class EntityIsTamedComponent {
     } catch (e) {}
   }
 }
-class EntityItemComponent {
+export class EntityItemComponent {
   /**
    * @readonly
    */
@@ -3242,7 +3245,7 @@ class EntityItemComponent {
     } catch (e) {}
   }
 }
-class EntityLeashableComponent {
+export class EntityLeashableComponent {
   /**
    * @readonly
    */
@@ -3389,7 +3392,7 @@ export class EntityLavaMovementComponent {
     } catch (e) {}
   }
 }
-class EntityMarkVariantComponent {
+export class EntityMarkVariantComponent {
   /**
    * @readonly
    */
@@ -3427,7 +3430,7 @@ class EntityMarkVariantComponent {
     } catch (e) {}
   }
 }
-class EntityMountTamingComponent {
+export class EntityMountTamingComponent {
   /**
    * @readonly
    */
@@ -3466,7 +3469,7 @@ class EntityMountTamingComponent {
     } catch (e) {}
   }
 }
-class EntityMovementAmphibiousComponent {
+export class EntityMovementAmphibiousComponent {
   /**
    * @readonly
    */
@@ -3496,7 +3499,7 @@ class EntityMovementAmphibiousComponent {
     } catch (e) {}
   }
 }
-class EntityMovementBasicComponent {
+export class EntityMovementBasicComponent {
   /**
    * @readonly
    */
@@ -3531,7 +3534,7 @@ class EntityMovementBasicComponent {
     } catch (e) {}
   }
 }
-class EntityMovementFlyComponent {
+export class EntityMovementFlyComponent {
   /**
    * @readonly
    */
@@ -3566,7 +3569,7 @@ class EntityMovementFlyComponent {
     } catch (e) {}
   }
 }
-class EntityMovementGenericComponent {
+export class EntityMovementGenericComponent {
   /**
    * @readonly
    */
@@ -3601,7 +3604,7 @@ class EntityMovementGenericComponent {
     } catch (e) {}
   }
 }
-class EntityMovementGlideComponent {
+export class EntityMovementGlideComponent {
   /**
    * @readonly
    */
@@ -3646,7 +3649,7 @@ class EntityMovementGlideComponent {
     } catch (e) {}
   }
 }
-class EntityMovementHoverComponent {
+export class EntityMovementHoverComponent {
   /**
    * @readonly
    */
@@ -3681,7 +3684,7 @@ class EntityMovementHoverComponent {
     } catch (e) {}
   }
 }
-class EntityMovementJumpComponent {
+export class EntityMovementJumpComponent {
   /**
    * @readonly
    */
@@ -3716,7 +3719,7 @@ class EntityMovementJumpComponent {
     } catch (e) {}
   }
 }
-class EntityMovementSkipComponent {
+export class EntityMovementSkipComponent {
   /**
    * @readonly
    */
@@ -3751,7 +3754,7 @@ class EntityMovementSkipComponent {
     } catch (e) {}
   }
 }
-class EntityMovementSwayComponent {
+export class EntityMovementSwayComponent {
   /**
    * @readonly
    */
@@ -3796,7 +3799,7 @@ class EntityMovementSwayComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationClimbComponent {
+export class EntityNavigationClimbComponent {
   /**
    * @readonly
    */
@@ -3921,7 +3924,7 @@ class EntityNavigationClimbComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationFloatComponent {
+export class EntityNavigationFloatComponent {
   /**
    * @readonly
    */
@@ -4046,7 +4049,7 @@ class EntityNavigationFloatComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationFlyComponent {
+export class EntityNavigationFlyComponent {
   /**
    * @readonly
    */
@@ -4171,7 +4174,7 @@ class EntityNavigationFlyComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationGenericComponent {
+export class EntityNavigationGenericComponent {
   /**
    * @readonly
    */
@@ -4296,7 +4299,7 @@ class EntityNavigationGenericComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationHoverComponent {
+export class EntityNavigationHoverComponent {
   /**
    * @readonly
    */
@@ -4421,7 +4424,7 @@ class EntityNavigationHoverComponent {
     } catch (e) {}
   }
 }
-class EntityNavigationWalkComponent {
+export class EntityNavigationWalkComponent {
   /**
    * @readonly
    */
@@ -4546,7 +4549,7 @@ class EntityNavigationWalkComponent {
     } catch (e) {}
   }
 }
-class EntityPushThroughComponent {
+export class EntityPushThroughComponent {
   /**
    * @readonly
    */
@@ -4584,7 +4587,7 @@ class EntityPushThroughComponent {
     } catch (e) {}
   }
 }
-class EntityRideableComponent {
+export class EntityRideableComponent {
   /**
    * @readonly
    */
@@ -4697,7 +4700,7 @@ class EntityRideableComponent {
     } catch (e) {}
   }
 }
-class EntityScaleComponent {
+export class EntityScaleComponent {
   /**
    * @readonly
    */
@@ -4735,7 +4738,7 @@ class EntityScaleComponent {
     } catch (e) {}
   }
 }
-class EntitySkinIdComponent {
+export class EntitySkinIdComponent {
   /**
    * @readonly
    */
@@ -4773,7 +4776,7 @@ class EntitySkinIdComponent {
     } catch (e) {}
   }
 }
-class EntityStrengthComponent {
+export class EntityStrengthComponent {
   /**
    * @readonly
    */
@@ -4813,7 +4816,7 @@ class EntityStrengthComponent {
     } catch (e) {}
   }
 }
-class EntityTamableComponent {
+export class EntityTamableComponent {
   /**
    * @readonly
    */
@@ -4874,7 +4877,7 @@ class EntityTamableComponent {
     } catch (e) {}
   }
 }
-class EntityUnderwaterMovementComponent {
+export class EntityUnderwaterMovementComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -4962,7 +4965,7 @@ class EntityUnderwaterMovementComponent {
     } catch (e) {}
   }
 }
-class EntityVariantComponent {
+export class EntityVariantComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -5000,7 +5003,7 @@ class EntityVariantComponent {
 /**
  * このコンポーネントが追加しているエンティティは、〇〇_jockeyだと示すコンポーネント
  */
-class EntityWantsJockeyComponent {
+export class EntityWantsJockeyComponent {
   /**
    * @readonly
    * コンポーネントID
