@@ -59,7 +59,7 @@ export class Dimension {
       for (const entity of this._dimension.getEntities(options.getOptions())) push.push(new Entity(entity));
     else for (const entity of this._dimension.getEntities(options)) push.push(new Entity(entity));
 
-    return push[Symbol.iterator]();
+    return push;
   }
   /**
    * @param {Vector} location

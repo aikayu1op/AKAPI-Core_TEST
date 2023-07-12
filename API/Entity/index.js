@@ -174,7 +174,7 @@ export class Entity {
   convertPlayer() {
     return world.getPlayers({
       name: this.NameTag(),
-      location: this.location,
+      location: this.location.getMCVector3(),
       maxDistance: 1,
       minDistance: 1,
     })[0];
@@ -273,6 +273,13 @@ export class Entity {
    */
   runCommandAsync(command) {
     return this._entity.runCommandAsync(command);
+  }
+  /**
+   * 指定されたコマンドを実行します。
+   * @param {String} command
+   */
+  runCommand(command){
+    return this._entity.runCommand(command);
   }
   /**
    * プロパティにデータをセットします。

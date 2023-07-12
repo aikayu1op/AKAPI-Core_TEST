@@ -29,7 +29,7 @@ export class ActionFormData{
     /**
      * @type {Function}
      */
-    firstCallback;
+    firstCallback = undefined;
     /**
      * @privare
      * @type {string[]}
@@ -48,21 +48,23 @@ export class ActionFormData{
     _callbackIndex = -1;
     /**
      * ActionFormDataのtitleテキストを設定します。
-     * @param {string} text
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} text
      */
     title(text){
         this.form.title = text;
+        return this;
     }
     /**
      * ActionFormDataのbodyテキストを設定します。
-     * @param {string} text
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} text
      */
     body(text){
         this.form.body = text;
+        return this;
     }
     /**
      * ボタンをフォームに追加できます。
-     * @param {string} text 
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} text 
      * @param {string} iconPath 
      * @param {ActionFormResponse} callback
      */
@@ -83,18 +85,21 @@ export class ActionFormData{
         .title(this.form.title)
         .body(this.form.body);
         for(let i = 0; i < this.buttons.length; i+=2) form.button(this.buttons[i], this.buttons[i+1]);
+        let firstCallback = this.firstCallback;
+        let _doCallback = this._doCallback;
         system.run(function forces(){
             form.show(showPlayer.getMCPlayer()).then(response =>{
                 let player = showPlayer;
                 let index = response.selection;
-                if(typeof this.firstCallback == "function") this.firstCallback({player, index});
+                const {canceled} = response;
+                if(typeof firstCallback == "function" && typeof index == "number") firstCallback({player, index});
                 if(String(response.cancelationReason) == "userBusy" && force) system.run(forces);
-                if(typeof callback != "function") throw "this callback is not a function.";
+                if(typeof callback != "function" && !!callback) throw "this callback is not a function.";
                 let cancelationReason = String(response.cancelationReason);
                 if(response.selection != undefined) cancelationReason = "buttonClicked";
-                if(typeof callback == "function") callback({player, cancelationReason});
+                if(typeof callback == "function") callback({player, cancelationReason, canceled});
                 if(response.canceled) return;
-                let fn = this._doCallback[response.selection];
+                let fn = _doCallback[response.selection];
                 if(typeof fn == "function") fn({player, index});
     
             });

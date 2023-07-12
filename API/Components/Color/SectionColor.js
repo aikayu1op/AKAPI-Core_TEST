@@ -53,6 +53,6 @@ export const SectionColor = /**@type {const} */({
  * @returns 
  */
 export function getColorCode(code){
-    if(code instanceof Array) return code.map(x => x = `§${x}`).join("");
+    if(code instanceof Array) return code.map(x => x = `§${SectionColorCode[x] ?? "f"}`).join("");
     return `§${SectionColorCode[code] ?? "f"}`;
 }

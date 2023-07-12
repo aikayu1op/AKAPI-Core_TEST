@@ -15,6 +15,7 @@ import { NumberRange } from "../Interfaces/NumberRange.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { BaseComponent } from "./BaseComponent.js";
 import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
+import { ContainerSlot } from "../ItemStack/ContainerSlot.js";
 /**
  * @template T
  * @typedef {T[keyof T]} ValueOf
@@ -1016,7 +1017,7 @@ export class PlayerInventoryComponent {
    */
   setItem(slot, itemStack) {
     try {
-      this.playerComp.container.setItem(slot, itemStack.getItemStack());
+      this.playerComp.container.setItem(slot, itemStack?.getItemStack());
       return true;
     } catch (e) {
       return false;
@@ -1187,28 +1188,29 @@ export class PlayerHealthComponent {
    * 現在の体力の値を返します。
    * @returns {number}
    */
-  getCurrent() {
-    return this.playerComp.current;
+  get currentValue() {
+    return this.playerComp.currentValue;
+  }
+  get effectiveMin(){
+    return this.playerComp.effectiveMin;
+  }
+  get effectiveMax(){
+    return this.playerComp.effectiveMax;
   }
   /**
    * プレイヤーの現時点での最高体力を返します。
    * @type {number}
    */
-  getValue() {
-    return this.playerComp.value;
+  get defaultValue() {
+    return this.playerComp.defaultValue;
   }
   /**
    * プレイヤーの体力を指定された値に設定します。
    * @param {number} value
    * @returns 正誤判定がかえります
    */
-  setCurrent(value) {
-    try {
-      this.playerComp.setCurrent(value);
-      return true;
-    } catch {
-      return false;
-    }
+  setCurrentValue(value) {
+      return this.playerComp.setCurrentValue(value);
   }
 
   /**
@@ -1339,14 +1341,26 @@ export class PlayerEquipmentSlot {
    * @param {ValueOf<EquipmentSlot>} equipmentSlot 
    */
   getEquipment(equipmentSlot){
-    
+    if(!!this._player.getComponent(this.typeId).getEquipment(equipmentSlot))
+      return new ItemStack(this._player.getComponent(this.typeId).getEquipment(equipmentSlot));
+    return undefined;
   }
   /**
    * 
    * @param {ValueOf<EquipmentSlot>} equipmentSlot 
    */
   getEquipmentSlot(equipmentSlot){
-
+    if(!!this._player.getComponent(this.typeId).getEquipmentSlot(equipmentSlot))
+      return new ContainerSlot(this._player.getComponent(this.typeId).getEquipmentSlot(equipmentSlot));
+    return undefined;
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   * @param {ItemStack} itemStack 
+   */
+  setEquipment(equipmentSlot, itemStack){
+    this._player.getComponent(this.typeId).setEquipment(equipmentSlot, itemStack.getItemStack());
   }
   /**
    *

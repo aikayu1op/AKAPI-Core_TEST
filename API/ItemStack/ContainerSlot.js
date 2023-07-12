@@ -1,25 +1,30 @@
 import * as mc from "@minecraft/server";
 import { ItemComponentBase } from "../Components/ItemComponents.js";
+import { ItemStack } from "./ItemStack.js";
+import { Player } from "../Player/index.js";
 
-export class ItemStack {
+export class ContainerSlot {
   /**
    * @type {mc.ItemStack}
    * @private
    */
   _itemStack;
   /**
+   * @type {Player}
+   * @private
+   */
+  _player;
+  /**
+   * @type {number | string}
+   * @private
+   */
+  _slot;
+  /**
    * アイテムのID
    * @type {string}
    * @readonly
    */
   typeId = undefined;
-
-  /**
-   * itemStackを複製します。
-   */
-  clone(){
-    return new ItemStack(this._itemStack);
-  }
   /**
    * アイテムのコンポーネントを操作できます。
    */
@@ -62,7 +67,10 @@ export class ItemStack {
    * @param {boolean} value
    */
   set keepOnDeath(value){
-    if(typeof value === "boolean") this._itemStack.keepOnDeath = value;
+    if(typeof value === "boolean"){
+        this._itemStack.keepOnDeath = value;
+        setItem(this._player, this._slot, this._itemStack);
+    }
   }
   get lockMode(){
     return this._itemStack.lockMode;
@@ -71,7 +79,10 @@ export class ItemStack {
    * @param {mc.ItemLockMode} value
    */
   set lockMode(value){
-    if(typeof value === "boolean") this._itemStack.lockMode = value;
+    if(typeof value === "boolean"){
+        this._itemStack.lockMode = value;
+        setItem(this._player, this._slot, this._itemStack);
+    }
   }
   /**
    * アドベンチャーモードで指定されたブロックに対して設置可能にします。
@@ -82,6 +93,7 @@ export class ItemStack {
    */
   set canPlaceOn(blockIdentifiers){
     this._itemStack.setCanPlaceOn(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アドベンチャーモードで指定されたブロックに対して破壊可能にします。
@@ -92,6 +104,7 @@ export class ItemStack {
    */
   set canDestroy(blockIdentifiers){
     this._itemStack.setCanDestroy(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アイテムに説明文を追加します。
@@ -99,6 +112,7 @@ export class ItemStack {
    */
   setLore(loreList) {
     this._itemStack.setLore(loreList);
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アイテムのイベントを実行します。
@@ -106,6 +120,7 @@ export class ItemStack {
    */
   triggerEvent(eventName) {
     this._itemStack.triggerEvent(eventName);
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アイテムの名前を確認・変更します。
@@ -122,6 +137,7 @@ export class ItemStack {
   NameTag(value = undefined){
     if(value == undefined) return this._itemStack.nameTag;
     this._itemStack.nameTag = value;
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アイテムの名前を確認します。
@@ -134,7 +150,10 @@ export class ItemStack {
    * @param {string} value 文字列を入れることでアイテムに名前を付けれます。undefinedをいれることで名前をリセットできます。
    */
   set nameTag(value){
-    if(typeof value == "string") this._itemStack.nameTag = value;
+    if(typeof value == "string"){
+        this._itemStack.nameTag = value;
+        setItem(this._player, this._slot, this._itemStack);
+    }
   }
   /**
    * アイテムの個数を確認・変更します。
@@ -151,6 +170,7 @@ export class ItemStack {
   Amount(value = undefined){
     if(value == undefined) return this._itemStack.amount;
     this._itemStack.amount = value;
+    setItem(this._player, this._slot, this._itemStack);
   }
   /**
    * アイテムの個数を確認します。
@@ -163,7 +183,10 @@ export class ItemStack {
    * @param {number} value
    */
   set amount(value){
-    if(typeof value == "number") this._itemStack.amount = value;
+    if(typeof value == "number"){
+        this._itemStack.amount = value;
+        setItem(this._player, this._slot, this._itemStack);
+    }
   }
   /**
    * アイテムのデータ値を確認・変更します。
@@ -190,39 +213,21 @@ export class ItemStack {
     return this._itemStack;
   }
   /**
-   * ワールドで使用するItemStackの初期化処理
-   * コンストラクタにItemStackを入れることも可能です。
-   * ```
-   * import * as mc from "@minecraft/server";
-   * import { ItemStack } from "./ItemStack/index.js";
-   *
-   * //ItemType Version
-   * const itemTypeVer = new ItemStack(mc.MinecraftItemTypes.apple, 1);
-   * const itemTypeVer2 = new ItemStack(mc.MinecraftItemTypes.apple, 1, "apple?", "yes");
-   *
-   * //ItemStack Version
-   * const example = new mc.ItemStack(mc.MinecraftItemTypes.apple, 1);
-   * const itemStackVersion = new ItemStack(example);
-   * ```
-   * @param {mc.ItemType | mc.ItemStack | string} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
-   * @param {number} amount 個数
-   * @param {string} nameTag アイテム名
-   * @param {string[]} lore アイテムの説明
+   * @param {Player} player
+   * @param {ItemStack | mc.ItemStack} itemStack アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
+   * @param {number | string} slot
    */
-  constructor(itemType, amount = 1, nameTag = "", lore = undefined) {
-    if (itemType instanceof mc.ItemStack) {
-      this._itemStack = itemType;
+  constructor(player, itemStack, slot) {
+    if (itemStack instanceof mc.ContainerSlot) {
+      this._itemStack = new itemStack;
       this.typeId = this._itemStack.typeId;
-      this.amount = this._itemStack.amount;
-      if(nameTag != "") this._itemStack.nameTag = nameTag;
-      if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
-
-    }
-    if (itemType instanceof mc.ItemType || typeof itemType === "string") {
-      this._itemStack = new mc.ItemStack(itemType, amount);
-      this.typeId = this._itemStack.typeId;
-      if(nameTag != "") this._itemStack.nameTag = nameTag;
-      if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
+      this._player = player;
+      this._slot = slot;
+    }else if(itemStack instanceof ItemStack){
+        this._itemStack = itemStack.getItemStack();
+        this.typeId = this._itemStack.typeId;
+        this._player = player;
+        this._slot = slot;
     }/*else{
       world.sendMessage(itemType instanceof mc.ItemStack);
       this._itemStack = undefined;
@@ -230,3 +235,13 @@ export class ItemStack {
   }
 }
 
+/**
+ * 
+ * @param {Player} player 
+ * @param {number | string} slot 
+ * @param {ItemStack} itemStack 
+ */
+function setItem(player, slot, itemStack){
+    if(typeof slot === "string") player.getComponent().getEquipmentInventory().setEquipment(slot, new ItemStack(itemStack))
+    else if(typeof slot === "number") player.getComponent().getInventory().container.setItem(slot, new ItemStack(itemStack));
+}

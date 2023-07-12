@@ -3,6 +3,8 @@ import { Player } from "../Player/index.js";
 import * as myOptions from "../Interfaces/index.js";
 import { Dimension } from "../Dimension/index.js";
 import { Vector } from "../Vector/Vector.js";
+import { Scoreboard } from "../Scoreboard/index.js";
+import { Entity } from "../Entity/index.js";
 
 class World {
   /**
@@ -19,7 +21,7 @@ class World {
    * スコアボードを取得したい場合に使用するプロパティ
    * @readonly
    */
-  scoreboard = w.scoreboard;
+  scoreboard = new Scoreboard(w.scoreboard);
   /**
    *
    * @param {string} id
@@ -75,7 +77,7 @@ class World {
   getPlayers(options = {}) {
     if (options instanceof myOptions.EntityQueryOptions)
       return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
-    else if (typeof options === "object") return [...w.getPlayers(options)].map((p) => new Player(p));
+    return [...w.getPlayers(options)].map((p) => new Player(p));
   }
   /**
    * 音楽を再生します。
@@ -146,12 +148,33 @@ class World {
    * @param {number} time
    */
   Time(time = undefined) {
-    if (time == undefined) return w.getTime();
+    if (time == undefined) return w.getTimeOfDay();
     else if (typeof time === "number") {
-      w.setTime(time);
+      w.setTimeOfDay(time);
       return time;
     }
   }
+  /**
+   * 現在何日経過したか取得します。
+   */
+  getDay(){
+    return w.getDay();
+  }
+  /**
+   * 
+   * @param {string} id 
+   */
+  getEntity(id){
+    new Entity(w.getEntity());
+  }
+  /**
+   * ワールドの絶対時間をセットします。
+   * @param {number} absoluteTime 
+   */
+  setAbsoluteTime(absoluteTime){
+    w.setAbsoluteTime(absoluteTime);
+  }
+
   /**
    * 音楽を止めれます。
    */

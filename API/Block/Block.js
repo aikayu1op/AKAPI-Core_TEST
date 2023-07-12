@@ -52,6 +52,15 @@ export class Block {
       return this._block.canPlace(blockToPlace.getMCBlockType(), faceToPlaceOn);
   }
   /**
+   * ブロックの座標からオフセットをもとに再取得します。
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} z 
+   */
+  changeOffset(x,y,z){
+    return new Block(this._block.dimension.getBlock(new Vector(this.x + x, this.y + y, this.z + z).getMCVector3()))
+  }
+  /**
    * コンポーネントを返します。
    */
   getComponent() {

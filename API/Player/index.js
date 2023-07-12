@@ -408,6 +408,7 @@ export class Player {
   }
   /**
    * 右手に持っているアイテムを設定・取得します。
+   * @deprecated
    *
    * @param {ItemStack} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
    * @returns {ItemStack | undefined}
@@ -416,6 +417,29 @@ export class Player {
     if (!itemStack) return this.getComponent().getInventory().container.getItem(this.selectedSlot);
     else if (itemStack instanceof ItemStack)
       this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
+  }
+  /**
+   * 右手に持っているアイテムを設定・取得します。
+   *
+   */
+  get mainhandItem(){
+    return this.getComponent().getInventory().container.getItem(this.selectedSlot);
+  }
+  /**
+   * 右手に持っているアイテムを設定・取得します。
+   *
+   * @param {ItemStack | undefined} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
+   * @returns {ItemStack | undefined}
+   */
+  set mainhandItem(itemStack){
+    if (itemStack instanceof ItemStack) 
+      this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
+  }
+  /**
+   * プレイヤーのMCIDをかえします。
+   */
+  get name(){
+    return this._player.name;
   }
   /**
    * プレイヤーにopを設定・確認出来ます。
@@ -670,7 +694,7 @@ export class Player {
       this.location = new Vector(this._player.location);
       this.name = this._player.name;
       this.onScreenDisplay = new onScreenDisplay(this);
-      this.scoreboard = this._player.scoreboard;
+      this.scoreboardIdentity = this._player.scoreboardIdentity;
       this.target = new Entity(this._player.target);
       this.typeId = this._player.typeId;
       this.headLocation = new Vector(this._player.getHeadLocation());

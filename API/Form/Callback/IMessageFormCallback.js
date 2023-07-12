@@ -41,4 +41,10 @@ export class MessageFormCanceledCallback{
      * @readonly
      */
     cancelationReason;
+    /**
+     * フォームが人為的に閉じたかどうかを取得します。
+     * @readonly
+     * @type {boolean}
+     */
+    canceled;
 }

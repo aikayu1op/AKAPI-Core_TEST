@@ -44,7 +44,7 @@ export class ModalFormData{
 
     /**
      * ModalFormDataのtitleテキストを設定します。
-     * @param {string} text
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} text
      */
     title(text){
         this.form.title = text;
@@ -52,8 +52,8 @@ export class ModalFormData{
     }
     /**
      * フォームにテキストボックスを配置します。
-     * @param {string} label 
-     * @param {string} placeholderText 
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} placeholderText 
      * @param {string} defaultValue 
      */
     textField(label = "", placeholderText = "", defaultValue = undefined){
@@ -77,7 +77,7 @@ export class ModalFormData{
     }
     /**
      * フォームにスライダーを配置します。
-     * @param {string} label 
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
      * @param {number} minValue 
      * @param {number} maxValue 
      * @param {number} valueStep 
@@ -94,8 +94,8 @@ export class ModalFormData{
     }
     /**
      * フォームにドロップダウンを配置します。
-     * @param {string} label 
-     * @param {string[]} options 
+     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
+     * @param {(string | import("../Interfaces/IRawMessage.js").IRawMessage)[]} options 
      * @param {number} defaultValueIndex 
      */
     dropdown(label = "", options = [], defaultValueIndex = 0){
