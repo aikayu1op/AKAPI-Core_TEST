@@ -36,11 +36,16 @@ export class Scoreboard{
     clearObjectiveAtDisplaySlot(displaySlotId){
         return new ScoreboardObjective(this._scoreboard.clearObjectiveAtDisplaySlot(displaySlotId));
     }
-    getObjective(){
-        return new ScoreboardObjective(this._scoreboard.getObjective());
+    /**
+     * 指定したオブジェクトからデータを取得します。
+     * @param {string} objectiveId 
+     * @returns 
+     */
+    getObjective(objectiveId){
+        return new ScoreboardObjective(this._scoreboard.getObjective(objectiveId));
     }
-    getObjectiveAtDisplaySlot(){
-        return this._scoreboard.getObjectiveAtDisplaySlot();
+    getObjectiveAtDisplaySlot(displaySlotId){
+        return this._scoreboard.getObjectiveAtDisplaySlot(displaySlotId);
     }
     getObjectives(){
         return this._scoreboard.getObjectives().map(x => new ScoreboardObjective(x))

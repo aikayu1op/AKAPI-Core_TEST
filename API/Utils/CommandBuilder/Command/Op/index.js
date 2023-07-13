@@ -1,4 +1,4 @@
-import { system } from "../../../AKAPI-Core/index.js";
+import { system } from "../../../../../index.js";
 import Config from "../../Config/index.js";
 import { Command } from "../../Main.js";
 
