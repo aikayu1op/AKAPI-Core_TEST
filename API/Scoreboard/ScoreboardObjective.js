@@ -27,9 +27,9 @@ export class ScoreboardObjective{
     addScore(participant, score){
         typeof participant == "string" ?
         this._objective.setScore(participant, this._objective.getScore(participant)+score) : (participant instanceof ScoreboardIdentity)  ?
-        this._objective.setScore(participant, this._objective.getScore(participant.getRawdata())+score) : (participant instanceof Player) ?
-        this._objective.setScore(participant, this._objective.getScore(participant.getMCPlayer())+score) : (participant instanceof Entity) ?
-        this._objective.setScore(participant, this._objective.getScore(participant.getMCEntity())+score) : 0
+        this._objective.setScore(participant.getRawdata(), this._objective.getScore(participant.getRawdata())+score) : (participant instanceof Player) ?
+        this._objective.setScore(participant.getMCPlayer(), this._objective.getScore(participant.getMCPlayer())+score) : (participant instanceof Entity) ?
+        this._objective.setScore(participant.getMCEntity(), this._objective.getScore(participant.getMCEntity())+score) : 0
     }
     /**
      * スコアを取得します。
@@ -39,7 +39,7 @@ export class ScoreboardObjective{
         return typeof participant === "string" ?
         this._objective.getScore(participant) : participant instanceof ScoreboardIdentity ?
         this._objective.getScore(participant.getRawdata()) : (participant instanceof Player) ?
-        this._objective.setScore(participant, this._objective.getScore(participant.getMCPlayer())+score) : participant instanceof Entity ?
+        this._objective.setScore(participant.getMCPlayer(), this._objective.getScore(participant.getMCPlayer())+score) : participant instanceof Entity ?
         this._objective.getScore(participant.getMCEntity()) : 0
     }
     /**
@@ -80,10 +80,10 @@ export class ScoreboardObjective{
      * @param {number} score 
      */
     setScore(participant, score){
-        return typeof participant === "string" ?
+        typeof participant === "string" ?
         this._objective.setScore(participant, score) : participant instanceof ScoreboardIdentity ?
         this._objective.setScore(participant.getRawdata(), score) : (participant instanceof Player) ?
-        this._objective.setScore(participant, this._objective.getScore(participant.getMCPlayer())+score) : participant instanceof Entity ?
+        this._objective.setScore(participant.getMCPlayer(), score) : participant instanceof Entity ?
         this._objective.setScore(participant.getMCEntity(), score) : 0
     }
     /**

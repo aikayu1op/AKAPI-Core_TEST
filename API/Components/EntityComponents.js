@@ -2331,14 +2331,14 @@ export class EntityHealthComponent {
    * @returns {number}
    */
   getCurrent() {
-    return this.entityComp.current;
+    return this.entityComp.currentValue;
   }
   /**
    * エンティティの現在の最大体力を返します。
    * @returns {number}
    */
   getValue() {
-    return this.entityComp.value;
+    return this.entityComp.defaultValue;
   }
 
   /**

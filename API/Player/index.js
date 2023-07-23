@@ -18,6 +18,9 @@ import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
 import { EntityEffectOptions } from "../Interfaces/EntityEffectOptions.js";
 import { GameMode } from "../Interfaces/GameMode.js";
 import { IRawMessage } from "../Interfaces/IRawMessage.js";
+import { ScoreboardObjective } from "../Scoreboard/ScoreboardObjective.js";
+import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
+import { DimensionLocation } from "../Interfaces/DimensionLocation.js";
 
 /**
  * @template T
@@ -94,11 +97,11 @@ export class Player {
    * ```
    * @readonly
    */
-  scoreboard;
+  scoreboardIdentity;
   /**
    * プレイヤーのアイデンティティが返ってきます。
    * 例として、鶏をtypeIdした際はminecraft:chickenが返ってきます。
-   * @type {string}
+   * @type {"minecraft:player"}
    * @readonly
    */
   typeId;
@@ -120,6 +123,36 @@ export class Player {
    * @readonly
    */
   lifetimeState;
+  /**
+   * 登っているかを取得します。
+   * @readonly
+   */
+  isClimbing;
+  /**
+   * 落下しているかどうかを取得します。
+   * @readonly
+   */
+  isFalling;
+  /**
+   * 地面についているかどうかを取得します。
+   * @readonly
+   */
+  isOnGround;
+  /**
+   * 水の中かどうかを取得します。
+   * @readonly
+   */
+  isInWater;
+  /**
+   * 泳ぎモーションになっているかどうかを取得します。
+   * @readonly
+   */
+  isSwimming;
+  /**
+   * スニークしているかどうかを取得します。
+   * @readonly
+   */
+  isSneaking;
 
   /**
    * プレイヤーにエフェクトを追加します。
@@ -174,6 +207,15 @@ export class Player {
     let bDatas = [];
     tags.forEach(tag => {let bData=this.addTag(tag);bDatas.push(bData)});
     return bDatas;
+  }
+  /**
+   * 指定されたオブジェクトに値を増加させます。
+   * @param {string | ScoreboardObjective} objectiveId 
+   * @param {number} score 
+   */
+  addScore(objectiveId, score){
+    if(typeof score === "number")
+      return world.scoreboard.getObjective(objectiveId).addScore(this, score);
   }
   /**
    * ダメージを与えます。
@@ -266,14 +308,24 @@ export class Player {
     return this._player.getItemCooldown(itemCategory);
   }
   /**
-   * 個々に指定された復活地点の座標を返します。
-   * 指定がない場合は、undefinedを返します。
-   * @returns {Vector | undefined}
+   * 指定されたオブジェクトから値を取得します。
+   * 
+   * エラーや存在しない場合は0をかえします。
+   * @param {string | ScoreboardObjective} objectiveId
    */
-  getSpawnPosition(){
-    const location = this._player.getSpawnPosition();
+  getScore(objectiveId){
+    try{
+      return world.scoreboard.getObjective(objectiveId).getScore(this);
+    }catch{return 0;}
+  }
+  /**
+   * 個々に指定された復活地点の座標やディメンションを返します。
+   * 指定がない場合は、undefinedを返します。
+   */
+  getSpawnPoint(){
+    const location = this._player.getSpawnPoint();
     if(!location) return undefined;
-    return new Vector(location);
+    return new DimensionLocation(location);
   }
   /**
    * マイクラ公式のPlayerクラスを返します。
@@ -307,15 +359,6 @@ export class Player {
   }
   getXpEarnedAtCurrentLevel() {
     return this._player.xpEarnedAtCurrentLevel;
-  }
-  /**
-   * 指定されたオブジェクトでスコアを取得します。
-   *
-   * 値が存在しない場合は、0が返ります。
-   * @param {string} objectiveId
-   */
-  getScore(objectiveId) {
-    return world.scoreboard.getObjective(objectiveId).getScore(this.scoreboard) ?? 0;
   }
   /**
    * プレイヤーに登録されているタグをすべて取得します。
@@ -540,6 +583,22 @@ export class Player {
     }
   }
   /**
+   * 火をつけます。
+   * @param {number} seconds 
+   * @param {boolean} useEffect 
+   */
+  setOnFire(seconds = 0, useEffect = false){
+    this._player.setOnFire(seconds, useEffect);
+  }
+  /**
+   * 指定されたオブジェクトに値を代入します。
+   * @param {string} objectiveId 
+   * @param {number} score 
+   */
+  setScore(objectiveId, score){
+    world.scoreboard.getObjective(objectiveId).setScore(this, score);
+  }
+  /**
    * ゲームモードを設定します。
    * @param {ValueOf<GameMode>} gameMode
    * @returns {void}
@@ -641,6 +700,14 @@ export class Player {
     if (typeof value == "boolean") this._player.isSneaking = value;
   }
   /**
+   * アニメーションを再生します。
+   * @param {string} animationName 
+   * @param {{}} options 
+   */
+  playAnimation(animationName, options = {}){
+    this._player.playAnimation(animationName, options);
+  }
+  /**
    * actionbarに表示するテキストを複数使えるようにします。
    *
    * idに適当な文字列を入れ、messageには表示するテキストを入れることができます。
@@ -694,7 +761,7 @@ export class Player {
       this.location = new Vector(this._player.location);
       this.name = this._player.name;
       this.onScreenDisplay = new onScreenDisplay(this);
-      this.scoreboardIdentity = this._player.scoreboardIdentity;
+      this.scoreboardIdentity = new ScoreboardIdentity(this._player.scoreboardIdentity);
       this.target = new Entity(this._player.target);
       this.typeId = this._player.typeId;
       this.headLocation = new Vector(this._player.getHeadLocation());
@@ -704,6 +771,12 @@ export class Player {
         this.spawnDimension = undefined;
       this.level = this._player.level;
       this.lifetimeState = this._player.lifetimeState;
+      this.isSneaking = this._player.isSneaking;
+      this.isClimbing = this._player.isClimbing;
+      this.isFalling  = this._player.isFalling;
+      this.isInWater  = this._player.isInWater;
+      this.isOnGround = this._player.isOnGround;
+      this.isSwimming = this._player.isSwimming;
 
     } catch (e) {}
   }

@@ -1,4 +1,3 @@
-import { world } from "@minecraft/server";
 import * as UI from "@minecraft/server-ui";
 import { Player } from "../Player/index.js";
 import { IModalFormResponse } from "./Callback/IModalFormCallback";
@@ -83,7 +82,7 @@ export class ModalFormData{
      * @param {number} valueStep 
      * @param {number} defaultValue 
      */
-    slider(label = "", minValue = 0, maxValue = 100, valueStep = 1, defaultValue = false){
+    slider(label = "", minValue = 0, maxValue = 100, valueStep = 1, defaultValue = minValue){
         let data = [];
         let map = new Map();
         data.push(minValue, maxValue, valueStep, defaultValue);

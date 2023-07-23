@@ -72,7 +72,7 @@ export class IBeforeItemUseOnEventSignal {
   /**
    * 実行したエンティティを返します。
    * プレイヤーの場合は強制的にプレイヤークラスに変換されますが、便宜上Entityクラスを返します。
-   * @type {Entity}
+   * @type {Entity | Player}
    * @readonly
    */
   source;

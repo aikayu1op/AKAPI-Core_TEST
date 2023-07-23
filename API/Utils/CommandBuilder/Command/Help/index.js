@@ -50,14 +50,14 @@ Command.register({
             }else if(typeof getCmd.permission === "boolean" && getCmd.permission && !ev.sender.hasTag(Config.firstTag+Config.opTag)){
                 ev.sender.sendMessage(replaceArgs(Config.invalidMessage, getCmd.cmd));
                 return;
-            }else if(typeof getCmd.permission === "string" && !ev.sender.hasTag(Config.firstTag+getCmd.permission) || !ev.sender.hasTag(Config.firstTag+Config.opTag)){
+            }else if(typeof getCmd.permission === "string" && !ev.sender.hasTag(Config.firstTag+getCmd.permission) && !ev.sender.hasTag(Config.firstTag+Config.opTag)){
                 ev.sender.sendMessage(replaceArgs(Config.invalidMessage, ev.args[0]));
                 return;
             }
             if(typeof getCmd.permission === "boolean")
                 ev.sender.sendMessage(`${getCmd.cmd}の説明\n    ${getCmd.description}\n使用例:\n${getCmd.usage.length > 0? getCmd.usage.map(x => x = " ".repeat(2)+Config.commandPrefix+getCmd.cmd+" "+x).join("\n") : " ".repeat(2)+Config.commandPrefix+getCmd.cmd}`);
             else
-                ev.sender.sendMessage(`${getCmd.cmd}の説明\n    ${getCmd.description}\n使用例\n:${getCmd.usage.length > 0? getCmd.usage.map(x => x = " ".repeat(2)+Config.commandPrefix+getCmd.cmd+" "+x).join("\n") : " ".repeat(2)+Config.commandPrefix+getCmd.cmd}`);
+                ev.sender.sendMessage(`${getCmd.cmd}の説明\n    ${getCmd.description}\n使用例:\n${getCmd.usage.length > 0? getCmd.usage.map(x => x = " ".repeat(2)+Config.commandPrefix+getCmd.cmd+" "+x).join("\n") : " ".repeat(2)+Config.commandPrefix+getCmd.cmd}`);
             return;
         }else{
             ev.sender.sendMessage(`§a--- ヘルプ ページの 1 / ${limitPage} ページを表示 (${Config.commandPrefix}help <number> ) ---§f`);

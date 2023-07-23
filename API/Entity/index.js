@@ -35,6 +35,37 @@ export class Entity {
    */
   target;
   /**
+   * 現在のプレイヤーが参照できる状態なのかを取得します。
+   * @type {EntityLifetimeState}
+   * @readonly
+   */
+  lifetimeState;
+  /**
+   * 登っているかを取得します。
+   * @readonly
+   */
+  isClimbing;
+  /**
+   * 落下しているかどうかを取得します。
+   * @readonly
+   */
+  isFalling;
+  /**
+   * 地面についているかどうかを取得します。
+   * @readonly
+   */
+  isOnGround;
+  /**
+   * 水の中かどうかを取得します。
+   * @readonly
+   */
+  isInWater;
+  /**
+   * 泳ぎモーションになっているかどうかを取得します。
+   * @readonly
+   */
+  isSwimming;
+  /**
    * エンティティを表すScoreboardIdentityクラスが返ります。
    * 使い方例(公式クラスを使っています。)
    * ```
@@ -51,7 +82,7 @@ export class Entity {
   /**
    * エンティティのアイデンティティが返ってきます。
    * 例として、鶏をtypeIdした際はminecraft:chickenが返ってきます。
-   * @type {string}
+   * @type {""}
    * @readonly
    */
   typeId;
@@ -104,6 +135,19 @@ export class Entity {
    */
   clearVelocity() {
     this._entity.clearVelocity();
+  }
+  /**
+   * 
+   * @param {boolean} useEffect 
+   */
+  extinguishFire(useEffect = false){
+    return this._entity.extinguishFire(useEffect);
+  }
+  /**
+   * @readonly
+   */
+  get fallDistance(){
+    return this._entity.fallDistance;
   }
   /**
    * エンティティが向いている方向のブロッククラスを返します。
@@ -245,6 +289,13 @@ export class Entity {
     this._entity.kill();
   }
   /**
+   * 
+   * @returns 
+   */
+  isValid(){
+    return this._entity.isValid();
+  }
+  /**
    * アニメーションを実行します。
    * @param {string} animationName
    * @param {{}} options
@@ -288,6 +339,14 @@ export class Entity {
    */
   setDynamicProperty(identifier, value) {
     this._entity.setDynamicProperty(identifier, value);
+  }
+  /**
+   * 
+   * @param {number} seconds 
+   * @param {boolean} useEffect 
+   */
+  setOnFire(seconds, useEffect = false){
+    return this._entity.setOnFire(seconds, useEffect);
   }
   /**
    * エンティティの向きを設定します。
@@ -374,6 +433,12 @@ export class Entity {
       this.scoreboard = this._entity.scoreboard;
       this.target = new Entity(this._entity.target);
       this.typeId = this._entity.typeId;
+      this.lifetimeState = this._entity.lifetimeState;
+      this.isClimbing = this._entity.isClimbing;
+      this.isFalling  = this._entity.isFalling;
+      this.isInWater  = this._entity.isInWater;
+      this.isOnGround = this._entity.isOnGround;
+      this.isSwimming = this._entity.isSwimming;
     } catch (e) {}
   }
 }

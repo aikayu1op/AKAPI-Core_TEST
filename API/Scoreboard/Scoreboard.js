@@ -1,3 +1,4 @@
+import { DisplaySlotId } from "../Interfaces/DisplaySlotId.js";
 import { ScoreboardObjectiveDisplayOptions } from "../Interfaces/ScoreboardObjectiveDisplayOptions.js";
 import { ScoreboardIdentity } from "./ScoreboardIdentity.js";
 import { ScoreboardObjective } from "./ScoreboardObjective.js";
@@ -44,6 +45,10 @@ export class Scoreboard{
     getObjective(objectiveId){
         return new ScoreboardObjective(this._scoreboard.getObjective(objectiveId));
     }
+    /**
+     * 
+     * @param {DisplaySlotId[keyof DisplaySlotId]} displaySlotId 
+     */
     getObjectiveAtDisplaySlot(displaySlotId){
         return this._scoreboard.getObjectiveAtDisplaySlot(displaySlotId);
     }

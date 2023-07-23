@@ -1,4 +1,4 @@
-import { world } from "../../../index.js";
+import { system, world } from "../../../index.js";
 import { IBuilderObject } from "./Object/BuilderObject.js";
 import Config from "./Config/index.js";
 import { Player } from "../../Player/index.js";
@@ -63,6 +63,12 @@ export class Command {
       throw `[${
         this._data.cmd ?? "undefined"
       }] The expected number of arguments is 5, but the returned value is ${count}`;
+  }
+  /**
+   * 現在のコンフィグを取得します。
+   */
+  static getConfig(){
+    return Config;
   }
   /**
    * @type {IBuilderObject}
@@ -196,25 +202,25 @@ world.beforeEvents.chatSend.subscribe((ev) => {
       cmdData.get(cmd).permission &&
       player.hasTag(Config.firstTag + Config.opTag)
     ) {
-      cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers });
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }));
       return;
     } else if (typeof cmdData.get(cmd).permission == "boolean" && !cmdData.get(cmd).permission) {
-      cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers });
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }))
       return;
     } else if (
       (typeof cmdData.get(cmd).permission === "string" &&
         player.hasTag(Config.firstTag + cmdData.get(cmd).permission)) ||
       ev.sender.hasTag(Config.firstTag + Config.opTag)
     ) {
-      cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers });
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }))
       return;
     } else {
-      sender.sendMessage(replaceArgs(Config.invalidMessage, cmd));
+      system.run(() => sender.sendMessage(replaceArgs(Config.invalidMessage, cmd)));
       return;
     }
   } else {
     //messageBuilder
-    if (_messageCallback.length > 0) _messageCallback.forEach((f) => f({ sender, message, getPlayers, getPlayer }));
+    if (_messageCallback.length > 0) _messageCallback.forEach((f) => system.run(() => f({ sender, message, getPlayers, getPlayer })));
     if (player.hasTag(Config.firstTagMsg + Config.noSend)) return;
     if (!_showPlayerMsg.has(sender.id)) {
       world.sendMessage(`<${sender.nameTag}> ${message}`);
@@ -230,7 +236,7 @@ world.beforeEvents.chatSend.subscribe((ev) => {
       .replace(/%d/g, sender.dimension.id)
       .replace(/%m/g, message);
     for (const player of world.getAllPlayers()) {
-      if (player.hasTag(Config.noShowPrefix)) player.sendMessage(`${sender.nameTag} > ${message}`);
+      if (player.hasTag(Config.firstTagMsg+Config.noShowPrefix)) player.sendMessage(`<${sender.nameTag}> ${message}`);
       else player.sendMessage(data);
     }
   }
