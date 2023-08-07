@@ -1,4 +1,5 @@
 import * as mc from "@minecraft/server";
+import { Vec3 } from "./Vec3.js";
 
 export class Vector {
   /**
@@ -19,6 +20,9 @@ export class Vector {
    * @type {boolean}
    */
   isZero;
+  get isZero(){
+    return (this.x == 0 && this.y == 0 && this.z == 0) ? true: false
+  }
 
   /**
    * ベクトルを表す定数から(0, 0, -1)変更したVectorが返されます。
@@ -88,9 +92,96 @@ export class Vector {
   lengthSquared() {
     return new Vector(this.getMCVector().lengthSquared());
   }
-  normalised() {
+  /*normalised() {
     return new Vector(this.getMCVector().normalized());
+  }*/
+  normalized(){
+    return new Vector(new Vec3(this).normalized);
   }
+  /**
+   * ２つのVectorを足し合わせます。
+   * @param {this} vector
+   */
+  add(vector){
+    return new Vector(new Vec3(this).add(vector.getMCVector3()));
+  }
+  /**
+   * ２つのVectorから外積を求めます。
+   * @param {this} vector 
+   * @returns 
+   */
+  cross(vector){
+    return new Vector(new Vec3(this).cross(vector.getMCVector3()))
+  }
+  /**
+   * ２つのVectorから距離を求めます。
+   * @param {this} vector
+   * @returns 
+   */
+  distance(vector){
+    return new Vector(new Vec3(this).distance(vector.getMCVector3()))
+  }
+  /**
+   * ２つのVectorから内積を求めます。
+   * @param {this} vector 
+   * @returns 
+   */
+  dot(vector){
+    return new Vector(new Vec3(this).dot(vector.getMCVector3()))
+  }
+  /**
+   * 
+   */
+  floor(){
+    return new Vector(new Vec3(this).floor())
+  }
+  /**
+   * ２つのVectorから線形補間を計算します。
+   * @param {this} vector 
+   * @param {this} vector2
+   * @param {number} t
+   * @returns 
+   */
+  lerp(vector, t){
+    return new Vector(new Vec3(this).lerp(vector.getMCVector3(), t))
+  }
+  /**
+   * ２つのVectorからスカラー値を計算します。
+   * @param {this | number} num
+   * @returns 
+   */
+  multiply(num){
+    return new Vector(new Vec3(this).multiply(typeof num ? num : num instanceof Vector ? num.getMCVector3() : 1))
+  }
+  magnitude(){
+    return Math.sqrt(this.x * this.x, this.y * this.y, this.z * this.z);
+  }
+  /**
+   * "a"から'b'への射影を計算します。
+   * @param {this} vector 
+   * @returns 
+   */
+  projection(vector){
+    return new Vector(new Vec3(this).projection(vector.getMCVector3()))
+  }
+  /**
+   * 
+   * @param {this} vector 
+   * @returns 
+   */
+  reflect(vector){
+    return new Vector(new Vec3(this).reflect(vector.getMCVector3()))
+  }
+  /**
+   * 
+   * @param {this} vector 
+   * @returns 
+   */
+  rejection(vector){
+    return new Vector(new Vec3(this).rejection(vector.getMCVector3()))
+  }
+  
+  
   /**
    * マイクラが提供しているVectorクラスを返します。
    * @deprecated
@@ -125,12 +216,12 @@ export class Vector {
   /**
    * ベクターを生成します。
    * x部分にマイクラ公式のVector3を入れることも可能です。
-   * @param {number | mc.Vector3 | mc.Vector} x
+   * @param {number | mc.Vector3 | mc.Vector | Vector} x
    * @param {number} y
    * @param {number} z
    */
   constructor(x, y, z) {
-    if(x instanceof mc.Vector){
+    if(x instanceof mc.Vector || x instanceof Vector){
         this.x = x.x;
         this.y = x.y;
         this.z = x.z;

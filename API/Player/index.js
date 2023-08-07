@@ -310,13 +310,13 @@ export class Player {
   /**
    * 指定されたオブジェクトから値を取得します。
    * 
-   * エラーや存在しない場合は0をかえします。
+   * エラーや存在しない場合はundefinedをかえします。
    * @param {string | ScoreboardObjective} objectiveId
    */
   getScore(objectiveId){
     try{
       return world.scoreboard.getObjective(objectiveId).getScore(this);
-    }catch{return 0;}
+    }catch{return undefined;}
   }
   /**
    * 個々に指定された復活地点の座標やディメンションを返します。
@@ -565,6 +565,14 @@ export class Player {
    */
   setCamera(){
 
+  }
+  /**
+   * 経験値バーのLvを設定できます。
+   * @param {number} lv 
+   */
+  setLevel(lv){
+    this.resetLevel();
+    this.addLevels(lv)
   }
   /**
    * プロパティにデータをセットします。

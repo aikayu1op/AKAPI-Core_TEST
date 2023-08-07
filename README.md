@@ -23,13 +23,12 @@
 現在特になし 
 
 # 現在新たに追加されている内容
-**PlayerInventoryComponentのgetAllItems**
-
-**CommandBuilder, MessageBuilderの追加**
-
-**Location系相互変換機能**
-
-**Playerクラスにいくつかの関数追加(hasTags, isInstantSneaking, MainhandItem, sendActionbar, setGamemode, getGamemode)** etc...
+**PlayerにaddScore,setScoreの追加**
+**Utilsの追加**
+    **sleep機能の追加**
+    **CommandBuilderの追加**
+**Systemの追加**
+    **allPlayerTickSubscribeの追加**etc...
 
 # ChangeLog
 > ver 1.1β
@@ -41,3 +40,7 @@ BlockPermutationのgetItemStackの追加
 > ver 1.2.0β
 1.20.10用にある程度対応、足りないデータはあるがある程度使用可能
 Playerに必要なis(Gliding,Swimming..etc)系を追加(Entityにはまだ追加してない)
+> ver 1.2.1β
+いくつかの追加データ
+Vectorに関数を追加
+etc...

@@ -37,13 +37,10 @@ class PlayerMoveEvent{
 }
 export const PlayerMove = new PlayerMoveEvent();
 
-system.run(function move(){
-    system.run(move);
-    for(const player of world.getAllPlayers()){
-        if(player.getVelocity().isZero) continue;
-        let getVelocity = () => player.getVelocity();
-        let getLocation = () => player.location;
-        let dimension = player.dimension;
-        _listener.forEach(f => f({player, getVelocity, getLocation, dimension}));
-    }
+system.allPlayerTickSubscribe(({player}) =>{
+    if(player.getVelocity().isZero) return;
+    let getVelocity = () => player.getVelocity();
+    let getLocation = () => player.location;
+    let dimension = player.dimension;
+    _listener.forEach(f => f({player, getVelocity, getLocation, dimension}));
 })

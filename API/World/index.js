@@ -5,6 +5,8 @@ import { Dimension } from "../Dimension/index.js";
 import { Vector } from "../Vector/Vector.js";
 import { Scoreboard } from "../Scoreboard/index.js";
 import { Entity } from "../Entity/index.js";
+import { Time } from "../Utils/Time/index.js";
+import { system } from "../System/index.js";
 
 class World {
   /**
@@ -72,7 +74,6 @@ class World {
   /**
    *
    * @param {{} | myOptions.EntityQueryOptions} options
-   * @returns {Player[]}
    */
   getPlayers(options = {}) {
     if (options instanceof myOptions.EntityQueryOptions)
@@ -100,7 +101,7 @@ class World {
   /**
    * 音楽をキューにいれることができます。
    * @param {string} trackID
-   * @param {[] | myOptions.MusicOptions} options
+   * @param {{} | myOptions.MusicOptions} options
    */
   queueMusic(trackID, options = {}) {
     if (options instanceof myOptions.SoundOptions) w.queueMusic(trackID, options.getOptions());
@@ -160,12 +161,17 @@ class World {
   getDay(){
     return w.getDay();
   }
+  async getGameTick(){
+    const date = new Date().getTime();
+    await Time.sleep(1)
+    return new Date().getTime() - date;
+  }
   /**
    * 
    * @param {string} id 
    */
   getEntity(id){
-    new Entity(w.getEntity());
+    new Entity(w.getEntity(id));
   }
   /**
    * ワールドの絶対時間をセットします。

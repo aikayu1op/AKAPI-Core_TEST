@@ -6,6 +6,7 @@ import { Dimension } from "../Dimension/index.js";
 import { world } from "../World/index.js";
 import { Block } from "../Block/Block.js";
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
+import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 
 export class Entity {
   /**
@@ -78,7 +79,7 @@ export class Entity {
    * ```
    * @readonly
    */
-  scoreboard;
+  scoreboardIdentity;
   /**
    * エンティティのアイデンティティが返ってきます。
    * 例として、鶏をtypeIdした際はminecraft:chickenが返ってきます。
@@ -100,11 +101,10 @@ export class Entity {
    * ```
    * @param {mc.EffectType} effectType エフェクトタイプを指定します。
    * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick)
-   * @param {number} amplifier 効果レベルを指定します。
-   * @param {boolean} showParticles パーティクルを表示するかどうか
+   * @param {mc.EntityEffectOptions} options
    */
-  addEffect(effectType, duration = 400, amplifier = 0, showParticles = false) {
-    this._entity.addEffect(effectType, duration, amplifier, showParticles);
+  addEffect(effectType, duration = 400, options = undefined) {
+    this._entity.addEffect(effectType, duration, options);
   }
   /**
    * エンティティにタグを設定します。
@@ -226,11 +226,13 @@ export class Entity {
   /**
    * スコアを取得します。
    *
-   * 値が存在しない場合はfalseを返します。
+   * 値が存在しない場合はundefinedを返します。
    * @param {string} objectiveId 取得したいオブジェクト
    */
   getScore(objectiveId) {
-    return world.scoreboard.getObjective(objectiveId).getScore(this._entity.scoreboard) ?? false;
+    try{
+      return world.scoreboard.getObjective(objectiveId).getScore(this.scoreboardIdentity);
+    }catch{return undefined;}
   }
   /**
    * エンティティに登録されているタグをすべて取得します。
@@ -418,6 +420,14 @@ export class Entity {
     if (typeof value == "boolean") this._entity.isSneaking = value;
   }
   /**
+   * 指定したオブジェクトに値を代入します。
+   * @param {string} objectiveId 
+   * @param {number} score 
+   */
+  setScore(objectiveId, score){
+    world.scoreboard.getObjective(objectiveId).setScore(this, score);
+  }
+  /**
    *
    * @param {mc.Entity} entity
    */
@@ -430,7 +440,7 @@ export class Entity {
       this.dimension = new Dimension(this._entity.dimension);
       this.id = this._entity.id;
       this.location = new Vector(this._entity.location);
-      this.scoreboard = this._entity.scoreboard;
+      this.scoreboardIdentity = new ScoreboardIdentity(this._entity.scoreboardIdentity);
       this.target = new Entity(this._entity.target);
       this.typeId = this._entity.typeId;
       this.lifetimeState = this._entity.lifetimeState;

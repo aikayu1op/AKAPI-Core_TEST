@@ -285,6 +285,13 @@ export class MessageBuilder {
     _showPlayerMsg.set(player.id, showMsg);
   }
   /**
+   * 既に変更済みかどうかを取得します。
+   * @param {import("../../Player/index.js").Player} player
+   */
+  static isChanged(player){
+    return _showPlayerMsg.has(player.id);
+  }
+  /**
    * メッセージが送信された瞬間に実行する関数です。
    * @param {MessageExecuteCallback} callback
    */

@@ -8,7 +8,7 @@ Command.register({
     description: "指定したプレイヤーにオペレーターを設定します。",
     permission: true,
     execute: ev =>{
-      const OP_MESSAGE = "§7You are now op!";
+      const OP_MESSAGE = "§7§oYou are now op!";
       if(!ev.getPlayer(ev.args[0])){
         ev.sender.sendMessage(`§c指定したプレイヤーは現在いません。`);
         return;

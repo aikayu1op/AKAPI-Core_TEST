@@ -7,7 +7,7 @@ export class IModalFormResponse{
     /**
      * @readonly
      * フォームがどのように閉じたかを取得します。
-     * @type {"userClosed" | "userBusy" | "buttonClicked"}
+     * @type {"UserClosed" | "UserBusy" | "buttonClicked"}
      * 
      */
     cancelationReason;

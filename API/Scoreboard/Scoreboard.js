@@ -15,7 +15,7 @@ export class Scoreboard{
      * @param {string} displayName 
      * @returns 
      */
-    addObjective(objectiveId, displayName){
+    addObjective(objectiveId, displayName = objectiveId){
         return this._scoreboard.addObjective(objectiveId, displayName);
     }
     /**
@@ -43,7 +43,15 @@ export class Scoreboard{
      * @returns 
      */
     getObjective(objectiveId){
+        if(!this._scoreboard.getObjective(objectiveId)) return undefined;
         return new ScoreboardObjective(this._scoreboard.getObjective(objectiveId));
+    }
+    /**
+     * 指定したオブジェクトが存在するかを取得します。
+     * @param {string} objectiveId 
+     */
+    hasObjective(objectiveId){
+        return !this._scoreboard.getObjective(objectiveId) ? false : true; 
     }
     /**
      * 

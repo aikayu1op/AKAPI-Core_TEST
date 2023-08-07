@@ -8,5 +8,4 @@ export { Entity } from "./API/Entity/index.js";
 export { Block, BlockPermutation, BlockType } from "./API/Block/index.js";
 export { system } from "./API/System/index.js";
 export { MinecraftItemTypes } from "./API/Type/index.js";
-export * from "./API/Utils/CommandBuilder/index.js";
-export * from "./API/Utils/PluginManager/index.js";
+export * from "./API/Utils/index.js";

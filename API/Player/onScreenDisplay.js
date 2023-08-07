@@ -4,14 +4,14 @@ import * as mc from "@minecraft/server";
 export class onScreenDisplay {
   /**
    * プレイヤーにアクションバーを送信します。
-   * @param {String} message
+   * @param {String | import("../Interfaces/IRawMessage.js").IRawMessage} message
    */
   setActionbar(message) {
     this._screenDisplay.setActionBar(String(message));
   }
   /**
    * タイトルを送信します。
-   * @param {String} message
+   * @param {String | import("../Interfaces/IRawMessage.js").IRawMessage} message
    * @param {mc.TitleDisplayOptions} options
    */
   setTitle(message, options) {
@@ -25,7 +25,7 @@ export class onScreenDisplay {
   }
   /**
    * サブタイトルを付与します。最初にupdateSubtitleを実行してからsetTitleを実行すると表示されます。
-   * @param {String} message
+   * @param {String | import("../Interfaces/IRawMessage.js").IRawMessage} message
    */
   updateSubtitle(message) {
     this._screenDisplay.updateSubtitle(String(message));

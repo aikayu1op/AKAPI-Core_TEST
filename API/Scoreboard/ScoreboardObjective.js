@@ -1,5 +1,6 @@
 import { Entity } from "../Entity/index.js";
 import { Player } from "../Player/index.js";
+import { world } from "../World/index.js";
 import { ScoreboardIdentity } from "./ScoreboardIdentity";
 import { ScoreboardScoreInfo } from "./ScoreboardScoreInfo";
 
@@ -39,7 +40,7 @@ export class ScoreboardObjective{
         return typeof participant === "string" ?
         this._objective.getScore(participant) : participant instanceof ScoreboardIdentity ?
         this._objective.getScore(participant.getRawdata()) : (participant instanceof Player) ?
-        this._objective.setScore(participant.getMCPlayer(), this._objective.getScore(participant.getMCPlayer())+score) : participant instanceof Entity ?
+        this._objective.getScore(participant.getMCPlayer()) : (participant instanceof Entity) ?
         this._objective.getScore(participant.getMCEntity()) : 0
     }
     /**
@@ -83,7 +84,7 @@ export class ScoreboardObjective{
         typeof participant === "string" ?
         this._objective.setScore(participant, score) : participant instanceof ScoreboardIdentity ?
         this._objective.setScore(participant.getRawdata(), score) : (participant instanceof Player) ?
-        this._objective.setScore(participant.getMCPlayer(), score) : participant instanceof Entity ?
+        this._objective.setScore(participant.getMCPlayer(), score) : (participant instanceof Entity) ?
         this._objective.setScore(participant.getMCEntity(), score) : 0
     }
     /**
