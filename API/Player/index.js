@@ -14,13 +14,14 @@ import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { EntityLifetimeState } from "../Interfaces/EntityLIfetimeState.js";
 import { Vector2 } from "../Vector/Vector2.js";
-import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
+import { ArmorSlot } from "../Interfaces/EquipmentSlot.js";
 import { EntityEffectOptions } from "../Interfaces/EntityEffectOptions.js";
 import { GameMode } from "../Interfaces/GameMode.js";
 import { IRawMessage } from "../Interfaces/IRawMessage.js";
 import { ScoreboardObjective } from "../Scoreboard/ScoreboardObjective.js";
 import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 import { DimensionLocation } from "../Interfaces/DimensionLocation.js";
+import { PlayAnimationOptions } from "../Interfaces/PlayAnimationOptions.js";
 
 /**
  * @template T
@@ -149,10 +150,25 @@ export class Player {
    */
   isSwimming;
   /**
-   * スニークしているかどうかを取得します。
+   * ジャンプしているかどうかを取得します。
    * @readonly
    */
-  isSneaking;
+  get isJumping(){
+    return this._player.isJumping;
+  }
+  /**
+   * スニークしているかどうかを取得します。
+   */
+  get isSneaking(){
+    return this._player.isSneaking;
+  }
+  /**
+   * スニークしているかどうかを取得します。
+   * @param {boolean} value 
+   */
+  set isSneaking(value){
+    typeof value === "boolean" ? this._player.isSneaking = value : 0
+  }
 
   /**
    * プレイヤーにエフェクトを追加します。
@@ -219,8 +235,8 @@ export class Player {
   }
   /**
    * ダメージを与えます。
-   * @param {number} damage
-   * @param {EntityDamageSource} source
+   * @param {number} damage いくつダメージを与えるか
+   * @param {EntityDamageSource} source ダメージを与えたEntityを指定できます。
    */
   applyDamage(damage, source = undefined) {
     return this._player.applyDamage(damage, source);
@@ -265,7 +281,7 @@ export class Player {
    * ```
    * //<Player>はこのクラスを表します。
    * for(const components of <Player>.getComponents()){
-   *    <Player>.tell(components.typeId);
+   *    <Player>.sendMessage(components.typeId);
    * }
    * //これで登録されているコンポーネントの名前を取得することが出来ます。
    *
@@ -282,15 +298,13 @@ export class Player {
     return this._player.getDynamicProperty(identifier);
   }
   /**
-   * プレイヤーに指定されたEffectTypeが付与しているかどうかを返します。付与されている場合はEffectクラスが返り、そうじゃない場合はundefinedを返します。
+   * プレイヤーに指定されたEffectTypeが付与しているかどうかを返します。
+   * 
+   * 付与されている場合はEffectクラスが返り、そうじゃない場合はundefinedを返します。
    * @param {mc.EffectType} effectType 取得したいエフェクトタイプ
    */
   getEffect(effectType) {
-    try {
-      return this._player.getEffect(effectType);
-    } catch (e) {
-      return undefined;
-    }
+    return this._player.getEffect(effectType);
   }
   /**
    * プレイヤーが向いている方向のエンティティを取得します。
@@ -380,6 +394,25 @@ export class Player {
     return new Vector(this._player.getVelocity());
   }
   /**
+   * 指定された数分を取得します。
+   * @param {number} many いくつ取得するか
+   * @param {"up" | "down"} direction どっちの方向に取得するか
+   */
+  getBlocks(many, direction = "up"){
+    return getBlocks(this, many, direction)
+  }
+  isInstantJump(){
+    if (this.isJumping) {
+      if (!this.hasTag("AKAPI-Jump")) {
+        this.addTag("AKAPI-Jump");
+        return true;
+      } else return false;
+    } else {
+      this.removeTag("AKAPI-Jump");
+      return false;
+    }
+  }
+  /**
    *
    */
   getViewDirection() {
@@ -450,16 +483,23 @@ export class Player {
     this._player.kill();
   }
   /**
-   * 右手に持っているアイテムを設定・取得します。
-   * @deprecated
-   *
-   * @param {ItemStack} itemStack ここに何も書かなければ取得しますが、ItemStackを入力するとアイテムがセットされます。
-   * @returns {ItemStack | undefined}
+   * 右手に持っているアイテムを取得します。
    */
-  MainhandItem(itemStack = undefined) {
-    if (!itemStack) return this.getComponent().getInventory().container.getItem(this.selectedSlot);
-    else if (itemStack instanceof ItemStack)
-      this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
+  getMainhandItem() {
+    return this.getComponent().getInventory().container.getItem(this.selectedSlot);
+  }
+  /**
+   * オフハンドに持っているアイテムを取得します。
+   */
+  getOffhandItem(){
+    return this.getComponent().getEquipmentInventory().getEquipment("offhand");
+  }
+  /**
+   * プレイヤーが身につけている装備を取得できます。
+   * @param {ArmorSlot[keyof ArmorSlot]} equipSlot 
+   */
+  getArmor(equipSlot){
+    return this.getComponent().getEquipmentInventory().getEquipment(ArmorSlot[equipSlot] ?? "head");
   }
   /**
    * 右手に持っているアイテムを設定・取得します。
@@ -642,7 +682,7 @@ export class Player {
    */
   teleport(location, options = undefined) {
     if(!options || !options instanceof TeleportOptions)
-      this._player.teleport(location.getMCVector3());
+      this._player.teleport(location.getMCVector3(), options);
     else
       this._player.teleport(location.getMCVector3(), options.toObject());
   }
@@ -710,10 +750,12 @@ export class Player {
   /**
    * アニメーションを再生します。
    * @param {string} animationName 
-   * @param {{}} options 
+   * @param {PlayAnimationOptions | {}} options 
    */
-  playAnimation(animationName, options = {}){
-    this._player.playAnimation(animationName, options);
+  playAnimation(animationName, options = undefined){
+    if(options instanceof PlayAnimationOptions)
+      this._player.playAnimation(animationName, options.toObject());
+    else if(typeof options === "object" || !options) this._player.playAnimation(animationName, options);
   }
   /**
    * actionbarに表示するテキストを複数使えるようにします。
@@ -787,5 +829,20 @@ export class Player {
       this.isSwimming = this._player.isSwimming;
 
     } catch (e) {}
+  }
+}
+
+/**
+ * 
+ * @param {Player} player 
+ * @param {number} many 
+ * @param {string} direction 
+ */
+function* getBlocks(player, many, direction){
+  for(let i = 0; i < many; i++){
+    try{
+      if(direction == "up") yield player.dimension.getBlock(player.location.changeOffset(0, 1, 0))
+      else if(direction == "down") yield player.dimension.getBlock(player.location.changeOffset(0, -1, 0))
+    }catch{yield undefined; break;}
   }
 }

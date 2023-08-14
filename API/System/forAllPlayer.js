@@ -27,7 +27,7 @@ var _tick = [];
  */
 export function tickSubscribe(callback, tickDelay = 0) {
   if (typeof callback == "function" && typeof tickDelay == "number"){
-    _tick.push({
+    return _tick.push({
       function: callback,
       delay: tickDelay,
       time: 0,
@@ -35,8 +35,17 @@ export function tickSubscribe(callback, tickDelay = 0) {
     });
   }else throw new Error("callback or tickDelay has illegal types.");
 }
+/**
+ * @deprecated
+ * @param {number} runId 
+ */
+export function tickUnSubscribe(runId){
+  if(!!_tick[runId]) _tick[runId] = undefined;
+  _tick.filter(c => typeof c === "undefined").length == 0 ? _tick = [] : 0
+}
 
 system.runInterval(() => {
+  if(_tick.length == 0) return;
   for (const IPlayer of world.getAllPlayers())
     _tick.forEach((f) => {
       let currentCount = f.currentCount;

@@ -150,7 +150,7 @@ export class Command {
   constructor() {}
 }
 
-world.beforeEvents.chatSend.subscribe((ev) => {
+world.beforeEvents.mc.chatSend.subscribe((ev) => {
   const player = ev.sender;
   const message = ev.message;
   const sender = new Player(player);

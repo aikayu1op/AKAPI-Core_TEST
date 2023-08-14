@@ -1,6 +1,5 @@
 import { system } from "../../../System/index.js";
 import { Player } from "../../../Player/index.js";
-import { world } from "../../../World/index.js";
 
 /**
  * MultiLineActionbarのデータ
@@ -55,11 +54,8 @@ export class MultiLineActionbar {
   }
 }
 
-system.run(function acbar() {
-  system.run(acbar);
-
-  for (const player of world.getPlayers()) {
-    if (!alldata.has(player.id)) continue;
+system.allPlayerTickSubscribe(({player}) =>{
+    if (!alldata.has(player.id)) return;
     let deleteTick = deleteDataTick.get(player.id);
 
     let text = "";
@@ -73,5 +69,4 @@ system.run(function acbar() {
     }
     if(alldata.get(player.id).has("last")) text += `${alldata.get(player.id).get("last")}\n\n`;
     player.sendActionbar(text);
-  }
 });

@@ -7,18 +7,42 @@ import { Scoreboard } from "../Scoreboard/index.js";
 import { Entity } from "../Entity/index.js";
 import { Time } from "../Utils/Time/index.js";
 import { system } from "../System/index.js";
+import { beforeEvents } from "../BeforeEvents/index.js";
+import { afterEvents } from "../AfterEvents/index.js";
 
 class World {
   /**
    * イベントを格納しているプロパティ
    * @readonly
    */
-  beforeEvents = w.beforeEvents;
+  beforeEvents = {
+    /**
+     * 公式のイベントをかえします。
+     * @readonly
+     */
+    mc: w.beforeEvents,
+    /**
+     * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
+     * @readonly
+     */
+    api:  beforeEvents
+  }
   /**
    * イベントを格納しているプロパティ
    * @readonly
    */
-  afterEvents = w.afterEvents;
+  afterEvents = {
+    /**
+     * 公式のイベントをかえします。
+     * @readonly
+     */
+    mc: w.afterEvents,
+    /**
+     * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
+     * @readonly
+     */
+    api:  afterEvents
+  }
   /**
    * スコアボードを取得したい場合に使用するプロパティ
    * @readonly

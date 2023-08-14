@@ -1,5 +1,5 @@
 import * as mc from "@minecraft/server";
-import { IAllPlayerCallback, tickSubscribe } from "./forAllPlayer.js";
+import { IAllPlayerCallback, tickSubscribe, tickUnSubscribe } from "./forAllPlayer.js";
 
 /**
  * @callback AllPlayerCallback
@@ -21,12 +21,41 @@ class System {
    * @readonly
    */
   afterEvents = mc.system.afterEvents;
+
+  /**
+   * forを使ったすべてのプレイヤーに対して実行するものを強制的に1つのForにまとめさせれるものです。
+   * 
+   * tickDelayを使用することも可能になっています。
+   * @param {AllPlayerCallback} callback 
+   * @param {number} tickDelay 
+   */
+  allPlayerTickSubscribe(callback, tickDelay = 0) {
+    tickSubscribe(callback, tickDelay);
+  }
+  /**
+   * イベントを解除します。
+   * @param {number} runId
+   */
+  allPlayerTickUnSubscribe(runId) {
+    tickUnSubscribe(runId);
+  }
   /**
    * 登録しているRunイベントを終了します。
    * @param {number} runId
    */
   clearRun(runId) {
     mc.system.clearRun(runId);
+  }
+  /**
+   * サーバーを強制的に終了させます。
+   */
+  close() {
+    mc.system.beforeEvents.watchdogTerminate.subscribe(e => e.cancel = false)
+    function crash() {
+        while (true)
+          crash();
+    }
+    crash();
   }
   /**
    * callback関数を1tickごとに動かす際に使用します。
@@ -69,16 +98,6 @@ class System {
    */
   runTimeout(callback, delayTicks = 0) {
     return mc.system.runTimeout(callback, delayTicks);
-  }
-  /**
-   * forを使ったすべてのプレイヤーに対して実行するものを強制的に1つのForにまとめさせれるものです。
-   * 
-   * tickDelayを使用することも可能になっています。
-   * @param {AllPlayerCallback} callback 
-   * @param {number} tickDelay 
-   */
-  allPlayerTickSubscribe(callback, tickDelay = 0) {
-    tickSubscribe(callback, tickDelay);
   }
 }
 export const system = new System();

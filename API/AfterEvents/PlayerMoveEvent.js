@@ -35,7 +35,7 @@ class PlayerMoveEvent{
     }
     constructor(){}
 }
-export const PlayerMove = new PlayerMoveEvent();
+export const playerMove = new PlayerMoveEvent();
 
 system.allPlayerTickSubscribe(({player}) =>{
     if(player.getVelocity().isZero) return;

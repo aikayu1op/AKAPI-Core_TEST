@@ -40,24 +40,22 @@ export class SliderActionbar{
         else sliderFlash.set(player.id, sliderFlash.get(player.id).set(id, false));
     }
 }
-system.runInterval(() =>{
-    for(const p of world.getAllPlayers()){
-        if(!slider.has(p.id)) continue;
-        let sliderData = slider.get(p.id);
-        let getTick = sliderTick.get(p.id);
-        let getFlash = sliderFlash.get(p.id);
-        for(const data of sliderData.keys()){
-            sliderData.set(data, sliderData.get(data).slice(1)+" ");
-            if(getTick.get(data) % 4 == 0) getFlash.set(data, getFlash.get(data) ? false : true);
-            if(getFlash.get(data)) p.setMultiLineActionbar(data, `§l§e${sliderData.get(data).slice(1)}§r `.substring(0,50));
-            else p.setMultiLineActionbar(data, `§r§l${sliderData.get(data).slice(1)} `.substring(0, 50));
-            if(getTick.get(data) <= sliderData.get(data).length) getTick.set(data, getTick.get(data)+1);
-            else{
-                p.deleteMultiLineActionbar(data); 
-                sliderData.delete(data);
-                getTick.delete(data);
-            }
-            
+system.allPlayerTickSubscribe(({player: p}) =>{
+    if(!slider.has(p.id)) return;
+    let sliderData = slider.get(p.id);
+    let getTick = sliderTick.get(p.id);
+    let getFlash = sliderFlash.get(p.id);
+    for(const data of sliderData.keys()){
+        sliderData.set(data, sliderData.get(data).slice(1)+" ");
+        if(getTick.get(data) % 4 == 0) getFlash.set(data, getFlash.get(data) ? false : true);
+        if(getFlash.get(data)) p.setMultiLineActionbar(data, `§l§e${sliderData.get(data).slice(1)}§r `.substring(0,50));
+        else p.setMultiLineActionbar(data, `§r§l${sliderData.get(data).slice(1)} `.substring(0, 50));
+        if(getTick.get(data) <= sliderData.get(data).length) getTick.set(data, getTick.get(data)+1);
+        else{
+            p.deleteMultiLineActionbar(data); 
+            sliderData.delete(data);
+            getTick.delete(data);
         }
+        
     }
 },2)

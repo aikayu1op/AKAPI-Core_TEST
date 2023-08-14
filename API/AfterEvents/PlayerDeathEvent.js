@@ -43,4 +43,4 @@ mc.world.afterEvents.entityHurt.subscribe(ev =>{
     if(player.getComponent().getHealth().getCurrent() <= 0) _listener.forEach(f => f({player, damagingEntity, projectile, reason, damage}));
 })
 
-export const PlayerDeath = new PlayerDeathEvent();
+export const playerDie = new PlayerDeathEvent();

@@ -57,3 +57,31 @@ export class IPlayerMoveEventSignal{
    */
   dimension;
 }
+export class IPlayerSneakingEvents{
+  /**
+   * スニークしたプレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 発火した状態でこれが最初の発火かどうかを取得します。
+   * @readonly
+   * @type {boolean}
+   */
+  isMoment;
+}
+export class IPlayerJumpingEvents{
+  /**
+   * ジャンプしたプレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 発火した状態でこれが最初の発火かどうかを取得します。
+   * @readonly
+   * @type {boolean}
+   */
+  isMoment;
+}

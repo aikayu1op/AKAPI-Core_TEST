@@ -1,2 +1,7 @@
-export { BeforeChat as chatSend } from "./BeforeChat.js";
-export { BeforeItemUseOn as itemUseOn} from "./BeforeItemUseOn.js";
+import { BeforeChat as chatSend } from "./BeforeChat.js";
+import { BeforeItemUseOn as itemUseOn } from "./BeforeItemUseOn.js";
+
+export const beforeEvents = {
+    chatSend: chatSend,
+    itemUseOn: itemUseOn
+}
