@@ -2,6 +2,7 @@ import * as mc from "@minecraft/server";
 import { ItemComponentBase } from "../Components/ItemComponents.js";
 import { ItemStack } from "./ItemStack.js";
 import { Player } from "../Player/index.js";
+import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
 
 export class ContainerSlot {
   /**
@@ -213,13 +214,18 @@ export class ContainerSlot {
     return this._itemStack;
   }
   /**
+   * @overload
    * @param {Player} player
    * @param {ItemStack | mc.ItemStack} itemStack アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
-   * @param {number | string} slot
+   * @param {number} slot
+   * @overload
+   * @param {Player} player
+   * @param {ItemStack | mc.ItemStack} itemStack アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
+   * @param {EquipmentSlot[keyof EquipmentSlot]} slot
    */
   constructor(player, itemStack, slot) {
     if (itemStack instanceof mc.ContainerSlot) {
-      this._itemStack = new itemStack;
+      this._itemStack = itemStack;
       this.typeId = this._itemStack.typeId;
       this._player = player;
       this._slot = slot;
@@ -236,9 +242,13 @@ export class ContainerSlot {
 }
 
 /**
- * 
+ * @overload
  * @param {Player} player 
- * @param {number | string} slot 
+ * @param {number} slot 
+ * @param {ItemStack} itemStack 
+ * @overload
+ * @param {Player} player 
+ * @param {EquipmentSlot[keyof EquipmentSlot]} slot 
  * @param {ItemStack} itemStack 
  */
 function setItem(player, slot, itemStack){

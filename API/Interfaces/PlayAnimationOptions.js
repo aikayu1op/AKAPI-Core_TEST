@@ -1,29 +1,25 @@
 export class PlayAnimationOptions{
     /**
-     * @remarks
-     * Amount of time to fade out after an animation stops.
+     * アニメーションが終わってから通常状態に戻るまでの時間
      * @type {number}
      *
      */
     blendOutTime;
     /**
-     * @remarks
-     * Specifies a controller to use that has been defined on the
-     * entity.
+     * エンティティに定義されている、使用するコントローラを指定します。
      * @type {string}
      */
     controller;
     /**
      * @remarks
-     * Specifies the state to transition to.
+     * 次のアニメーションの設定
      * @type {string}
      *
      */
     nextState;
     /**
      * @remarks
-     * Specifies a Molang expression for when this animation should
-     * complete.
+     * Molangを使っての終了条件を設定できます。
      * @type {string}
      *
      */

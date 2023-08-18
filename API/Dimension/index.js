@@ -119,7 +119,7 @@ export class Dimension {
   }
 
   /**
-   * @param {mc.Dimension | string} dimension
+   * @overload
    */
   constructor(dimension) {
     try {

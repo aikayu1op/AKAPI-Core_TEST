@@ -1,4 +1,3 @@
-import * as mc from "@minecraft/server";
 export class BlockType{
     /**
      * 水に漬けれるブロックかどうかを返します。
@@ -20,8 +19,7 @@ export class BlockType{
         return this._type;
     }
     /**
-     * 
-     * @param {mc.BlockType} type 
+     * @overload
      */
     constructor(type){
         /**

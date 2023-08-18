@@ -54,7 +54,7 @@ export class BlockPermutation{
     }
     /**
      * 
-     * @param {mc.BlockPermutation} permutation 
+     * @overload
      */
     constructor(permutation){
         /**

@@ -12,7 +12,7 @@ import { onScreenDisplay } from "./onScreenDisplay.js";
 import { MultiLineActionbar } from "../Utils/ExtendsActionbar/MultiLineActionbar/index.js";
 import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index.js";
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
-import { EntityLifetimeState } from "../Interfaces/EntityLIfetimeState.js";
+import { EntityLifetimeState } from "../Interfaces/EntityLifetimeState.js";
 import { Vector2 } from "../Vector/Vector2.js";
 import { ArmorSlot } from "../Interfaces/EquipmentSlot.js";
 import { EntityEffectOptions } from "../Interfaces/EntityEffectOptions.js";
@@ -22,6 +22,7 @@ import { ScoreboardObjective } from "../Scoreboard/ScoreboardObjective.js";
 import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 import { DimensionLocation } from "../Interfaces/DimensionLocation.js";
 import { PlayAnimationOptions } from "../Interfaces/PlayAnimationOptions.js";
+import { Block } from "../Block/Block.js";
 
 /**
  * @template T
@@ -34,121 +35,7 @@ export class Player {
    * @private
    */
   _player;
-  /**
-   * 復活地点に設定されているDimensionを取得します。
-   * @type {Dimension}
-   * @readonly
-   */
-  spawnDimension;
-  /**
-   * プレイヤーの現在のレベルです。
-   * @type {number}
-   * @readonly
-   */
-  level;
-  /**
-   * プレイヤーの足元からの座標クラスが返ります。
-   * @type {Vector}
-   * @readonly
-   */
-  location;
-  /**
-   * @readonly
-   * @type {string}
-   */
-  id;
-  /**
-   * プレイヤーの頭からの座標クラスが返ります。
-   * @type {Vector}
-   * @readonly
-   */
-  headLocation;
-  /**
-   * プレイヤーの現在いるディメンションクラスを取得します。
-   * @type {Dimension}
-   * @readonly
-   */
-  dimension;
-  /**
-   * プレイヤーのMCIDが返ります。
-   * @type {string}
-   * @readonly
-   */
-  name;
-  /**
-   * プレイヤーにタイトルやアクションバーを送信するクラスが返ります。
-   * @type {onScreenDisplay}
-   * @readonly
-   */
-  onScreenDisplay;
-  /**
-   * @readonly
-   */
-  target;
-  /**
-   * プレイヤーを表すScoreboardIdentityクラスが返ります。
-   * 使い方例(公式クラスを使っています。)
-   * ```
-   * import { world } from "@minecraft/server";
-   *
-   * world.beforeEvents.chatSend.subscribe((ev) =>{
-   *    let score = world.scoreboard.getObjective("スコアの名前").getScore(ev.sender.scoreboard);
-   *    if(score >= 10) ev.sender.sendMessage("スコア10以上あります。");
-   * })
-   * ```
-   * @readonly
-   */
-  scoreboardIdentity;
-  /**
-   * プレイヤーのアイデンティティが返ってきます。
-   * 例として、鶏をtypeIdした際はminecraft:chickenが返ってきます。
-   * @type {"minecraft:player"}
-   * @readonly
-   */
-  typeId;
-  /**
-   * プレイヤーの速度を取得し、設定されたVelocityクラスが返ってきます。
-   * @type {Vector}
-   * @readonly
-   */
-  velocity;
-  /**
-   * 向いている方向のベクターを返します。
-   * @readonly
-   * @type {Vector}
-   */
-  viewVector;
-  /**
-   * 現在のプレイヤーが参照できる状態なのかを取得します。
-   * @type {EntityLifetimeState}
-   * @readonly
-   */
-  lifetimeState;
-  /**
-   * 登っているかを取得します。
-   * @readonly
-   */
-  isClimbing;
-  /**
-   * 落下しているかどうかを取得します。
-   * @readonly
-   */
-  isFalling;
-  /**
-   * 地面についているかどうかを取得します。
-   * @readonly
-   */
-  isOnGround;
-  /**
-   * 水の中かどうかを取得します。
-   * @readonly
-   */
-  isInWater;
-  /**
-   * 泳ぎモーションになっているかどうかを取得します。
-   * @readonly
-   */
-  isSwimming;
+  
   /**
    * ジャンプしているかどうかを取得します。
    * @readonly
@@ -395,12 +282,25 @@ export class Player {
   }
   /**
    * 指定された数分を取得します。
-   * @param {number} many いくつ取得するか
-   * @param {"up" | "down"} direction どっちの方向に取得するか
+   * @overload
+   * @param {number} x
+   * @param {number} y
+   * @param {number} z
+   * @returns {Generator<Block, void, unknown>}
+   * @overload
+   * @param {Vector} vector
+   * @returns {Generator<Block, void, unknown>}
    */
-  getBlocks(many, direction = "up"){
-    return getBlocks(this, many, direction)
+  getBlocks(x, y, z){
+    if(x instanceof Vector || typeof x === "object")
+      return getBlocks(this, x?.x??0, x?.y??0, x?.z??0);
+    else if(typeof x === "number" && typeof y === "number" && typeof z === "number")
+      return getBlocks(this, x, y, z);
+    else throw new Error("This argument is illegal.\nIt is defined as (x: number, y: number, z: number) or (vector: Vector) only.");
   }
+  /**
+   * @deprecated
+   */
   isInstantJump(){
     if (this.isJumping) {
       if (!this.hasTag("AKAPI-Jump")) {
@@ -464,9 +364,12 @@ export class Player {
   }
   /**
    * 一瞬だけスニークしたことを検知します。
+   * 
+   * eventを追加したことで、廃止されました。
+   * @deprecated
    */
   isInstantSneaking() {
-    if (this.Sneaking()) {
+    /*if (this.Sneaking()) {
       if (!this.hasTag("AKAPI-Sneak")) {
         this.addTag("AKAPI-Sneak");
         return true;
@@ -474,7 +377,7 @@ export class Player {
     } else {
       this.removeTag("AKAPI-Sneak");
       return false;
-    }
+    }*/
   }
   /**
    * プレイヤーをキルします。
@@ -612,7 +515,7 @@ export class Player {
    */
   setLevel(lv){
     this.resetLevel();
-    this.addLevels(lv)
+    this.addLevels(lv);
   }
   /**
    * プロパティにデータをセットします。
@@ -800,49 +703,187 @@ export class Player {
     MultiLineActionbar.deleteData(this, id);
   }
   /**
+   * プレイヤーが今いるディメンションを取得します。
+   * @readonly
+   */
+  get dimension(){
+    return new Dimension(this._player.dimension);
+  }
+  /**
+   * プレイヤーに割り当てられる識別IDを取得します。
+   * @readonly
+   */
+  get id(){
+    return this._player.id;
+  }
+  /**
+   * 現在の座標を設定・取得します。
+   */
+  get location(){
+    return new Vector(this._player.location);
+  }
+  /**
+   * 現在の座標を設定・取得します。
+   * @param {Vector} vector
+   */
+  set location(vector){
+    this.teleport(vector);
+  }
+  /**
+   * プレイヤーのMCIDを取得します。
+   * @readonly
+   */
+  get name(){
+    return this._player.name;
+  }
+  /**
+   * プレイヤーに対してタイトルやアクションバーの表示に関するデータをかえします。
+   * @readonly
+   */
+  get onScreenDisplay(){
+    return new onScreenDisplay(this);
+  }
+  /**
+   * ScoreboardIdentityをかえします。
+   * @readonly
+   */
+  get scoreboardIdentity(){
+    return new ScoreboardIdentity(this._player.scoreboardIdentity);
+  }
+  /**
+   * @readonly
+   */
+  get target(){
+    return new Entity(this._player.target);
+  }
+  /**
+   * エンティティの識別IDをかえします。
+   * 
+   * Playerの場合はminecraft:playerをかえします。
+   * @readonly
+   */
+  get typeId(){
+    return this._player.typeId;
+  }
+  /**
+   * @readonly
+   */
+  get headLocation(){
+    return new Vector(this._player.getHeadLocation());
+  }
+  /**
+   * 復活地点に設定されているDimensionクラスをかえします。
+   * 
+   * 設定されていない場合はundefinedが返ります。
+   * @readonly
+   */
+  get spawnDimension(){
+    if(!!this._player.spawnDimension)
+        this.spawnDimension = new Dimension(this._player.spawnDimension);
+      else
+        this.spawnDimension = undefined;
+  }
+  /**
+   * 現在のレベルを取得します。
+   * @readonly
+   */
+  get level(){
+    return this._player.level;
+  }
+  /**
+   * @type {EntityLifetimeState[keyof EntityLifetimeState]}
+   * @readonly
+   */
+  get lifetimeState(){
+    return this._player.lifetimeState;
+  }
+  /**
+   * 登っているかを取得します。(例: はしご、足場)
+   * @readonly
+   */
+  get isClimbing(){
+    return this._player.isClimbing;
+  }
+  /**
+   * 落ちている状態かを取得します。
+   * @readonly
+   */
+  get isFalling(){
+    return this._player.isFalling;
+  }
+  /**
+   * クリエイティブ飛行状態かを取得します。
+   * @readonly
+   */
+  get isFlying(){
+    return this._player.isFlying;
+  }
+  /**
+   * エリトラ飛行状態かを取得します。
+   * @readonly
+   */
+  get isGliding(){
+    return this._player.isGliding;
+  }
+  /**
+   * 水の中にいるのかどうかを取得します。
+   * @readonly
+   */
+  get isInWater(){
+    return this._player.isInWater;
+  }
+  /**
+   * 地面に足をつけている状態かを取得します。
+   * @readonly
+   */
+  get isOnGround(){
+    return this._player.isOnGround;
+  }
+  /**
+   * 泳いでいるかを取得します。
+   * @readonly
+   */
+  get isSwimming(){
+    return this._player.isSwimming;
+  }
+  /**
+   * 走っているかを取得します。
+   * @readonly
+   */
+  get isSprinting(){
+    return this._player.isSprinting
+  }
+  /**
    *
    * @param {mc.Player} player
    */
   constructor(player) {
-    try {
       this._player = player;
-      this.dimension = new Dimension(this._player.dimension);
-      this.id = this._player.id;
-      this.location = new Vector(this._player.location);
-      this.name = this._player.name;
-      this.onScreenDisplay = new onScreenDisplay(this);
-      this.scoreboardIdentity = new ScoreboardIdentity(this._player.scoreboardIdentity);
-      this.target = new Entity(this._player.target);
-      this.typeId = this._player.typeId;
-      this.headLocation = new Vector(this._player.getHeadLocation());
-      if(!!this._player.spawnDimension)
-        this.spawnDimension = new Dimension(this._player.spawnDimension);
-      else
-        this.spawnDimension = undefined;
-      this.level = this._player.level;
-      this.lifetimeState = this._player.lifetimeState;
-      this.isSneaking = this._player.isSneaking;
-      this.isClimbing = this._player.isClimbing;
-      this.isFalling  = this._player.isFalling;
-      this.isInWater  = this._player.isInWater;
-      this.isOnGround = this._player.isOnGround;
-      this.isSwimming = this._player.isSwimming;
-
-    } catch (e) {}
   }
 }
 
 /**
- * 
  * @param {Player} player 
- * @param {number} many 
- * @param {string} direction 
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
  */
-function* getBlocks(player, many, direction){
-  for(let i = 0; i < many; i++){
+function* getBlocks(player, x, y, z){
+  let checkx = x >= 0?true:(x*=-1,false)
+  let checky = y >= 0?true:(y*=-1,false)
+  let checkz = z >= 0?true:(z*=-1,false)
+
+  for(let lx = 0; lx < x+1; lx++){
+    for(let ly = 0; ly < y+1; ly++){
+      for(let lz = 0; lz < z+1; lz++){
+        yield player.dimension.getBlock(player.location.changeOffset(checkx?lx:lx*-1, checky?ly:ly*-1, checkz?lz:lz*-1))
+      }
+    } 
+  }
+  /*for(let i = 0; i < many; i++){
     try{
       if(direction == "up") yield player.dimension.getBlock(player.location.changeOffset(0, 1, 0))
       else if(direction == "down") yield player.dimension.getBlock(player.location.changeOffset(0, -1, 0))
     }catch{yield undefined; break;}
-  }
+  }*/
 }

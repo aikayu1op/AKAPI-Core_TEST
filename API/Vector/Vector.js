@@ -216,9 +216,12 @@ export class Vector {
   /**
    * ベクターを生成します。
    * x部分にマイクラ公式のVector3を入れることも可能です。
-   * @param {number | mc.Vector3 | mc.Vector | Vector} x
+   * @overload
+   * @param {number} x
    * @param {number} y
    * @param {number} z
+   * @overload
+   * @param {mc.Vector3 | mc.Vector | Vector} vector
    */
   constructor(x, y, z) {
     if(x instanceof mc.Vector || x instanceof Vector){

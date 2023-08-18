@@ -17,11 +17,12 @@ export function sleep(ticks){
 export function nativeSleep(ms){
     /*return new Promise((resolve, reject) =>{
         let a = new Date().getTime();
-        for(let i = 0; i < 1000; i++){
+        for(let i = 0; i < 2; i++){
             let b = new Date().getTime();
             if(i == 2){
-                world.sendMessage(`${b}\n${a}`);
+                //world.sendMessage(`${b}\n${a}`);
                 if(b - a <= ms) break;
+                //yield i = 0;
             }
         }
         resolve();

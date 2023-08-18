@@ -31,9 +31,11 @@ export class Vector2{
         }
     }
     /**
-     * 
-     * @param {number | mc.Vector2 | Vector} x 
+     * @overload
+     * @param {number} x 
      * @param {number} y 
+     * @overload
+     * @param {mc.Vector2 | Vector} vector
      */
     constructor(x, y){
         if(!!x && x instanceof Vector){

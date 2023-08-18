@@ -1,6 +1,5 @@
 import { Entity } from "../Entity/index.js";
 import { Player } from "../Player/index.js";
-import { world } from "../World/index.js";
 import { ScoreboardIdentity } from "./ScoreboardIdentity";
 import { ScoreboardScoreInfo } from "./ScoreboardScoreInfo";
 

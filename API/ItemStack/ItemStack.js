@@ -1,5 +1,6 @@
 import * as mc from "@minecraft/server";
 import { ItemComponentBase } from "../Components/ItemComponents.js";
+import { ItemLockMode } from "../Interfaces/ItemLockMode.js";
 
 export class ItemStack {
   /**
@@ -53,6 +54,12 @@ export class ItemStack {
     return this._itemStack.isStackable;
   }
   /**
+   * @param {ItemStack} itemStack
+   */
+  isStackableWith(itemStack){
+    return this._itemStack.isStackableWith(itemStack.getItemStack())
+  }
+  /**
    * 
    */
   get keepOnDeath(){
@@ -68,7 +75,7 @@ export class ItemStack {
     return this._itemStack.lockMode;
   }
   /**
-   * @param {mc.ItemLockMode} value
+   * @param {ItemLockMode[keyof ItemLockMode]} value
    */
   set lockMode(value){
     if(typeof value === "boolean") this._itemStack.lockMode = value;
@@ -204,10 +211,13 @@ export class ItemStack {
    * const example = new mc.ItemStack(mc.MinecraftItemTypes.apple, 1);
    * const itemStackVersion = new ItemStack(example);
    * ```
-   * @param {mc.ItemType | mc.ItemStack | string} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
+   * @overload
+   * @param {mc.ItemType | string} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
    * @param {number} amount 個数
    * @param {string} nameTag アイテム名
    * @param {string[]} lore アイテムの説明
+   * @overload
+   * @param {mc.ItemStack} itemStack
    */
   constructor(itemType, amount = 1, nameTag = "", lore = undefined) {
     if (itemType instanceof mc.ItemStack) {

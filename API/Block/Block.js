@@ -6,7 +6,7 @@ import { BlockPermutation } from "./BlockPermutation.js";
 import { BlockType } from "./BlockType.js";
 import { MinecraftBlockTypes } from "../Type/index.js";
 /**
- * @typedef {MinecraftBlockTypes[keyof MinecraftBlockTypes] blockTypes}
+ * @typedef {MinecraftBlockTypes[keyof MinecraftBlockTypes] BlockID}
  */
 
 export class Block {
@@ -36,7 +36,7 @@ export class Block {
   type;
   /**
    * ブロックのIDを返します。(例: minecraft:wool等)
-   * @type {blockTypes}
+   * @type {BlockID}
    * @readonly
    */
   typeId;
@@ -138,8 +138,7 @@ export class Block {
   }
 
   /**
-   *
-   * @param {mc.Block} block
+   * @overload
    */
   constructor(block) {
     try {

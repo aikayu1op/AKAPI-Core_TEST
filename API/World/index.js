@@ -6,7 +6,6 @@ import { Vector } from "../Vector/Vector.js";
 import { Scoreboard } from "../Scoreboard/index.js";
 import { Entity } from "../Entity/index.js";
 import { Time } from "../Utils/Time/index.js";
-import { system } from "../System/index.js";
 import { beforeEvents } from "../BeforeEvents/index.js";
 import { afterEvents } from "../AfterEvents/index.js";
 
