@@ -2,8 +2,9 @@ export class IModalFormResponse{
     /**
      * @readonly
      * フォームを閉じたかを判定するbooleanです。
+     * @type {boolean}
      */
-    canceled = false;
+    canceled;
     /**
      * @readonly
      * フォームがどのように閉じたかを取得します。

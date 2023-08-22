@@ -3,7 +3,7 @@ import { IPlayerSneakingEvents } from "./interface";
 import { isDuplicate } from "./isDuplicate.js";
 
 /**
- * @type {{function: Function,isMoment: Map<string, any>}[]}
+ * @type {{function: Function,isMoment: Map<string, any>,sneakTime: Map<string, number>}[]}
  */
 var _event = [];
 /**
@@ -25,6 +25,7 @@ export class PlayerSneakingEvents{
             _event.push({
                 function: callback,
                 isMoment: new Map(),
+                sneakTime: new Map()
             });
         else throw new Error(`This function has already subscribed.\n${callback}`)
         if(!isRunning && _event.length >= 1){
@@ -57,10 +58,15 @@ function start(){
         _event.forEach(f =>{
             if(player.isSneaking){
                 let isMoment = f.isMoment.has(player.id)? false : true;
-                f.function(({player, isMoment}));
+                let sneakTime = f.sneakTime.has(player.id)? (f.sneakTime.get(player.id) >= Number.MAX_SAFE_INTEGER? (f.sneakTime.set(player.id, 0), 0) : f.sneakTime.get(player.id)) : 0
+                f.function(({player, isMoment, sneakTime}));
                 f.isMoment.set(player.id, true)
+                f.sneakTime.set(player.id, (f.sneakTime.has(player.id)? f.sneakTime.get(player.id) : 0) +1)
 
-            }else _event.forEach(p => p.isMoment.delete(player.id));
+            }else _event.forEach(p => {
+                p.isMoment.delete(player.id);
+                p.sneakTime.set(player.id, 0);
+            });
         });
     })
 }

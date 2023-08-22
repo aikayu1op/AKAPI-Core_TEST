@@ -70,6 +70,12 @@ export class IPlayerSneakingEvents{
    * @type {boolean}
    */
   isMoment;
+  /**
+   * スニークの時間を取得します
+   * @readonly
+   * @type {boolean}
+   */
+  sneakTime;
 }
 export class IPlayerJumpingEvents{
   /**

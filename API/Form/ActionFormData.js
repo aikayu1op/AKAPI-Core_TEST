@@ -27,10 +27,11 @@ export class ActionFormData{
     }
     /**
      * @type {Function}
+     * @private
      */
     firstCallback = undefined;
     /**
-     * @privare
+     * @private
      * @type {string[]}
      */
     buttons = [];
@@ -86,20 +87,21 @@ export class ActionFormData{
         for(let i = 0; i < this.buttons.length; i+=2) form.button(this.buttons[i], this.buttons[i+1]);
         let firstCallback = this.firstCallback;
         let _doCallback = this._doCallback;
+        let count = 0;
         system.run(function forces(){
             form.show(showPlayer.getMCPlayer()).then(response =>{
                 let player = showPlayer;
                 let index = response.selection;
                 const {canceled} = response;
-                if(typeof firstCallback == "function" && typeof index == "number") firstCallback({player, index});
-                if(String(response.cancelationReason) == "userBusy" && force) system.run(forces);
+                if(typeof firstCallback == "function" && typeof index == "number") firstCallback({player, index, count});
+                if(String(response.cancelationReason) == "UserBusy" && force) system.run(forces);
                 if(typeof callback != "function" && !!callback) throw "this callback is not a function.";
                 let cancelationReason = String(response.cancelationReason);
                 if(response.selection != undefined) cancelationReason = "buttonClicked";
-                if(typeof callback == "function") callback({player, cancelationReason, canceled});
+                if(typeof callback == "function") callback({player, cancelationReason, canceled, count});
                 if(response.canceled) return;
                 let fn = _doCallback[response.selection];
-                if(typeof fn == "function") fn({player, index});
+                if(typeof fn == "function") fn({player, index, count});
     
             });
         })

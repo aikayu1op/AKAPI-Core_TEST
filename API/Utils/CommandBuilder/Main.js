@@ -202,17 +202,20 @@ world.beforeEvents.mc.chatSend.subscribe((ev) => {
       cmdData.get(cmd).permission &&
       player.hasTag(Config.firstTag + Config.opTag)
     ) {
-      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }));
+      let isOp = () => player.hasTag(Config.firstTag + Config.opTag);
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }));
       return;
     } else if (typeof cmdData.get(cmd).permission == "boolean" && !cmdData.get(cmd).permission) {
-      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }))
+      let isOp = () => player.hasTag(Config.firstTag + Config.opTag);
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }))
       return;
     } else if (
       (typeof cmdData.get(cmd).permission === "string" &&
         player.hasTag(Config.firstTag + cmdData.get(cmd).permission)) ||
       ev.sender.hasTag(Config.firstTag + Config.opTag)
     ) {
-      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers }))
+      let isOp = () => player.hasTag(Config.firstTag + Config.opTag)? true : player.hasTag(Config.firstTag + cmdData.get(cmd).permission)? true: false
+      system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }))
       return;
     } else {
       system.run(() => sender.sendMessage(replaceArgs(Config.invalidMessage, cmd)));

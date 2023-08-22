@@ -37,7 +37,7 @@ export class ActionFormCanceledCallback{
     player;
     /**
      * どうやってフォームを閉じたかを取得できます。
-     * @type {"userClosed" | "userBusy" | "buttonClicked"}
+     * @type {"UserClosed" | "UserBusy" | "buttonClicked"}
      * @readonly
      */
     cancelationReason;

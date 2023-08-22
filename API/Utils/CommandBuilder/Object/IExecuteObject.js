@@ -6,6 +6,11 @@ export class IExecuteObject {
    */
   sender;
   /**
+   * 送ったプレイヤーがopを持っているかどうかを取得します。
+   * @returns {boolean}
+   */
+  isOp(){}
+  /**
    * 名前の最初が少し一致していればPlayerをかえします。
    * @readonly
    * @param {string} name

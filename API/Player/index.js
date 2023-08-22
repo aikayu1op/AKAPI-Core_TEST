@@ -282,14 +282,15 @@ export class Player {
   }
   /**
    * 指定された数分を取得します。
+   * Generator<Block, void, unknown>
    * @overload
    * @param {number} x
    * @param {number} y
    * @param {number} z
-   * @returns {Generator<Block, void, unknown>}
+   * @returns {BlockIterator}
    * @overload
    * @param {Vector} vector
-   * @returns {Generator<Block, void, unknown>}
+   * @returns {BlockIterator}
    */
   getBlocks(x, y, z){
     if(x instanceof Vector || typeof x === "object")
