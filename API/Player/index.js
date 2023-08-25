@@ -881,10 +881,4 @@ function* getBlocks(player, x, y, z){
       }
     } 
   }
-  /*for(let i = 0; i < many; i++){
-    try{
-      if(direction == "up") yield player.dimension.getBlock(player.location.changeOffset(0, 1, 0))
-      else if(direction == "down") yield player.dimension.getBlock(player.location.changeOffset(0, -1, 0))
-    }catch{yield undefined; break;}
-  }*/
 }

@@ -10,10 +10,6 @@ var _event = [];
  * 一つ以上動く場合は、ここがTrueになります。
  */
 let isRunning = false;
-/**
- * 実行された際にsystemIntervalから値を受け取ります。
- */
-let runId = 0;
 export class PlayerJumpingEvents{
     /**
      * イベントを登録します。 
@@ -21,7 +17,7 @@ export class PlayerJumpingEvents{
      * @throw 同じものが既に存在している場合にエラーをかえします。
      */
     subscribe(callback){
-        if(isDuplicate(_event, callback) == -1 && typeof callback === "function")
+        if(isDuplicate(_event.map(x => x.function), callback) == -1 && typeof callback === "function")
             _event.push({
                 function: callback,
                 isMoment: new Map()
@@ -31,22 +27,22 @@ export class PlayerJumpingEvents{
             isRunning = true;
             start();
         }
+        return callback;
     }
     /**
-     * イベントを登録します。 
+     * イベントを削除します。 
      * @param {(callback: IPlayerJumpingEvents) => void} callback 
      */
     unsubscribe(callback){
-        let index = isDuplicate(_event, callback);
+        let index = isDuplicate(_event.map(x => x.function), callback);
         if(index != -1){
             _event[index] = undefined;
             _event.filter(c => typeof c === "undefined").length == 0 ? _event = [] : 0
         }
         else throw new Error("This function was not found.")
-        if(isRunning && _event.length == 0){
+        if(isRunning && _event.length == 0)
             isRunning = false;
-            stop();
-        }
+        return callback;
     }
 }
 export const playerJump = new PlayerJumpingEvents();
@@ -55,7 +51,8 @@ export const playerJump = new PlayerJumpingEvents();
  * イベント登録数が1個以上の場合にイベントを監視するようにします。
  */
 function start(){
-    runId = system.allPlayerTickSubscribe(({player}) =>{
+    let runId = system.allPlayerTickSubscribe(({player}) =>{
+        if(!isRunning) system.allPlayerTickUnSubscribe(runId)
         _event.forEach(f =>{
             if(player.isJumping){
                 let isMoment = f.isMoment.has(player.id)? false : true;
@@ -65,10 +62,4 @@ function start(){
             }else _event.forEach(p => p.isMoment.delete(player.id));
         });
     })
-}
-/**
- * イベント登録数が0個の場合にイベントを監視しないようにします。
- */
-function stop(){
-    system.allPlayerTickUnSubscribe(runId);
 }

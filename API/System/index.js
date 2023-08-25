@@ -30,7 +30,7 @@ class System {
    * @param {number} tickDelay 
    */
   allPlayerTickSubscribe(callback, tickDelay = 0) {
-    tickSubscribe(callback, tickDelay);
+    return tickSubscribe(callback, tickDelay);
   }
   /**
    * イベントを解除します。

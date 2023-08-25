@@ -2,9 +2,10 @@ import * as mc from "@minecraft/server";
 import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Player } from "../Player/index.js";
-import { IBeforeItemUseOnEventSignal } from "./interface";
+import { IBeforeItemUseOnEventSignal } from "./interface.js";
 import { Vector } from "../Vector/Vector.js";
 import { Block } from "../Block/Block.js";
+import { isDuplicate } from "../AfterEvents/isDuplicate.js";
 
 /**
  * 地面に右クリック、またはタップではタッチした瞬間に発火するイベントです。アイテムを持っていなくても発火させることが可能です。
@@ -24,17 +25,29 @@ export class BeforeItemUseOnEvent {
    * @returns {(arg: BeforeItemUseOnEventSignal) => void}
    */
   subscribe(callback) {
-    if (typeof callback == "function") {
-      _listener.push(callback);
-      return callback;
+    if (isDuplicate(_listener, callback) == -1 && typeof callback === "function") _listener.push(callback);
+    else throw new Error("This function has already subscribed.");
+    if (!isRunning && _listener.length >= 1) {
+      isRunning = true;
+      start();
     }
+    return callback;
   }
   /**
    * イベントを停止します。
    * @param {BeforeItemUseOnEventSignal} callback
    */
   unsubscribe(callback) {
-    if (typeof callback == "function") _listener = _listener.filter((f) => f !== callback);
+    let index = isDuplicate(_listener, callback);
+    if (index != -1) {
+      _listener[index] = undefined;
+      _listener.filter((c) => typeof c === "undefined").length == 0 ? (_listener = []) : 0;
+    } else throw new Error("This function was not found.");
+    if (isRunning && _listener.length == 0) {
+      isRunning = false;
+      stop();
+    }
+    return callback;
   }
   constructor() {}
 }

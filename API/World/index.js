@@ -24,8 +24,8 @@ class World {
      * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
      * @readonly
      */
-    api:  beforeEvents
-  }
+    api: beforeEvents,
+  };
   /**
    * イベントを格納しているプロパティ
    * @readonly
@@ -40,8 +40,8 @@ class World {
      * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
      * @readonly
      */
-    api:  afterEvents
-  }
+    api: afterEvents,
+  };
   /**
    * スコアボードを取得したい場合に使用するプロパティ
    * @readonly
@@ -181,26 +181,26 @@ class World {
   /**
    * 現在何日経過したか取得します。
    */
-  getDay(){
+  getDay() {
     return w.getDay();
   }
-  async getGameTick(){
+  async getGameTick() {
     const date = new Date().getTime();
-    await Time.sleep(1)
+    await Time.sleep(1);
     return new Date().getTime() - date;
   }
   /**
-   * 
-   * @param {string} id 
+   *
+   * @param {string} id
    */
-  getEntity(id){
+  getEntity(id) {
     new Entity(w.getEntity(id));
   }
   /**
    * ワールドの絶対時間をセットします。
-   * @param {number} absoluteTime 
+   * @param {number} absoluteTime
    */
-  setAbsoluteTime(absoluteTime){
+  setAbsoluteTime(absoluteTime) {
     w.setAbsoluteTime(absoluteTime);
   }
 

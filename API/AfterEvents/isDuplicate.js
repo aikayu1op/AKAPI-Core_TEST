@@ -5,10 +5,10 @@
  * 
  * -1以外が返ってくる場合は存在しています。
  * 
- * @param {{function: Function, isMoment: Map<string, any>}[]} fList 
+ * @param {Function[]} fList 
  * @param {Function} f2 
  * @returns 
  */
 export function isDuplicate(fList, f2){
-    return fList.findIndex(existingFunc => existingFunc.function.toString() === f2.toString());
+    return fList.findIndex(existingFunc => existingFunc.toString() === f2.toString());
 }

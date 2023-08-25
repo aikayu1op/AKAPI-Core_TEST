@@ -10,10 +10,6 @@ var _event = [];
  * 一つ以上動く場合は、ここがTrueになります。
  */
 let isRunning = false;
-/**
- * 実行された際にsystemIntervalから値を受け取ります。
- */
-let runId = 0;
 export class PlayerSneakingEvents{
     /**
      * イベントを登録します。 
@@ -27,25 +23,24 @@ export class PlayerSneakingEvents{
                 isMoment: new Map(),
                 sneakTime: new Map()
             });
-        else throw new Error(`This function has already subscribed.\n${callback}`)
+        else throw new Error(`This function has already subscribed.`)
         if(!isRunning && _event.length >= 1){
             isRunning = true;
             start();
         }
+        return callback;
     }
     /**
      * イベントを削除します。 
      * @param {(callback: IPlayerSneakingEvents) => void} callback 
      */
     unsubscribe(callback){
-        let index = isDuplicate(_event, callback);
+        let index = isDuplicate(_event.map(x => x.function), callback);
         if(index != -1)
             _event.splice(index, 1);
         else throw new Error("This function was not found.")
-        if(isRunning && _event.length == 0){
+        if(isRunning && _event.length == 0)
             isRunning = false;
-            stop();
-        }
     }
 }
 export const playerSneak = new PlayerSneakingEvents();
@@ -54,7 +49,8 @@ export const playerSneak = new PlayerSneakingEvents();
  * イベント登録数が1個以上の場合にイベントを監視するようにします。
  */
 function start(){
-    runId = system.allPlayerTickSubscribe(({player}) =>{
+    let runId = system.allPlayerTickSubscribe(({player}) =>{
+        if(!isRunning) system.allPlayerTickUnSubscribe(runId);
         _event.forEach(f =>{
             if(player.isSneaking){
                 let isMoment = f.isMoment.has(player.id)? false : true;
@@ -69,10 +65,4 @@ function start(){
             });
         });
     })
-}
-/**
- * イベント登録数が0個の場合にイベントを監視しないようにします。
- */
-function stop(){
-    system.allPlayerTickUnSubscribe(runId);
 }
