@@ -4,11 +4,12 @@ import { isDuplicate } from "../AfterEvents/isDuplicate.js";
 
 export class IAllPlayerCallback {
   /**
-   *
+   * @readonly
    * @type {Player}
    */
   player;
   /**
+   * @readonly
    * @type {number}
    */
   currentCount = 0;

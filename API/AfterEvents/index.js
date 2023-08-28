@@ -20,4 +20,5 @@ export const afterEvents = {
      * @readonly
      */
     playerSneak: playerSneak
+
 }

@@ -1,5 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Vec3 } from "./Vec3.js";
+import { world } from "../../index.js";
 
 export class Vector {
   /**
@@ -22,6 +23,12 @@ export class Vector {
   isZero;
   get isZero(){
     return (this.x == 0 && this.y == 0 && this.z == 0) ? true: false
+  }
+  /**
+   * クローンを生成します。
+   */
+  clone(){
+    return new Vector(this.x, this.y, this.z);
   }
 
   /**
@@ -202,16 +209,43 @@ export class Vector {
   }
   /**
    * Vectorのオフセットを変更します。
+   * @overload
    * @param {number} x
    * @param {number} y
    * @param {number} z
+   * @returns {this}
+   * @overload
+   * @param {Vector} vector
+   * @returns {this}
    */
   changeOffset(x, y, z) {
-    this.x += x;
-    this.y += y;
-    this.z += z;
+    if(x instanceof Vector){
+      this.x += x.x;
+      this.y += x.y;
+      this.z += x.z;
+      return this;
+    }else if(typeof x === "number" && typeof y === "number" && typeof z === "number"){
+      this.x += x;
+      this.y += y;
+      this.z += z;
+    }
     return this;
   }
+  /**
+   * x, y, zを強制的に設定します。
+   * @param {{x: number, y: number, z: number}} param
+   */
+  setVector(param){
+    //world.sendMessage(JSON.stringify(param));
+    if(!param.hasOwnProperty("x")) param.x = this.x
+    if(!param.hasOwnProperty("y")) param.y = this.y
+    if(!param.hasOwnProperty("z")) param.z = this.z
+    this.x = param.x;
+    this.y = param.y;
+    this.z = param.z;
+    return this;
+  }
+  
 
   /**
    * ベクターを生成します。

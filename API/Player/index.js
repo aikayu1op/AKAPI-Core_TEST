@@ -14,7 +14,7 @@ import { SliderActionbar } from "../Utils/ExtendsActionbar/SliderActionbar/index
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { EntityLifetimeState } from "../Interfaces/EntityLifetimeState.js";
 import { Vector2 } from "../Vector/Vector2.js";
-import { ArmorSlot } from "../Interfaces/EquipmentSlot.js";
+import { ArmorSlot, EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
 import { EntityEffectOptions } from "../Interfaces/EntityEffectOptions.js";
 import { GameMode } from "../Interfaces/GameMode.js";
 import { IRawMessage } from "../Interfaces/IRawMessage.js";
@@ -147,6 +147,38 @@ export class Player {
    */
   extinguishFire(useEffects = undefined) {
     return this._player.extinguishFire(useEffects);
+  }
+  /**
+   * 指定したスロットのアイテムをドロップします。
+   * 
+   * 空の場合はfalseを返します。
+   * @overload
+   * @param {number} slot
+   * @param {number} amount
+   * @returns {boolean}
+   * 指定したスロットのアイテムをドロップします。
+   * 
+   * 空の場合はfalseを返します。
+   * @overload
+   * @param {ValueOf<EquipmentSlot>}
+   * @param {number} amount
+   * @returns {boolean}
+   */
+  dropItem(slot, amount = 1){
+    const comp = this.getComponent();
+    if(typeof slot === "number"){
+      let item = comp.getInventory().container.getItem(slot);
+      let copy;
+      if(!item) return false;
+      if(item.amount > amount) amount = item.amount;
+      copy = item.clone();
+      if(item.amount -1 <= 0) item = undefined;
+      else item.amount -= amount;
+      this.getComponent().getInventory().container.setItem(slot, item);
+      let entity = this.dimension.spawnItem(copy, this.location.changeOffset(this.getViewDirection().multiply(2).setVector({y:0})));
+      return true;
+    }
+    return false;
   }
   /**
    * プレイヤーが向いている方向のブロッククラスを返します。
@@ -385,6 +417,13 @@ export class Player {
    */
   kill() {
     this._player.kill();
+  }
+  /**
+   * プレイヤーをキックします。
+   * @param {string | undefined} reason 
+   */
+  kick(reason){
+    this.runCommand(`kick ${this.name} ${reason ?? ""}`)
   }
   /**
    * 右手に持っているアイテムを取得します。
@@ -882,3 +921,6 @@ function* getBlocks(player, x, y, z){
     } 
   }
 }
+
+
+

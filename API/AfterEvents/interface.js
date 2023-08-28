@@ -59,7 +59,7 @@ export class IPlayerMoveEventSignal{
 }
 export class IPlayerSneakingEvents{
   /**
-   * スニークしたプレイヤーを取得します。
+   * プレイヤーを取得します。
    * @readonly
    * @type {Player}
    */
@@ -69,7 +69,7 @@ export class IPlayerSneakingEvents{
    * @readonly
    * @type {boolean}
    */
-  isMoment;
+  isMoment;  
   /**
    * スニークの時間を取得します
    * @readonly
@@ -79,7 +79,7 @@ export class IPlayerSneakingEvents{
 }
 export class IPlayerJumpingEvents{
   /**
-   * ジャンプしたプレイヤーを取得します。
+   * プレイヤーを取得します。
    * @readonly
    * @type {Player}
    */
@@ -89,5 +89,21 @@ export class IPlayerJumpingEvents{
    * @readonly
    * @type {boolean}
    */
-  isMoment;
+  isMoment;  
+}
+
+class IPlayerEvents{
+  /**
+   * プレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 発火した状態でこれが最初の発火かどうかを取得します。
+   * @readonly
+   * @type {boolean}
+   */
+  isMoment;  
+  constructor(){}
 }
