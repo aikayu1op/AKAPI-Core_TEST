@@ -94,11 +94,14 @@ export class ActionFormData{
                 let index = response.selection;
                 const {canceled} = response;
                 if(typeof firstCallback == "function" && typeof index == "number") firstCallback({player, index, count});
-                if(String(response.cancelationReason) == "UserBusy" && force) system.run(forces);
+                if(String(response.cancelationReason) == "UserBusy" && force){
+                    system.run(forces);
+                    return;
+                }
                 if(typeof callback != "function" && !!callback) throw "this callback is not a function.";
                 let cancelationReason = String(response.cancelationReason);
                 if(response.selection != undefined) cancelationReason = "buttonClicked";
-                if(typeof callback == "function") callback({player, cancelationReason, canceled, count});
+                if(typeof callback == "function") callback({player, cancelationReason, canceled, count, index});
                 if(response.canceled) return;
                 let fn = _doCallback[response.selection];
                 if(typeof fn == "function") fn({player, index, count});

@@ -82,7 +82,7 @@ export class ScoreboardObjective{
     setScore(participant, score){
         typeof participant === "string" ?
         this._objective.setScore(participant, score) : participant instanceof ScoreboardIdentity ?
-        this._objective.setScore(participant.getRawdata(), score) : (participant instanceof Player) ?
+        this._objective.setScore(participant.getRawdata(), score)  : (participant instanceof Player) ?
         this._objective.setScore(participant.getMCPlayer(), score) : (participant instanceof Entity) ?
         this._objective.setScore(participant.getMCEntity(), score) : 0
     }

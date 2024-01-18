@@ -21,6 +21,16 @@ export class Vector2{
         this.y += y;
     }
     /**
+     * 同じ値かどうかを取得します。
+     * @param {this} vector2 
+     * @returns 
+     */
+    equals(vector2){
+        if(!(vector2 instanceof Vector2)) return false;
+        if(this.x - vector2.x == 0 && this.y - vector2.y == 0) return true;
+        return false
+    }
+    /**
      * Objectに変換します。
      * @deprecated
      */

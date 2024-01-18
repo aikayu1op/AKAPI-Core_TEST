@@ -22,7 +22,16 @@ export class Vector {
    */
   isZero;
   get isZero(){
-    return (this.x == 0 && this.y == 0 && this.z == 0) ? true: false
+    return (this.x == 0 && this.y == 0 && this.z == 0)
+  }
+  /**
+   * 指定した座標がすべて下回っている際にtrueを返します。
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} z 
+   */
+  getBelowCoordinates(x,y,z){
+    return (this.x < x && this.y < y && this.z < z) || (this.x < x*-1 && this.y < y*-1 && this.z * -1)
   }
   /**
    * クローンを生成します。
@@ -187,6 +196,33 @@ export class Vector {
   rejection(vector){
     return new Vector(new Vec3(this).rejection(vector.getMCVector3()))
   }
+  /**
+   * 現在の座標が始点と終点の間に含まれているかどうかを取得します。
+   * @param {this} startPoint
+   * @param {this} endPoint
+   */
+  isPointBetween(startPoint, endPoint) {
+    return (
+        (this.x >= Math.min(startPoint.x, endPoint.x) && this.x <= Math.max(startPoint.x, endPoint.x)) &&
+        (this.y >= Math.min(startPoint.y, endPoint.y) && this.y <= Math.max(startPoint.y, endPoint.y)) &&
+        (this.z >= Math.min(startPoint.z, endPoint.z) && this.z <= Math.max(startPoint.z, endPoint.z))
+    );
+  }
+  /**
+   * 現在の座標が始点と終点の間に含まれているかどうかを取得します。
+   * @param {Vector} startPoint
+   * @param {Vector} endPoint
+   * @param {Vector} targetPoint
+   */
+  static isPointBetween(startPoint, endPoint, targetPoint) {
+    return (
+        (targetPoint.x >= Math.min(startPoint.x, endPoint.x) && targetPoint.x <= Math.max(startPoint.x, endPoint.x)) &&
+        (targetPoint.y >= Math.min(startPoint.y, endPoint.y) && targetPoint.y <= Math.max(startPoint.y, endPoint.y)) &&
+        (targetPoint.z >= Math.min(startPoint.z, endPoint.z) && targetPoint.z <= Math.max(startPoint.z, endPoint.z))
+    );
+}
+
+
   
   
   /**
@@ -272,7 +308,5 @@ export class Vector {
         this.y = y;
         this.z = z;
     }
-    if(this.x == 0 && this.y == 0 && this.z == 0) this.isZero = true;
-    else this.isZero = false;
   }
 }

@@ -21,6 +21,10 @@ class System {
    * @readonly
    */
   afterEvents = mc.system.afterEvents;
+  /**
+   * @readonly
+   */
+  WORLD_TICKS = 20;
 
   /**
    * forを使ったすべてのプレイヤーに対して実行するものを強制的に1つのForにまとめさせれるものです。

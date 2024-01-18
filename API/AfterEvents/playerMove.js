@@ -37,21 +37,16 @@ class PlayerMoveEvent{
      * @param {PlayerMoveEventSignal} callback 
      */
     unsubscribe(callback){
-        let index = isDuplicate(_listener, callback);
-        if(index != -1){
-            _listener[index] = undefined;
-            _listener.filter(c => typeof c === "undefined").length == 0 ? _listener = [] : 0
-        }
-        else throw new Error("This function was not found.")
-        if(isRunning && _listener.length == 0){
-            isRunning = false;
-            //stop();
-        }
+        let index = isDuplicate(_listener,callback);
+          if (index != -1) _listener.splice(index, 1);
+          else throw new Error("This function was not found.");
+          if (isRunning && _listener.length == 0) isRunning = false;
         return callback;
     }
     constructor(){}
 }
 export const playerMove = new PlayerMoveEvent();
+
 /**
  * イベント登録数が1個以上の場合にイベントを監視するようにします。
  */

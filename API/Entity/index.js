@@ -25,7 +25,9 @@ export class Entity {
    * @type {Dimension}
    * @readonly
    */
-  dimension;
+  get dimension(){
+    return new Dimension(this._entity.dimension);
+  }
   /**
    * エンティティが向いている方向のクラスが返ります。
    * @readonly
@@ -185,6 +187,18 @@ export class Entity {
    */
   getDynamicProperty(identifier) {
     return this._entity.getDynamicProperty(identifier);
+  }
+  /**
+   * 
+   */
+  getDynamicPropertyIds(){
+    return this._entity.getDynamicPropertyIds();
+  }
+  /**
+   * 
+   */
+  getDynamicPropertyTotalByteCount(){
+    return this._entity.getDynamicPropertyTotalByteCount();
   }
   /**
    * エンティティに指定されたEffectTypeが付与しているかどうかを返します。付与されている場合はEffectクラスが返り、そうじゃない場合はundefinedを返します。
@@ -367,7 +381,7 @@ export class Entity {
     location,
     options
   ) {
-    this._entity.teleport(location.getMCVector3(), options.toObject());
+    this._entity.teleport(location.getMCVector3(), options?.toObject());
   }
   /**
    * エンティティをテレポートさせます。
@@ -437,7 +451,7 @@ export class Entity {
        * @private
        */
       this._entity = entity;
-      this.dimension = new Dimension(this._entity.dimension);
+      //this.dimension = new Dimension(this._entity.dimension);
       this.id = this._entity.id;
       this.location = new Vector(this._entity.location);
       this.scoreboardIdentity = new ScoreboardIdentity(this._entity.scoreboardIdentity);

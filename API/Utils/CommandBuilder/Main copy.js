@@ -184,7 +184,7 @@ world.beforeEvents.mc.chatSend.subscribe((ev) => {
     executeCommand(player, sender, undefined, undefined, message, isCommand);
 });
 
-export function executeCommand(player, sender, cmd, arg, message, isCommand) {
+function executeCommand(player, sender, cmd, arg, message, isCommand) {
   const regex = /\s+(?=(?:[^"]*"[^"]*")*[^"]*$)/;
   const getPlayers = (name) => {
     return world.getPlayers().filter((x) => x.name.toLowerCase().startsWith(name?.toLowerCase()));
@@ -200,34 +200,29 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
       }
       let args = [];
       if (arg.length > 0)
-        args = arg.map((x, i) => {
-          x = x.startsWith('"') && x.endsWith('"') ? x.slice(1, -1) : x;
-          let nothingBool = false;
+        args = arg.map((x) => {
+          x.startsWith('"') && x.endsWith('"') ? x.slice(1, -1) : x;
           cmdData
             .get(cmd)
-            .usage.filter((y) => y.split(regex).length === arg.length)
-            .forEach((z) =>{
-              if(!nothingBool){
-                let array = z.split(regex);
-                if(array.every(() => {
-                  if ((array[i].includes("boolean") && x === "true") || x === "false") {
-                    x == "true" ? (x = true) : (x = false);
-                    return true;
-                  } else if (array[i].includes("number") && !isNaN(x)) {
-                    x = Number(x);
-                    return true;
-                  } else if (array[i].includes("object")) {
-                    try {                  
-                      x = JSON.parse(x);
-                      return true;
-                    } catch {
-                      return false;
-                    }
-                  } else if (array[i].includes("string") && typeof x === "string") return true;
+            .usage.find((y) => y.split(regex).length === arg.length)
+            .split(regex)
+            .every((v) => {
+              if ((v.includes("boolean") && x === "true") || x === "false") {
+                x == "true" ? (x = true) : (x = false);
+                return true;
+              } else if (v.includes("number") && !isNaN(x)) {
+                x = Number(x);
+                return true;
+              } else if (v.includes("object")) {
+                try {                  
+                  x = JSON.parse(x);
+                  return true;
+                } catch {
                   return false;
-                })) nothingBool = true;
-              }
-            })
+                }
+              } else if (v.includes("string") && typeof x === "string") return true;
+              return false;
+            });
           return x;
         });
 

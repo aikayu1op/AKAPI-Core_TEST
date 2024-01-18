@@ -60,7 +60,7 @@ system.allPlayerTickSubscribe(({player}) =>{
 
     let text = "";
     if (alldata.get(player.id).has("main")) text += `${alldata.get(player.id).get("main")}\n\n`;
-    for (const data of alldata.get(player.id).keys()) {
+    for (const data of [...alldata.get(player.id).keys()].sort()) {
       if (data != "main" && data != "last"){
         text += `${alldata.get(player.id).get(data)}\n\n`;
         if(deleteTick.get(data) != -1) deleteTick.set(data, deleteTick.get(data)-1);

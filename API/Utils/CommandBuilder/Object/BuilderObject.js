@@ -13,6 +13,8 @@ export class IBuilderObject{
     cmd;
     /**
      * コマンドの使い方
+     * 
+     * ここでargsに入る値がbooleanやstringなどを設定できます。
      * @type {string[]}
      */
     usage;

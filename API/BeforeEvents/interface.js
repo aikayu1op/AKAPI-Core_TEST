@@ -1,9 +1,11 @@
 import { Player } from "../Player/index.js";
 import * as mc from "@minecraft/server";
 import { Vector } from "../Vector/Vector.js";
-import { EntityDamageCause } from "../Interfaces/EntityDamageCause.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { Entity } from "../Entity/index.js";
+import { IMoveEventCancelMode } from "./Enum.js";
+import { Block } from "../Block/Block.js";
+import { Dimension } from "../Dimension/index.js";
 
 export class IBeforeChatEventSignal {
   /**
@@ -76,4 +78,122 @@ export class IBeforeItemUseOnEventSignal {
    * @readonly
    */
   source;
+}
+export class IBeforePlayerMoveEventSignal{
+  /**
+   * 動こうとしているプレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 動きをキャンセルします。
+   * @param {IMoveEventCancelMode[keyof IMoveEventCancelMode]} value
+   */
+  cancel(value = "all"){}
+  
+}
+export class IBeforePlayerInteractWithBlock{
+    /**
+   * @type {mc.Direction}
+   * @readonly
+   */
+    blockFace;
+    /**
+     * イベントをキャンセルします。(設置、扉を開く、チェスト開く等々)
+     */
+    cancel() {}
+    /**
+     * @type {number}
+     * @readonly
+     */
+    faceLocationX;
+    /**
+     * @type {number}
+     * @readonly
+     */
+    faceLocationY;
+
+    /**
+     * 手に持っているitemStackを返します。
+     * @returns {ItemStack}
+     */
+    getItemStack(){}
+    /**
+     * @type {ItemStack}
+     */
+    _itemStack;
+    /**
+     * @readonly
+     */
+    get itemStack(){
+      return this._itemStack;
+    }
+    set itemStack(value){
+      this._itemStack = value;
+    }
+    /**
+     * 実行したPlayerを返します。
+     * @type {Player}
+     * @readonly
+     */
+    player;
+    /**
+     * @readonly
+     * @type {Block}
+     */
+    block;
+}
+export class IBeforePlayerBreakBlock{
+  /**
+   * イベントをキャンセルします。(設置、扉を開く、チェスト開く等々)
+   */
+  cancel() {}
+  /**
+   * 手に持っているitemStackを返します。
+   * @returns {ItemStack}
+   */
+  getItemStack(){}
+  /**
+   * @type {ItemStack}
+   * @private
+   */
+  _itemStack;
+  /**
+   * @readonly
+   */
+  get itemStack(){
+    return this._itemStack;
+  }
+  set itemStack(value){
+    this._itemStack = value;
+  }
+  /**
+   * 実行者のディメンションを返します。
+   * @readonly
+   * @type {Dimension}
+   */
+  dimension;
+  /**
+   * 実行したPlayerを返します。
+   * @type {Player}
+   * @readonly
+   */
+  player;
+  /**
+   * @readonly
+   * @type {Block}
+   */
+  block;
+}
+export class IBeforePlayerEmotingEventSignal{
+  /**
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 
+   */
+  cancel(){}
 }

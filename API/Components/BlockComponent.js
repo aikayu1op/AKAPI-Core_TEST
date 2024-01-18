@@ -85,39 +85,59 @@ class BlockSignComponent {
    */
   typeId = "minecraft:sign";
   /**
+   * @readonly
+   * 
+   * 書き換えが可能かどうかを取得します。
+   * @returns {boolean}
+   */
+  get isWaxed(){
+    return this._blockComp.isWaxed;
+  }
+  /**
    * 看板の文字をstring型で返します。
+   * @param {"Back" | "Front"} signSide
    * @returns {string}
    */
-  getText() {
-    return this._blockComp.getText();
+  getText(signSide) {
+    return this._blockComp.getText(signSide);
   }
   /**
    * 看板の文字をRawText型(Object)で返します。
+   * @param {"Back" | "Front"} signSide
    * @returns {import("@minecraft/server").RawText}
    */
-  getRawText() {
-    return this._blockComp.getRawText();
+  getRawText(signSide) {
+    return this._blockComp.getRawText(signSide);
   }
   /**
    * 看板の文字の色を取得します。
+   * @param {"Back" | "Front"} signSide
    * @returns {DyeColor | undefined}
    */
-  getTextDyeColor() {
-    return this._blockComp.getTextDyeColor();
+  getTextDyeColor(signSide) {
+    return this._blockComp.getTextDyeColor(signSide);
   }
   /**
    * 看板の文字をセットします。
    * @param {string | import("@minecraft/server").RawText | import("@minecraft/server").RawMessage} text
+   * @param {"Back" | "Front"} signSide
    */
-  setText(text) {
-    this._blockComp.setText(text);
+  setText(text, signSide) {
+    this._blockComp.setText(text, signSide);
   }
   /**
    * 看板の全体の文字の色を設定します。
    * @param {DyeColor} color
+   * @param {"Back" | "Front"} signSide
    */
-  setTextDyeColor(color) {
-    this._blockComp.setTextDyeColor(color);
+  setTextDyeColor(color, signSide) {
+    this._blockComp.setTextDyeColor(color, signSide);
+  }
+  /**
+   * 書き換えを不可能にします。
+   */
+  setWaxed(){
+    this._blockComp.setWaxed();
   }
 
   /**

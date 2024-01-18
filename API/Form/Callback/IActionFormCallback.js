@@ -47,4 +47,10 @@ export class ActionFormCanceledCallback{
      * @type {boolean}
      */
     canceled;
+    /**
+     * @readonly
+     * 押したボタンのindexを取得します。
+     * @type {number}
+     */
+    index;
 }

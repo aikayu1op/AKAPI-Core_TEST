@@ -88,7 +88,7 @@ class World {
     w.setDefaultSpawn(vector.getMCVector3());
   }
   /**
-   *
+   * 動的プロパティを取得します。
    * @param {string} identifier
    */
   getDynamicProperty(identifier) {

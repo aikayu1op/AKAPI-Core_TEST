@@ -6,6 +6,7 @@ import { BlockRaycastOptions } from "../Interfaces/BlockRaycastOptions.js";
 import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
+import { BlockPermutation } from "../Block/BlockPermutation.js";
 
 export class Dimension {
   /**
@@ -95,6 +96,31 @@ export class Dimension {
    */
   runCommandAsync(commandString) {
     return this._dimension.runCommandAsync(commandString);
+  }
+  /**
+   * 指定した座標にブロックを設置します。
+   * @param {Vector} location
+   * @param {string | mc.BlockType | mc.BlockPermutation | BlockPermutation} block
+   * @param {mc.BlockFillOptions | undefined} options
+   */
+  setBlock(location, block, options = undefined){
+    if(block instanceof BlockPermutation)
+      this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block?.getMCBlockPermutation(), options);
+    else 
+      this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block, options);
+  }
+  /**
+   * 指定した始終点を基準にブロックを設置します。
+   * @param {Vector} begin
+   * @param {Vector} end
+   * @param {string | mc.BlockType | mc.BlockPermutation | BlockPermutation} block
+   * @param {mc.BlockFillOptions | undefined} options
+   */
+  fillBlocks(begin, end, block, options = undefined){
+    if(block instanceof BlockPermutation)
+      return this._dimension.fillBlocks(begin.getMCVector3(), end.getMCVector3(), block?.getMCBlockPermutation()??block, options);
+    else
+      return this._dimension.fillBlocks(begin.getMCVector3(), end.getMCVector3(), block, options);
   }
   /**
    * 指定されたエンティティを召喚します。

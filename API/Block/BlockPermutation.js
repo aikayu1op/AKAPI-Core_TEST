@@ -15,16 +15,25 @@ export class BlockPermutation{
     }
     /**
      * 
+     * @returns 
      */
-    getAllProperties(){
-        return this._permutation.getAllProperties();
+    getAllState(){
+        return this._permutation.getAllStates();
     }
     /**
      * 
      * @param {string} propertyName 
      */
-    getProperty(propertyName){
-        return this._permutation.getProperty(propertyName);
+    getState(propertyName){
+        return this._permutation.getState(propertyName);
+    }
+    /**
+     * 
+     * @param {number} amount 
+     * @returns 
+     */
+    getItemStack(amount = 1){
+        return new ItemStack(this._permutation.getItemStack(amount));
     }
     /**
      * ブロックに付与されているタグを返します。
@@ -54,7 +63,22 @@ export class BlockPermutation{
     }
     /**
      * 
-     * @overload
+     * @param {string} name 
+     * @param {string | number | boolean} value 
+     */
+    withState(name, value){
+        return this._permutation.withState(name, value);
+    }
+    /**
+     * 
+     * @param {import("./Block.js").BlockID} blockId 
+     * @param {Record<string, boolean | number | string>} states 
+     */
+    static resolve(blockId, states = undefined){
+        return new BlockPermutation(mc.BlockPermutation.resolve(blockId, states));
+    }
+    /**
+     * @param {mc.BlockPermutation} permutation
      */
     constructor(permutation){
         /**

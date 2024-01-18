@@ -1,14 +1,14 @@
 export const EquipmentSlot = /** @type {const} */({
-    head:     "head",
-    chest:    "chest",
-    legs:     "legs",
-    feet:     "feet",
-    mainhand: "mainhand",
-    offhand:  "offhand"
+    head:     "Head",
+    chest:    "Chest",
+    legs:     "Legs",
+    feet:     "Feet",
+    mainhand: "Mainhand",
+    offhand:  "Offhand"
   });
 export const ArmorSlot = /** @type  {const} */({
-    head:     "head",
-    chest:    "chest",
-    legs:     "legs",
-    feet:     "feet"
+    head:     "Head",
+    chest:    "Chest",
+    legs:     "Legs",
+    feet:     "Feet"
 })

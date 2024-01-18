@@ -16,6 +16,7 @@ import { ItemStack } from "../ItemStack/ItemStack.js";
 import { BaseComponent } from "./BaseComponent.js";
 import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
 import { ContainerSlot } from "../ItemStack/ContainerSlot.js";
+import { EntityAttributeComponent } from "./extends/EntityAttributeComponent.js";
 /**
  * @template T
  * @typedef {T[keyof T]} ValueOf
@@ -280,6 +281,9 @@ export class EntityComponentBase {
   getColor() {
     return new EntityColorComponent(this._entity);
   }
+  getEquippableInventory(){
+    return;
+  }
   /**
    * エンティティが火のダメージを無効にする際に付与されるコンポーネント関数
    */
@@ -532,6 +536,12 @@ export class EntityComponentBase {
   getNavigationWalk() {
     return new EntityNavigationWalkComponent(this._entity);
   }
+  getNPC(){
+    return
+  }
+  getOnFire(){
+    return;
+  }
   /**
    * エンティティが押し通すことができる距離を設定するコンポーネント関数
    */
@@ -567,6 +577,9 @@ export class EntityComponentBase {
    */
   getTamable() {
     return new EntityTamableComponent(this._entity);
+  }
+  getTameMount(){
+    return;
   }
   /**
    * エンティティの水中での一般的な移動速度を設定できるコンポーネント関数
@@ -1057,173 +1070,17 @@ export class PlayerInventoryComponent {
 /**
  * プレイヤーの動きに関するものを設定するクラス
  */
-export class PlayerMovementComponent {
-  /**
-   * @private
-   */
-  playerComp;
-
-  /**
-   * プレイヤーの移動速度をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.playerComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を最大値にリセットします。
-   */
-  resetToMaxValue() {
-    try {
-      this.playerComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を最小値にリセットします。
-   */
-  resetToMinValue() {
-    try {
-      this.playerComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を指定された値に設定します。
-   * @param {number} value
-   */
-  setCurrent(value) {
-    try {
-      this.playerComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   *
-   * @param {Player} player
-   */
-  constructor(player) {
-    try {
-      this.playerComp = player.getComponent("movement");
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.playerComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.playerComp.value;
-      /**
-       * @readonly
-       * コンポーネントID
-       */
-      this.typeId = "minecraft:movement";
-      /**
-       * @private
-       */
-      this._player = player;
-    } catch (e) {}
+export class PlayerMovementComponent extends EntityAttributeComponent {
+  constructor(player){
+    super(player, "minecraft:movement");
   }
 }
 /**
  * プレイヤーの体力を設定したりするクラス
  */
-export class PlayerHealthComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:health";
-  /**
-   * プレイヤーの体力をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.playerComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの体力を最大値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMaxValue() {
-    try {
-      this.playerComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの体力を最小値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMinValue() {
-    try {
-      this.playerComp.resetToMinValue();
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  /**
-   * 現在の体力の値を返します。
-   * @returns {number}
-   */
-  get currentValue() {
-    return this.playerComp.currentValue;
-  }
-  get effectiveMin(){
-    return this.playerComp.effectiveMin;
-  }
-  get effectiveMax(){
-    return this.playerComp.effectiveMax;
-  }
-  /**
-   * プレイヤーの現時点での最高体力を返します。
-   * @type {number}
-   */
-  get defaultValue() {
-    return this.playerComp.defaultValue;
-  }
-  /**
-   * プレイヤーの体力を指定された値に設定します。
-   * @param {number} value
-   * @returns 正誤判定がかえります
-   */
-  setCurrentValue(value) {
-      return this.playerComp.setCurrentValue(value);
-  }
-
-  /**
-   *
-   * @param {Player} player
-   */
-  constructor(player) {
-    try {
-      /**
-       * @private
-       */
-      this.playerComp = player.getComponent(this.typeId);
-    } catch (e) {}
+export class PlayerHealthComponent extends EntityAttributeComponent {
+  constructor(player){
+    super(player, "minecraft:health");
   }
 }
 export class PlayerBreathableComponent {
@@ -1327,7 +1184,7 @@ export class PlayerEquipmentSlot {
    * @readonly
    * コンポーネントID
    */
-  typeId = "minecraft:equipment_inventory";
+  typeId = "minecraft:equippable";
   /**
    * プレイヤーがコンポーネントを持っているか確認できます。
    * @returns 持っている場合はtrueを、持っていない場合はfalseが返ります
@@ -1360,7 +1217,7 @@ export class PlayerEquipmentSlot {
    * @param {ItemStack} itemStack 
    */
   setEquipment(equipmentSlot, itemStack){
-    this._player.getComponent(this.typeId).setEquipment(equipmentSlot, itemStack.getItemStack());
+    this._player.getComponent(this.typeId).setEquipment(equipmentSlot, itemStack?.getItemStack());
   }
   /**
    *
@@ -1438,93 +1295,13 @@ export class PlayerIsHiddenWhenInvisibleComponent {
     this.playerComp = player.getComponent(this.typeId);
   }
 }
-export class PlayerLavaMovementComponent {
+export class PlayerLavaMovementComponent extends EntityAttributeComponent {
   /**
-   * @readonly
-   * コンポーネントID
+   * 
+   * @param {Player} player 
    */
-  typeId = "minecraft:lava_movement";
-
-  /**
-   * プレイヤーがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this.this._player.hasComponent(this.typeId)) return true;
-    else return false;
-  }
-
-  /**
-   * プレイヤーの移動速度をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.playerComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を最大値にリセットします。
-   */
-  resetToMaxValue() {
-    try {
-      this.playerComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を最小値にリセットします。
-   */
-  resetToMinValue() {
-    try {
-      this.playerComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの移動速度を指定された値に設定します。
-   * @param {number} value
-   */
-  setCurrent(value) {
-    try {
-      this.playerComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   *
-   * @param {Player} player
-   */
-  constructor(player) {
-    try {
-      /**
-       * @private
-       */
-      this.playerComp = player.getComponent(this.typeId);
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.playerComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.playerComp.value;
-      /**
-       * @private
-       */
-      this._player = player;
-    } catch (e) {}
+  constructor(player){
+    super(player, "minecraft:lava_movement")
   }
 }
 export class PlayerRideableComponent {
@@ -1912,95 +1689,13 @@ export class PlayerScaleComponent {
     } catch (e) {}
   }
 }
-export class PlayerUnderwaterMovementComponent {
+export class PlayerUnderwaterMovementComponent extends EntityAttributeComponent {
   /**
-   * @readonly
-   * コンポーネントID
+   * 
+   * @param {Player} player 
    */
-  typeId = "minecraft:underwater_movement";
-  /**
-   * プレイヤーがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this._player.hasComponent(this.typeId)) return true;
-    else return false;
-  }
-
-  /**
-   * プレイヤーの体力をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.playerComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの体力を最大値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMaxValue() {
-    try {
-      this.playerComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの体力を最小値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMinValue() {
-    try {
-      this.playerComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * プレイヤーの体力を指定された値に設定します。
-   * @param {number} value
-   * @returns 正誤判定がかえります
-   */
-  setCurrent(value) {
-    try {
-      this.playerComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   *
-   * @param {Player} player
-   */
-  constructor(player) {
-    try {
-      /**
-       * @private
-       */
-      this._player = player;
-      /**
-       * @private
-       */
-      this.playerComp = player.getComponent(this.typeId);
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.playerComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.playerComp.value;
-    } catch (e) {}
+  constructor(player){
+    super(player, "minecraft:underwater_movement");
   }
 }
 export class PlayerVariantComponent {
@@ -2171,191 +1866,17 @@ export class EntityInventoryComponent {
 /**
  * エンティティの移動に関するものを設定するクラス
  */
-export class EntityMovementComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:movement";
-
-  /**
-   * エンティティがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this._entity.hasComponent(this.typeId)) return true;
-    else return false;
-  }
-
-  /**
-   * エンティティの移動速度をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.entityComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を最大値にリセットします。
-   */
-  resetToMaxValue() {
-    try {
-      this.entityComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を最小値にリセットします。
-   */
-  resetToMinValue() {
-    try {
-      this.entityComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を指定された値に設定します。
-   * @param {number} value
-   */
-  setCurrent(value) {
-    try {
-      this.entityComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   *
-   * @param {Entity} entity
-   */
-  constructor(entity) {
-    try {
-      /**
-       * @private
-       */
-      this._entity = entity;
-      /**
-       * @private
-       */
-      this.entityComp = entity.getComponent(this.typeId);
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.entityComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.entityComp.value;
-    } catch (e) {}
+export class EntityMovementComponent extends EntityAttributeComponent{
+  constructor(entity){
+    super(entity, "minecraft:movement");
   }
 }
 /**
  * エンティティの体力などの設定ができるクラス
  */
-export class EntityHealthComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:health";
-
-  /**
-   * エンティティがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this._entity.hasComponent(this.typeId)) return true;
-    else return false;
-  }
-
-  /**
-   * エンティティの体力をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.entityComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を最大値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMaxValue() {
-    try {
-      this.entityComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を最小値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMinValue() {
-    try {
-      this.entityComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を指定された値に設定します。
-   * @param {number} value
-   * @returns 正誤判定がかえります
-   */
-  setCurrent(value) {
-    try {
-      this.entityComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * 現在の体力を返します。
-   * @returns {number}
-   */
-  getCurrent() {
-    return this.entityComp.currentValue;
-  }
-  /**
-   * エンティティの現在の最大体力を返します。
-   * @returns {number}
-   */
-  getValue() {
-    return this.entityComp.defaultValue;
-  }
-
-  /**
-   *
-   * @param {Entity} entity
-   */
-  constructor(entity) {
-    try {
-      /**
-       * @private
-       */
-      this._entity = entity;
-      /**
-       * @private
-       */
-      this.entityComp = entity.getComponent(this.typeId);
-    } catch (e) {}
+export class EntityHealthComponent extends EntityAttributeComponent{
+  constructor(entity){
+    super(entity, "minecraft:health");
   }
 }
 export class EntityAddRiderComponent {
@@ -3317,93 +2838,9 @@ export class EntityLeashableComponent {
 /**
  * エンティティの移動に関するものを設定するクラス
  */
-export class EntityLavaMovementComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:lava_movement";
-
-  /**
-   * エンティティがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this._entity.hasComponent(this.typeId)) return true;
-    else return false;
-  }
-
-  /**
-   * エンティティの移動速度をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
-   */
-  resetToDefaultValue() {
-    try {
-      this.entityComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を最大値にリセットします。
-   */
-  resetToMaxValue() {
-    try {
-      this.entityComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を最小値にリセットします。
-   */
-  resetToMinValue() {
-    try {
-      this.entityComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの移動速度を指定された値に設定します。
-   * @param {number} value
-   */
-  setCurrent(value) {
-    try {
-      this.entityComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   *
-   * @param {Entity} entity
-   */
-  constructor(entity) {
-    try {
-      /**
-       * @private
-       */
-      this._entity = entity;
-      /**
-       * @private
-       */
-      this.entityComp = entity.getComponent(this.typeId);
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.entityComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.entityComp.value;
-    } catch (e) {}
+export class EntityLavaMovementComponent extends EntityAttributeComponent {
+  constructor(entity){
+    super(entity, "minecraft:lava_movement");
   }
 }
 export class EntityMarkVariantComponent {
@@ -4891,92 +4328,14 @@ export class EntityTamableComponent {
     } catch (e) {}
   }
 }
-export class EntityUnderwaterMovementComponent {
-  /**
-   * @readonly
-   * コンポーネントID
-   */
-  typeId = "minecraft:underwater_movement";
-  /**
-   * エンティティがコンポーネントを所持しているか確認します。
-   */
-  hasComponent() {
-    if (this._entity.hasComponent(this.typeId)) return true;
-    else return false;
-  }
+export class EntityUnderwaterMovementComponent extends EntityAttributeComponent{
 
   /**
-   * エンティティの体力をデフォルト値に設定します。
-   * @returns 正誤判定がかえります
+   * 
+   * @param {Entity} entity 
    */
-  resetToDefaultValue() {
-    try {
-      this.entityComp.resetToDefaultValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を最大値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMaxValue() {
-    try {
-      this.entityComp.resetToMaxValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を最小値にリセットします。
-   * @returns 正誤判定がかえります
-   */
-  resetToMinValue() {
-    try {
-      this.entityComp.resetToMinValue();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  /**
-   * エンティティの体力を指定された値に設定します。
-   * @param {number} value
-   * @returns 正誤判定がかえります
-   */
-  setCurrent(value) {
-    try {
-      this.entityComp.setCurrent(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   *
-   * @param {Entity} entity
-   */
-  constructor(entity) {
-    try {
-      /**
-       * @private
-       */
-      this._entity = entity;
-      this.entityComp = entity.getComponent("health");
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.current = this.entityComp.current;
-      /**
-       * @readonly
-       * @type {number}
-       */
-      this.value = this.entityComp.value;
-    } catch (e) {}
+  constructor(entity){
+    super(entity, "minecraft:underwater_movement");
   }
 }
 export class EntityVariantComponent {

@@ -18,7 +18,7 @@ class BeforeChatEvents {
   /**
    * チャットを送信した際に発火しますが、送信する前の瞬間になるのでチャットのキャンセルが可能です。
    * @param {BeforeChatEventSignal} callback
-   * @returns {(arg: BeforeChatEventSignal) => void}
+   * @returns {(arg: IBeforeChatEventSignal) => void}
    */
   subscribe(callback) {
     if (isDuplicate(_listener, callback) == -1 && typeof callback === "function") _listener.push(callback);

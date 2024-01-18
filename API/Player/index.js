@@ -23,6 +23,9 @@ import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 import { DimensionLocation } from "../Interfaces/DimensionLocation.js";
 import { PlayAnimationOptions } from "../Interfaces/PlayAnimationOptions.js";
 import { Block } from "../Block/Block.js";
+import { system } from "../System/index.js";
+import Config from "../Utils/CommandBuilder/Config/index.js";
+import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 
 /**
  * @template T
@@ -95,7 +98,9 @@ export class Player {
    * @param {String} tag ここで指定された名前でタグを付与します。
    */
   addTag(tag) {
-    return this._player.addTag(tag);
+    try{
+      return this._player.addTag(tag);
+    }catch{mc.system.run(() => this._player.addTag(tag))}
   }
   /**
    * プレイヤーにタグを設定します。
@@ -127,6 +132,53 @@ export class Player {
    */
   applyDamage(damage, source = undefined) {
     return this._player.applyDamage(damage, source);
+  }
+  /**
+     * @remarks
+     * Applies impulse vector to the current velocity of the
+     * entity.
+     *
+     * This function can't be called in read-only mode.
+     *
+     * @param directionX
+     * X direction in horizontal plane.
+     * @param directionZ
+     * Z direction in horizontal plane.
+     * @param horizontalStrength
+     * Knockback strength for the horizontal vector.
+     * @param verticalStrength
+     * Knockback strength for the vertical vector.
+     * @throws This function can throw errors.
+     * @example bounceSkeletons.ts
+     * ```typescript
+     *   let mobs = ["creeper", "skeleton", "sheep"];
+     *
+     *   // create some sample mob data
+     *   for (let i = 0; i < 10; i++) {
+     *     overworld.spawnEntity(mobs[i % mobs.length], targetLocation);
+     *   }
+     *
+     *   let eqo: mc.EntityQueryOptions = {
+     *     type: "skeleton",
+     *   };
+     *
+     *   for (let entity of overworld.getEntities(eqo)) {
+     *     entity.applyKnockback(0, 0, 0, 1);
+     *   }
+     * ```
+     */
+  applyKnockback(directionX = 0, directionZ = 0, horizontalStrength = 0, verticalStrength = 0) {
+    this._player.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+  }
+  /**
+   * 
+   * @param {Vector} vector 
+   */
+  applyImpulse(vector) {
+    const { x, y, z } = vector;
+    const horizontal = Math.sqrt(x * x + z * z) * 2.0;
+    const vertical = y < 0.0 ? 0.5 * y : y;
+    this._player.applyKnockback(x, z, horizontal, vertical);
   }
   /**
    * EntityクラスからPlayerクラスへ変換します。
@@ -175,14 +227,14 @@ export class Player {
       if(item.amount -1 <= 0) item = undefined;
       else item.amount -= amount;
       this.getComponent().getInventory().container.setItem(slot, item);
-      let entity = this.dimension.spawnItem(copy, this.location.changeOffset(this.getViewDirection().multiply(2).setVector({y:0})));
+      this.dimension.spawnItem(copy, this.location.changeOffset(this.getViewDirection().multiply(2).setVector({y:0})));
       return true;
     }
     return false;
   }
   /**
    * プレイヤーが向いている方向のブロッククラスを返します。
-   * @param {keyof BlockRaycastOptions | BlockRaycastOptions} options 距離等のオプションの設定
+   * @param {mc.BlockRaycastOptions | BlockRaycastOptions} options 距離等のオプションの設定
    */
   getBlockFromViewDirection(options = {}) {
     if (options instanceof BlockRaycastOptions) return this._player.getBlockFromViewDirection(options.getOptions());
@@ -193,6 +245,23 @@ export class Player {
    */
   getComponent() {
     return Components.getPlayer(this._player);
+  }
+  /**
+   * 
+   * @param {string} identifier 
+   * @returns 
+   */
+  getProperty(identifier){
+    return this._player.getProperty(identifier);
+  }
+  /**
+   * 
+   * @param {string} identifier 
+   * @param {string | number | boolean} value 
+   * @returns 
+   */
+  setProperty(identifier, value){
+    this._player.setProperty(identifier, value);
   }
   /**
    * プレイヤー(エンティティ)に登録されているコンポーネントをすべて返します。
@@ -215,6 +284,18 @@ export class Player {
    */
   getDynamicProperty(identifier) {
     return this._player.getDynamicProperty(identifier);
+  }
+  /**
+   * 
+   */
+  getDynamicPropertyIds(){
+    return this._player.getDynamicPropertyIds();
+  }
+  /**
+   * 
+   */
+  getDynamicPropertyTotalByteCount(){
+    return this._player.getDynamicPropertyTotalByteCount();
   }
   /**
    * プレイヤーに指定されたEffectTypeが付与しているかどうかを返します。
@@ -319,10 +400,10 @@ export class Player {
    * @param {number} x
    * @param {number} y
    * @param {number} z
-   * @returns {BlockIterator}
+   * @returns {Generator<Block, void, unknown>}
    * @overload
    * @param {Vector} vector
-   * @returns {BlockIterator}
+   * @returns {Generator<Block, void, unknown>}
    */
   getBlocks(x, y, z){
     if(x instanceof Vector || typeof x === "object")
@@ -370,6 +451,9 @@ export class Player {
   setSpawn(spawnPosition = this.location, spawnDimension = this.dimension) {
     this._player.setSpawn(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
   }
+  stopSound(){
+    try{this._player.runCommand("stopsound @s");}catch{mc.system.run(() => this.stopSound())}
+  }
   /**
    * スポーンポイントをリセットします。
    */
@@ -394,6 +478,16 @@ export class Player {
   hasTags(...tag) {
     if (tag instanceof Array) return this.getTags().filter((x) => tag.find((y) => x === y)).length;
     return this.getTags().filter((x) => x.match(tag)).length;
+  }
+  /**
+   * 
+   * @param {EntityQueryOptions | mc.EntityQueryOptions} options 
+   * @returns 
+   */
+  matches(options = {}){
+    if(options instanceof EntityQueryOptions)
+      return this._player.matches(options.getOptions());
+    else return this._player.matches(options);
   }
   /**
    * 一瞬だけスニークしたことを検知します。
@@ -490,9 +584,12 @@ export class Player {
    * @param {ISoundOptions | SoundOptions} options
    */
   playSound(soundID, options = {}) {
-    if (options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
-    else if (typeof options == "object") this._player.playSound(soundID, new SoundOptions(options).getOptions());
+    try{
+      if (options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
+      else if (typeof options == "object") this._player.playSound(soundID, options);
+    }catch{mc.system.run(() => this.playSound(soundID, options))}
   }
+  
   /**
    *
    * @param {String} id
@@ -514,7 +611,9 @@ export class Player {
    * @returns 正常に削除出来た場合はtrue, 削除出来なかった、タグが存在しなかった場合はfalseが返ります。
    */
   removeTag(tag) {
-    return this._player.removeTag(tag);
+    try{
+      return this._player.removeTag(tag);
+    }catch{this._player.removeTag(tag);}
   }
   /**
    * プレイヤーのレベルを初期値に戻します。
@@ -537,18 +636,44 @@ export class Player {
     return this._player.runCommandAsync(command);
   }
   /**
+   * 
+   * @param {string} identifier 
+   * @returns 
+   */
+  resetProperty(identifier){
+    return this._player.resetProperty(identifier);
+  }
+  /**
+   * 首の向きを設定・取得します。
+   */
+  get rotation(){
+    return this.getRotation();
+  }
+  /**
+   * 首の向きを設定・取得します。
+   * @param {Vector2} value
+   * 
+   */
+  set rotation(value){
+    if(value instanceof Vector2) return this.setRotation(value);
+    throw new Error("No other value is allowed to be assigned to this property except Vector2.")
+  }
+  /**
    * プレイヤーにアクションバーを送信します。
    * @param {string} message
    */
   sendActionbar(message) {
-    this.onScreenDisplay.setActionbar(message);
+    try{
+      this.onScreenDisplay.setActionbar(message);
+    }catch{mc.system.run(() => this.onScreenDisplay.setActionbar(message))}
   }
   /**
    * プレイヤーのカメラを設定します。
    */
   setCamera(){
-
+    this._player.setCamera();
   }
+  
   /**
    * 経験値バーのLvを設定できます。
    * @param {number} lv 
@@ -603,12 +728,10 @@ export class Player {
   }
   /**
    * プレイヤーの向きを設定します。
-   * @deprecated
-   * @param {number} degreesX
-   * @param {number} degreesY
+   * @param {Vector2} rotation
    */
-  setRotation(degreesX, degreesY) {
-    this._player.setRotation(degreesX, degreesY);
+  setRotation(rotation) {
+    this._player.setRotation(rotation.toObject());
   }
   /**
    * プレイヤーに指定したアイテムのカテゴリに対して、クールダウンを付与します。
@@ -617,6 +740,19 @@ export class Player {
    */
   startItemCooldown(itemCategory, tickDuration) {
     this._player.startItemCooldown(itemCategory, tickDuration);
+  }
+  /**
+   * グライド状態であればその状態を解除します。
+   * 
+   * @returns {boolean}
+   */
+  stopGliding(){
+    const elytra = this.getComponent().getEquipmentInventory().getEquipment("Chest");
+    if(!this.isGliding) return false;
+    this.getComponent().getEquipmentInventory().setEquipment("Chest", undefined);
+    system.runTimeout(() => this.getComponent().getEquipmentInventory().setEquipment("Chest", elytra),2);
+    system.runTimeout(() => this.stopSound(),2);
+    return true;
   }
   /**
    * プレイヤーをテレポートさせます。
@@ -722,7 +858,7 @@ export class Player {
    * @param {string} message 表示用テキスト
    * @param {number} tick 表示時間(1/20s)
    */
-  setMultiLineActionbar(id = "main", message = "undefined", tick = -1) {
+  setMultiLineActionbar(id = "main", message = "undefined", tick = 1) {
     MultiLineActionbar.addMultiLineData(this, id, message, tick);
   }
   /**
@@ -754,13 +890,13 @@ export class Player {
    * @readonly
    */
   get id(){
-    return this._player.id;
+    return this._player?.id;
   }
   /**
    * 現在の座標を設定・取得します。
    */
   get location(){
-    return new Vector(this._player.location);
+    return new Vector(this._player?.location);
   }
   /**
    * 現在の座標を設定・取得します。
@@ -774,7 +910,7 @@ export class Player {
    * @readonly
    */
   get name(){
-    return this._player.name;
+    return this._player?.name;
   }
   /**
    * プレイヤーに対してタイトルやアクションバーの表示に関するデータをかえします。
@@ -788,13 +924,13 @@ export class Player {
    * @readonly
    */
   get scoreboardIdentity(){
-    return new ScoreboardIdentity(this._player.scoreboardIdentity);
+    return new ScoreboardIdentity(this._player?.scoreboardIdentity);
   }
   /**
    * @readonly
    */
   get target(){
-    return new Entity(this._player.target);
+    return new Entity(this._player?.target);
   }
   /**
    * エンティティの識別IDをかえします。
@@ -803,7 +939,7 @@ export class Player {
    * @readonly
    */
   get typeId(){
-    return this._player.typeId;
+    return this._player?.typeId;
   }
   /**
    * @readonly
@@ -836,6 +972,13 @@ export class Player {
    */
   get lifetimeState(){
     return this._player.lifetimeState;
+  }
+  /**
+   * CommandBuilderのopがあるかどうかを取得します。
+   * @readonly
+   */
+  get isCBOp(){
+    return this.hasTag(Config.firstTag+Config.opTag);
   }
   /**
    * 登っているかを取得します。(例: はしご、足場)
@@ -894,6 +1037,27 @@ export class Player {
     return this._player.isSprinting
   }
   /**
+   * 寝ているかどうかを取得します。
+   * @readonly
+   */
+  get isSleaping(){
+    return this._player.isSleeping;
+  }
+  /**
+   * エモート状態かどうかを取得します。
+   * @readonly
+   */
+  get isEmoting(){
+    return this._player.isEmoting;
+  }
+  /**
+   * カメラを設定します。
+   * @readonly
+   */
+  get camera(){
+    return this._player.camera;
+  }
+  /**
    *
    * @param {mc.Player} player
    */
@@ -916,7 +1080,7 @@ function* getBlocks(player, x, y, z){
   for(let lx = 0; lx < x+1; lx++){
     for(let ly = 0; ly < y+1; ly++){
       for(let lz = 0; lz < z+1; lz++){
-        yield player.dimension.getBlock(player.location.changeOffset(checkx?lx:lx*-1, checky?ly:ly*-1, checkz?lz:lz*-1))
+        try{yield player.dimension.getBlock(player.location.changeOffset(checkx?lx:lx*-1, checky?ly:ly*-1-2, checkz?lz:lz*-1))}catch(e){break}
       }
     } 
   }

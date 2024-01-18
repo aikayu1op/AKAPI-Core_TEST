@@ -1,9 +1,5 @@
 import { Vector } from "../Vector/Vector.js";
 export class SoundOptions {
-  /**
-   * @private
-   */
-  alldata = {};
   volume = -32767;
   pitch = -32767;
   /**
@@ -11,19 +7,22 @@ export class SoundOptions {
    */
   location = null;
   getOptions() {
-    if (this.volume != -32767) this.alldata.volume = this.volume;
-    if (this.pitch != -32767) this.alldata.pitch = this.pitch;
-    if (this.location != null && this.location instanceof Vector) this.alldata.location = this.location.getMCVector3();
-    return this.alldata;
+    let alldata = {};
+    if (this.volume != -32767) alldata.volume = this.volume;
+    if (this.pitch != -32767) alldata.pitch = this.pitch;
+    if (this.location != null && this.location instanceof Vector) alldata.location = this.location.getMCVector3();
+    return alldata;
   }
   /**
    * 
    * @param {ISoundOptions} obj 
    */
-  constructor(obj){
-    this.volume =   obj.volume;
-    this.pitch =    obj.pitch;
-    this.location = obj.location;
+  constructor(obj = undefined){
+    if(typeof obj !== undefined){
+      this.volume =   obj?.volume;
+      this.pitch =    obj?.pitch;
+      this.location = obj?.location;
+    }
   }
 }
 export class ISoundOptions{

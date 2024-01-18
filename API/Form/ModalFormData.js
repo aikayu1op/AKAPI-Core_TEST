@@ -1,6 +1,7 @@
 import * as UI from "@minecraft/server-ui";
 import { Player } from "../Player/index.js";
 import { IModalFormResponse } from "./Callback/IModalFormCallback";
+import { system } from "@minecraft/server";
 
 /**
  * @callback ModalFormResponse
@@ -148,11 +149,19 @@ export class ModalFormData{
                 toggle+=2;
             }
         }
-        form.show(showPlayer.getMCPlayer()).then(response =>{
-            let player = showPlayer;
-            const { cancelationReason, formValues, canceled } = response;
-            callback({ player, cancelationReason, formValues, canceled });
-        })
+        try{
+            form.show(showPlayer.getMCPlayer()).then(response =>{
+                let player = showPlayer;
+                const { cancelationReason, formValues, canceled } = response;
+                callback({ player, cancelationReason, formValues, canceled });
+            })
+        }catch{
+            system.run(() => form.show(showPlayer.getMCPlayer()).then(response =>{
+                let player = showPlayer;
+                const { cancelationReason, formValues, canceled } = response;
+                callback({ player, cancelationReason, formValues, canceled });
+            }))
+        }
         //const returnForm = form.show(showPlayer.getMCPlayer());
         //return returnForm;
     }
