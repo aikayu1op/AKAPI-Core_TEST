@@ -91,6 +91,13 @@ export class Dimension {
     else if (typeof options === "object") return [...this._dimension.getPlayers(options)].map((p) => new Player(p));
   }
   /**
+   * コマンドを同期処理で実行します。
+   * @param {string} commandString
+   */
+  runCommand(commandString) {
+    return this._dimension.runCommand(commandString);
+  }
+  /**
    * コマンドを非同期処理で実行します。
    * @param {string} commandString
    */

@@ -184,6 +184,16 @@ world.beforeEvents.mc.chatSend.subscribe((ev) => {
     executeCommand(player, sender, undefined, undefined, message, isCommand);
 });
 
+/**
+ * 
+ * @param {Player} player 
+ * @param {Player} sender 
+ * @param {string} cmd 
+ * @param {string[]} arg 
+ * @param {string} message 
+ * @param {boolean} isCommand 
+ * @returns 
+ */
 export function executeCommand(player, sender, cmd, arg, message, isCommand) {
   const regex = /\s+(?=(?:[^"]*"[^"]*")*[^"]*$)/;
   const getPlayers = (name) => {
@@ -259,6 +269,11 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
   } else {
     //messageBuilder
     system.run(() =>{
+      //WebSocket用通信
+      sender.runCommand(`titleraw @s actionbar {"rawtext":[{"text":"§m§s§g${message.split("").map(x => "§"+x).join("")}"}]}`);
+      //同様
+      sender.sendActionbar("");
+
       const MB = new MessageBuilderData();
       MB.sender = sender;
       MB.message = message;
