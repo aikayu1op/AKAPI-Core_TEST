@@ -779,12 +779,14 @@ export class Player {
    * 
    * @returns {boolean}
    */
-  stopGliding(){
+  async stopGliding(){
     const elytra = this.getComponent().getEquipmentInventory().getEquipment("Chest");
-    if(!this.isGliding) return false;
+    if(!this.isGliding || elytra.typeId.includes("elytra")) return false;
     this.getComponent().getEquipmentInventory().setEquipment("Chest", undefined);
-    system.runTimeout(() => this.getComponent().getEquipmentInventory().setEquipment("Chest", elytra),2);
-    system.runTimeout(() => this.stopSound(),2);
+    await new Promise(() =>{
+      this.getComponent().getEquipmentInventory().setEquipment("Chest", elytra);
+      this.stopSound();
+    });
     return true;
   }
   /**
