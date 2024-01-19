@@ -7,88 +7,129 @@ import { world } from "../World/index.js";
 import { Block } from "../Block/Block.js";
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
+import { Vector2 } from "../Vector/Vector2.js";
 
 export class Entity {
   /**
-   * エンティティの足元からの座標クラスが返ります。
-   * @type {Vector}
-   * @readonly
-   */
-  location;
-  /**
-   * @readonly
-   * @type {string}
-   */
-  id;
-  /**
-   * エンティティの現在いるディメンションクラスを取得します。
-   * @type {Dimension}
+   * プレイヤーが今いるディメンションを取得します。
    * @readonly
    */
   get dimension(){
     return new Dimension(this._entity.dimension);
   }
   /**
-   * エンティティが向いている方向のクラスが返ります。
+   * プレイヤーに割り当てられる識別IDを取得します。
    * @readonly
    */
-  rotation;
+  get id(){
+    return this._entity?.id;
+  }
+  /**
+   * 現在の座標を設定・取得します。
+   */
+  get location(){
+    return new Vector(this._entity?.location);
+  }
+  /**
+   * 現在の座標を設定・取得します。
+   * @param {Vector} vector
+   */
+  set location(vector){
+    this.teleport(vector);
+  }
+  /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  get rotation(){
+    return new Vector2(this._entity.getRotation());
+  }
+  /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  set rotation(value){
+    if(value instanceof Vector2)
+      this._entity.setRotation(value);
+  }
+  /**
+   * ScoreboardIdentityをかえします。
+   * @readonly
+   */
+  get scoreboardIdentity(){
+    return new ScoreboardIdentity(this._entity?.scoreboardIdentity);
+  }
   /**
    * @readonly
    */
-  target;
+  get target(){
+    return new Entity(this._entity?.target);
+  }
   /**
-   * 現在のプレイヤーが参照できる状態なのかを取得します。
-   * @type {EntityLifetimeState}
+   * エンティティの識別IDをかえします。
+   * 
+   * Playerの場合はminecraft:playerをかえします。
    * @readonly
    */
-  lifetimeState;
+  get typeId(){
+    return this._entity?.typeId;
+  }
   /**
-   * 登っているかを取得します。
+     * @type {EntityLifetimeState[keyof EntityLifetimeState]}
+     * @readonly
+     */
+  get lifetimeState(){
+    return this._entity.lifetimeState;
+  }
+  /**
+     * 登っているかを取得します。(例: はしご、足場)
+     * @readonly
+     */
+  get isClimbing(){
+    return this._entity.isClimbing;
+  }
+  /**
+   * 落ちている状態かを取得します。
    * @readonly
    */
-  isClimbing;
+  get isFalling(){
+    return this._entity.isFalling;
+  }
   /**
-   * 落下しているかどうかを取得します。
+   * 水の中にいるのかどうかを取得します。
    * @readonly
    */
-  isFalling;
+  get isInWater(){
+    return this._entity.isInWater;
+  }
   /**
-   * 地面についているかどうかを取得します。
+   * 地面に足をつけている状態かを取得します。
    * @readonly
    */
-  isOnGround;
+  get isOnGround(){
+    return this._entity.isOnGround;
+  }
   /**
-   * 水の中かどうかを取得します。
+   * 泳いでいるかを取得します。
    * @readonly
    */
-  isInWater;
+  get isSwimming(){
+    return this._entity.isSwimming;
+  }
   /**
-   * 泳ぎモーションになっているかどうかを取得します。
+   * 走っているかを取得します。
    * @readonly
    */
-  isSwimming;
+  get isSprinting(){
+    return this._entity.isSprinting;
+  }
   /**
-   * エンティティを表すScoreboardIdentityクラスが返ります。
-   * 使い方例(公式クラスを使っています。)
-   * ```
-   * import { world } from "@minecraft/server";
-   *
-   * world.beforeEvents.chatSend.subscribe((ev) =>{
-   *    let score = world.scoreboard.getObjective("スコアの名前").getScore(ev.sender.scoreboard);
-   *    if(score >= 10) ev.sender.tell("スコア10以上あります。");
-   * })
-   * ```
+   * 寝ているかどうかを取得します。
    * @readonly
    */
-  scoreboardIdentity;
-  /**
-   * エンティティのアイデンティティが返ってきます。
-   * 例として、鶏をtypeIdした際はminecraft:chickenが返ってきます。
-   * @type {""}
-   * @readonly
-   */
-  typeId;
+  get isSleeping(){
+    return this._entity.isSleeping;
+  }
 
   /**
    * エンティティにエフェクトを追加します。
@@ -170,9 +211,9 @@ export class Entity {
    * エンティティ(エンティティ)に登録されているコンポーネントをすべて返します。
    * 基本的な使い方
    * ```
-   * //<Player>はこのクラスを表します。
-   * for(const components of <Player>.getComponents()){
-   *    <Player>.tell(components.typeId);
+   * //<Entity>はこのクラスを表します。
+   * for(const components of <Entity>.getComponents()){
+   *    world.sendMessage(components.typeId);
    * }
    * //これで登録されているコンポーネントの名前を取得することが出来ます。
    *
@@ -189,7 +230,7 @@ export class Entity {
     return this._entity.getDynamicProperty(identifier);
   }
   /**
-   * 
+   * DynamicPropertyに登録されている変数の一覧です。
    */
   getDynamicPropertyIds(){
     return this._entity.getDynamicPropertyIds();
@@ -324,7 +365,7 @@ export class Entity {
    * @param {String} identifier
    */
   removeDynamicProperty(identifier) {
-    return this._entity.removeDynamicProperty(identifier);
+    return this._entity.setDynamicProperty(identifier, undefined);
   }
   /**
    * エンティティに登録されているタグを削除します。
@@ -384,17 +425,6 @@ export class Entity {
     this._entity.teleport(location.getMCVector3(), options?.toObject());
   }
   /**
-   * エンティティをテレポートさせます。
-   * @param {Vector} location
-   * @param {TeleportOptions} options
-   */
-  teleportFacing(location, options) {
-    this._entity.teleportFacing(
-      location.getMCVector3(),
-      options.toObject()
-    );
-  }
-  /**
    * イベントをトリガーします。
    * @param {String} eventName
    */
@@ -446,23 +476,6 @@ export class Entity {
    * @param {mc.Entity} entity
    */
   constructor(entity) {
-    try {
-      /**
-       * @private
-       */
-      this._entity = entity;
-      //this.dimension = new Dimension(this._entity.dimension);
-      this.id = this._entity.id;
-      this.location = new Vector(this._entity.location);
-      this.scoreboardIdentity = new ScoreboardIdentity(this._entity.scoreboardIdentity);
-      this.target = new Entity(this._entity.target);
-      this.typeId = this._entity.typeId;
-      this.lifetimeState = this._entity.lifetimeState;
-      this.isClimbing = this._entity.isClimbing;
-      this.isFalling  = this._entity.isFalling;
-      this.isInWater  = this._entity.isInWater;
-      this.isOnGround = this._entity.isOnGround;
-      this.isSwimming = this._entity.isSwimming;
-    } catch (e) {}
+    this._entity = entity;
   }
 }

@@ -26,6 +26,7 @@ import { Block } from "../Block/Block.js";
 import { system } from "../System/index.js";
 import Config from "../Utils/CommandBuilder/Config/index.js";
 import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
+import "./setSpeed.js";
 
 /**
  * @template T
@@ -440,6 +441,21 @@ export class Player {
     return new Vector2(this._player.getRotation());
   }
   /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  get rotation(){
+    return new Vector2(this._entity.getRotation());
+  }
+  /**
+   * 現在向いている方向を返します。
+   * xが上下、yが左右の向きを表します。
+   */
+  set rotation(value){
+    if(value instanceof Vector2)
+      this._entity.setRotation(value);
+  }
+  /**
    * 死んだ際にスポーンする座標が個別に設定されている場合に、そのスポーンするディメンションを取得できます。
    */
   get spawnDimension() {
@@ -732,6 +748,23 @@ export class Player {
    */
   setRotation(rotation) {
     this._player.setRotation(rotation.toObject());
+  }
+  /**
+   * プレイヤーの速度を設定します。
+   * @returns {number}
+   */
+  get speed(){
+    return this.getDynamicProperty("AKAPI-CoreComp:Speed");
+  }
+  set speed(value){
+    if(!this.getDynamicProperty("AKAPI-CoreComp:Speed")){
+      this.setDynamicProperty("AKAPI-CoreComp:Speed", this.getComponent().getMovement().defaultValue);
+      this.getComponent().getMovement().setCurrentValue(this.getComponent().getMovement().defaultValue);
+    }
+    if(typeof value === "number"){
+      this.getComponent().getMovement().setCurrentValue(value);
+      this.setDynamicProperty("AKAPI-CoreComp:Speed", value);
+    }else throw new Error("Invalid value.");
   }
   /**
    * プレイヤーに指定したアイテムのカテゴリに対して、クールダウンを付与します。
@@ -1040,7 +1073,7 @@ export class Player {
    * 寝ているかどうかを取得します。
    * @readonly
    */
-  get isSleaping(){
+  get isSleeping(){
     return this._player.isSleeping;
   }
   /**
