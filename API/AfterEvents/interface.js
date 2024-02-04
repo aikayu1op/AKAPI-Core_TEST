@@ -1,5 +1,23 @@
+import { Block } from "../Block/Block.js";
 import { Dimension } from "../Dimension/index.js";
+import { Entity } from "../Entity/index.js";
 import { Player } from "../Player/index.js";
+
+class IPlayerEvents{
+  /**
+   * プレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 発火した状態でこれが最初の発火かどうかを取得します。
+   * @readonly
+   * @type {boolean}
+   */
+  isMoment;  
+  constructor(){}
+}
 
 export class IPlayerDeathEventSignal {
     /**
@@ -91,19 +109,23 @@ export class IPlayerJumpingEvents{
    */
   isMoment;  
 }
-
-class IPlayerEvents{
+class IBlockFallingEvents{
   /**
-   * プレイヤーを取得します。
+   * @type {Entity}
    * @readonly
+   * 何のブロックが落ちたかをエンティティクラスで返します。
+   */
+  entity;
+  /**
+   * @type {boolean}
+   * @readonly
+   * プレイヤーが設置したものかどうかを取得します。
+   */
+  isPlayer;
+  /**
    * @type {Player}
+   * @readonly
+   * プレイヤーが設置した場合のプレイヤークラスを返します。
    */
   player;
-  /**
-   * 発火した状態でこれが最初の発火かどうかを取得します。
-   * @readonly
-   * @type {boolean}
-   */
-  isMoment;  
-  constructor(){}
 }
