@@ -58,8 +58,10 @@ export class Command {
       obj.hasOwnProperty("description") &&
       obj.hasOwnProperty("execute") &&
       obj.hasOwnProperty("permission")
-    )
+    ){
       cmdData.set(obj.cmd, obj);
+      world.sendMessage("load command: "+obj.cmd);
+    }
     else
       throw `[${
         this._data.cmd ?? "undefined"

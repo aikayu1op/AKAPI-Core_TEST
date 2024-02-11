@@ -1,5 +1,5 @@
 import Config from "../../Config/index.js";
-import { Command, replaceArgs } from "../../Main.js";
+import { Command, replaceArgs } from "../../index.js";
 
 Command.register({
     cmd: "help",

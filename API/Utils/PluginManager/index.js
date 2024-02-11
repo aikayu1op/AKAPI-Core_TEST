@@ -1,11 +1,9 @@
-import { SendText } from "../../../../SendText";
-import { Command } from "../../../index.js";
+import { Command } from "../CommandBuilder/index.js";
 
 let author = "";
 let allplugins = "";
 let errorlist = [];
 let minus = 0;
-import "../CommandBuilder/index.js";
 export class Plugins {
   /**
    * プラグインを読み込みます。
@@ -22,6 +20,7 @@ export class Plugins {
             let now = Date.now();
             allplugins += `§a${filename[0]} v${filename[1]} §f${now - time - minus}ms\n`;
             minus = now - time;
+            console.warn("load plugins: "+filename[0]);
           })
           .catch((e) => {
             allplugins += `§4${filename[0]} v${filename[1]} §f-1ms\n`;
@@ -78,9 +77,8 @@ Command.register({
         break;
       }
       default: {
-        new SendText(ev.sender)
-          .send(`PluginList\n---------------------\n${allplugins}§f---------------------`)
-          .send(`author: ${author}\n---------------------`);
+        ev.sender.sendMessage(`PluginList\n---------------------\n${allplugins}§f---------------------`)
+        ev.sender.sendMessage(`author: ${author}\n---------------------`);
         break;
       }
     }
