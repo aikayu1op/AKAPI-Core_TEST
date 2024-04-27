@@ -618,25 +618,55 @@ export class EntityComponentBase {
 export class PlayerContainerComponent {
   /**
    * @readonly
+   */
+  get additionalPerStrength(){
+    return this._player.getComponent(this.typeId).additionalSlotsPerStrength;
+  }
+  /**
+   * @readonly
+   */
+  get canBeSiphonedFrom(){
+    return this._player.getComponent(this.typeId).canBeSiphonedFrom;
+  }
+  /**
+   * @readonly
    * コンポーネントID
    */
   typeId = "minecraft:inventory";
   /**
    * @readonly
    */
-  container;
+  container = new PlayerInventoryComponent(this._player);
+  /**
+   * @readonly
+   */
+  get containerType(){
+    return this._player.getComponent(this.typeId).containerType;
+  }
+  /**
+   * @readonly
+   */
+  get inventorySize(){
+    return this._player.getComponent(this.typeId).inventorySize;
+  }
+  /**
+   * @readonly
+   */
+  get "private"(){
+    return this._player.getComponent(this.typeId).private;
+  }
+  /**
+   * @readonly
+   */
+  get restrictOwner(){
+    return this._player.getComponent(this.typeId).restrictToOwner;
+  }
   /**
    *
    * @param {Player} player
    */
   constructor(player) {
-    try {
-      /**
-       * @private
-       */
       this._player = player;
-      this.container = new PlayerInventoryComponent(this._player);
-    } catch (e) {}
   }
 }
 /**
@@ -1740,6 +1770,18 @@ export class PlayerVariantComponent {
 export class EntityContainerComponent {
   /**
    * @readonly
+   */
+  get additionalPerStrength(){
+    return this._entity.getComponent(this.typeId).additionalSlotsPerStrength;
+  }
+  /**
+   * @readonly
+   */
+  get canBeSiphonedFrom(){
+    return this._entity.getComponent(this.typeId).canBeSiphonedFrom;
+  }
+  /**
+   * @readonly
    * コンポーネントID
    */
   typeId = "minecraft:inventory";
@@ -1747,6 +1789,30 @@ export class EntityContainerComponent {
    * @readonly
    */
   container = new EntityInventoryComponent(this._entity);
+  /**
+   * @readonly
+   */
+  get containerType(){
+    return this._entity.getComponent(this.typeId).containerType;
+  }
+  /**
+   * @readonly
+   */
+  get inventorySize(){
+    return this._entity.getComponent(this.typeId).inventorySize;
+  }
+  /**
+   * @readonly
+   */
+  get "private"(){
+    return this._entity.getComponent(this.typeId).private;
+  }
+  /**
+   * @readonly
+   */
+  get restrictOwner(){
+    return this._entity.getComponent(this.typeId).restrictToOwner;
+  }
   /**
    * エンティティがコンポーネントを所持しているか確認します。
    */

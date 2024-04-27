@@ -21,6 +21,12 @@ export class Dimension {
    */
   id;
   /**
+   * @readonly
+   */
+  get heightRange(){
+    return this._dimension.heightRange;
+  }
+  /**
    *
    * @param {Vector} location
    * @param {number} radius
@@ -28,6 +34,16 @@ export class Dimension {
    */
   createExplosion(location, radius, options = {}) {
     this._dimension.createExplosion(location.getMCVector3(), radius, options);
+  }
+  /**
+   * 
+   * @param {Vector | mc.Vector3} pos 
+   * @param {string | mc.BiomeType} biomeToFind 
+   * @param {mc.BiomeSearchOptions | undefined} options 
+   */
+  findClosestBiome(pos, biomeToFind, options = undefined){
+    if(pos instanceof Vector) pos = pos.getMCVector3();
+    this._dimension.findClosestBiome(pos, biomeToFind, options);
   }
   /**
    * 指定されたディメンションと座標のブロックを取得します。
@@ -91,6 +107,13 @@ export class Dimension {
     else if (typeof options === "object") return [...this._dimension.getPlayers(options)].map((p) => new Player(p));
   }
   /**
+   * 現在のディメンションの天気を取得します。
+   * @returns {"Clear" | "Rain" | "Thunder"}
+   */
+  getWeather(){
+    return this._dimension.getWeather();
+  }
+  /**
    * コマンドを同期処理で実行します。
    * @param {string} commandString
    */
@@ -115,6 +138,14 @@ export class Dimension {
       this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block?.getMCBlockPermutation(), options);
     else 
       this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block, options);
+  }
+  /**
+   * 現在のディメンションの天気を変更します。
+   * @param {"Clear" | "Rain" | "Thunder"} weatherType 天候のタイプを指定します。
+   * @param {number} duration 何秒間変更するかを指定します。
+   */
+  setWeather(weatherType, duration = 0){
+    this._dimension.setWeather(weatherType, duration);
   }
   /**
    * 指定した始終点を基準にブロックを設置します。

@@ -60,6 +60,12 @@ export class Player {
   set isSneaking(value){
     typeof value === "boolean" ? this._player.isSneaking = value : 0
   }
+  /**
+   * 
+   */
+  get fallDistance(){
+    return this._player.fallDistance;
+  }
 
   /**
    * プレイヤーにエフェクトを追加します。
@@ -284,6 +290,7 @@ export class Player {
    * @param {string} identifier 取得したいデータ
    */
   getDynamicProperty(identifier) {
+    if(typeof identifier === "object") return new Vector(this._player.getDynamicProperty(identifier));
     return this._player.getDynamicProperty(identifier);
   }
   /**
@@ -355,9 +362,8 @@ export class Player {
    */
   getGameMode() {
     for (const gamemodeName in mc.GameMode) {
-      if ([...world.getPlayers({ name: this.name, gameMode: mc.GameMode[gamemodeName] })].length > 0) {
+      if(this.matches({gameMode: mc.GameMode[gamemodeName]}))
         return gamemodeName;
-      }
     }
   }
   /**
@@ -445,7 +451,7 @@ export class Player {
    * xが上下、yが左右の向きを表します。
    */
   get rotation(){
-    return new Vector2(this._entity.getRotation());
+    return new Vector2(this._player.getRotation());
   }
   /**
    * 現在向いている方向を返します。
@@ -453,7 +459,7 @@ export class Player {
    */
   set rotation(value){
     if(value instanceof Vector2)
-      this._entity.setRotation(value);
+      this._player.setRotation(value);
   }
   /**
    * 死んだ際にスポーンする座標が個別に設定されている場合に、そのスポーンするディメンションを取得できます。
@@ -630,6 +636,9 @@ export class Player {
     try{
       return this._player.removeTag(tag);
     }catch{this._player.removeTag(tag);}
+  }
+  remove(){
+    this._player.remove();
   }
   /**
    * プレイヤーのレベルを初期値に戻します。

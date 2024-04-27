@@ -1,6 +1,7 @@
 import * as mc from "@minecraft/server";
 import { ItemComponentBase } from "../Components/ItemComponents.js";
 import { ItemLockMode } from "../Interfaces/ItemLockMode.js";
+import { Vector } from "../Vector/index.js";
 
 export class ItemStack {
   /**
@@ -20,6 +21,35 @@ export class ItemStack {
    */
   clone(){
     return new ItemStack(this._itemStack);
+  }
+  /**
+   * 適応されている動的プロパティをクリアします。
+   */
+  clearDynamicProperties(){
+    this._itemStack.clearDynamicProperties();
+  }
+  /**
+   * このアイテムに保存されている動的プロパティを取得します。
+   * @param {string} identifier 
+   * @returns 
+   */
+  getDynamicProperty(identifier){
+    if(typeof identifier === "object") return new Vector(this._itemStack.getDynamicProperty(identifier));
+    return this._itemStack.getDynamicProperty(identifier);
+  }
+  /**
+   * 
+   * @returns 
+   */
+  getDynamicPropertyIds(){
+    return this._itemStack.getDynamicPropertyIds();
+  }
+  /**
+   * 
+   * @returns 
+   */
+  getDynamicPropertyTotalByteCount(){
+    return this._itemStack.getDynamicPropertyTotalByteCount();
   }
   /**
    * アイテムのコンポーネントを操作できます。
@@ -83,7 +113,7 @@ export class ItemStack {
   /**
    * アドベンチャーモードで指定されたブロックに対して設置可能にします。
    */
-  get canPlaceOn(){return null;}
+  get canPlaceOn(){return this._itemStack.getCanPlaceOn();}
   /**
    * @param {string[]} blockIdentifiers 指定されたブロックIDだけを設置可能にします。
    */
@@ -93,7 +123,7 @@ export class ItemStack {
   /**
    * アドベンチャーモードで指定されたブロックに対して破壊可能にします。
    */
-  get canDestroy(){return null;}
+  get canDestroy(){return this._itemStack.getCanDestroy();}
   /**
    * @param {string[]} blockIdentifiers 指定されたブロックIDだけを破壊可能にします。
    */
@@ -106,6 +136,15 @@ export class ItemStack {
    */
   setLore(loreList) {
     this._itemStack.setLore(loreList);
+  }
+  /**
+   * 
+   * @param {string} identifier 
+   * @param {string | number | boolean | Vector} value 
+   */
+  setDynamicProperty(identifier, value){
+    if(value instanceof Vector) value = value.getMCVector3();
+    this._itemStack.setDynamicProperty(identifier, value);
   }
   /**
    * アイテムのイベントを実行します。
