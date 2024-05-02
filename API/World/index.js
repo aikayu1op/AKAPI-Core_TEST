@@ -8,6 +8,7 @@ import { Entity } from "../Entity/index.js";
 import { Time } from "../Utils/Time/index.js";
 import { beforeEvents } from "../BeforeEvents/index.js";
 import { afterEvents } from "../AfterEvents/index.js";
+import { instanceEnum } from "../Interfaces/instanceEnum.js";
 
 class World {
   /**
@@ -109,17 +110,19 @@ class World {
       return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
     return [...w.getPlayers(options)].map((p) => new Player(p));
   }
-  /**
+/**
    * 指定されたIDから動的プロパティがあるかどうかを取得します。 
    * @param {string} identifier DynamicPropertyで指定されたID
-   * @param {Type} type Stringなどの型を指定します。DynamicPropertyで設定できるものだけが対応しています。
+   * @param {ValueOf<instanceEnum>} type Stringなどの型を指定します。DynamicPropertyで設定できるものだけが対応しています。
    */
-  hasDynamicProperty(identifier, type = undefined){
-    if(!identifier) return false;
-    if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
-    if(!!type && this.getDynamicProperty(type) instanceof type) return true;
-    return false;
-  }
+hasDynamicProperty(identifier, type = undefined){
+  let instance = ["string", "number", "boolean", "Vector", "undefined"];
+  if(!identifier) return false;
+  if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
+  if(type == "Vector") return (this.getDynamicProperty(identifier) instanceof Vector);
+  if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
+  return false;
+}
   /**
    * 音楽を再生します。
    * @param {string} trackID

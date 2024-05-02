@@ -27,6 +27,7 @@ import { system } from "../System/index.js";
 import Config from "../Utils/CommandBuilder/Config/index.js";
 import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 import "./setSpeed.js";
+import { instanceEnum } from "../Interfaces/instanceEnum.js";
 
 /**
  * @template T
@@ -778,6 +779,10 @@ export class Player {
    * @returns {number}
    */
   get speed(){
+    if(!this.getDynamicProperty("AKAPI-CoreComp:Speed")){
+      this.setDynamicProperty("AKAPI-CoreComp:Speed", this.getComponent().getMovement().defaultValue);
+      this.getComponent().getMovement().setCurrentValue(this.getComponent().getMovement().defaultValue);
+    }
     return this.getDynamicProperty("AKAPI-CoreComp:Speed");
   }
   set speed(value){
@@ -1144,14 +1149,3 @@ function* getBlocks(player, x, y, z){
     } 
   }
 }
-
-const instanceEnum = /** @type {const} */({
-  "string": "string",
-  "number": "number",
-  "boolean": "boolean",
-  "Vector": "Vector",
-  "undefined": "undefined"
-})
-
-
-
