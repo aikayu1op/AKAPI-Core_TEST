@@ -223,11 +223,13 @@ export class Entity {
     return Components.getEntity(this._entity).getComponents();
   }
   /**
-   *
+   * 動的プロパティを取得します。
    * @param {string} identifier 取得したいデータ
+   * @returns {string | number | boolean | Vector | undefined}
    */
   getDynamicProperty(identifier) {
-    return this._entity.getDynamicProperty(identifier);
+    if(typeof this._player.getDynamicProperty(identifier) === "object") return new Vector(this._player.getDynamicProperty(identifier));
+    return this._player.getDynamicProperty(identifier);
   }
   /**
    * DynamicPropertyに登録されている変数の一覧です。
@@ -319,6 +321,19 @@ export class Entity {
    */
   getRotation() {
     return this._entity.getRotation();
+  }
+  /**
+   * 指定されたIDから動的プロパティがあるかどうかを取得します。 
+   * @param {string} identifier DynamicPropertyで指定されたID
+   * @param {ValueOf<instanceEnum>} type Stringなどの型を指定します。DynamicPropertyで設定できるものだけが対応しています。
+   */
+  hasDynamicProperty(identifier, type = undefined){
+    let instance = ["string", "number", "boolean", "Vector", "undefined"];
+    if(!identifier) return false;
+    if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
+    if(type == "Vector") return (this.getDynamicProperty(identifier) instanceof Vector);
+    if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
+    return false;
   }
   /**
    * エンティティに指定されたタグが存在するかどうかをチェックします。

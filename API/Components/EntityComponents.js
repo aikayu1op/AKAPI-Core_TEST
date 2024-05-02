@@ -1246,7 +1246,7 @@ export class PlayerEquipmentSlot {
   /**
    * 
    * @param {ValueOf<EquipmentSlot>} equipmentSlot 
-   * @param {ItemStack} itemStack 
+   * @param {ItemStack | undefined} itemStack 
    */
   setEquipment(equipmentSlot, itemStack){
     this._player.getComponent(this.typeId).setEquipment(equipmentSlot, itemStack?.getItemStack());

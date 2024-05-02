@@ -801,16 +801,16 @@ export class Player {
   /**
    * グライド状態であればその状態を解除します。
    * 
-   * @returns {boolean}
    */
-  async stopGliding(){
+  stopGliding(){
+    if(!this.isGliding) return false;
     const elytra = this.getComponent().getEquipmentInventory().getEquipment("Chest");
-    if(!this.isGliding || elytra.typeId.includes("elytra")) return false;
+    if(elytra?.typeId != "minecraft:elytra") return false;
     this.getComponent().getEquipmentInventory().setEquipment("Chest", undefined);
-    await new Promise(() =>{
+    system.runTimeout(() =>{
       this.getComponent().getEquipmentInventory().setEquipment("Chest", elytra);
       this.stopSound();
-    });
+    },1);
     return true;
   }
   /**
