@@ -94,6 +94,12 @@ class World {
   getDynamicProperty(identifier) {
     return w.getDynamicProperty(identifier);
   }
+  getDynamicPropertyIds(){
+    return w.getDynamicPropertyIds();
+  }
+  getDynamicPropertyTotalByteCount(){
+    return w.getDynamicPropertyTotalByteCount();
+  }
   /**
    *
    * @param {{} | myOptions.EntityQueryOptions} options
@@ -102,6 +108,17 @@ class World {
     if (options instanceof myOptions.EntityQueryOptions)
       return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
     return [...w.getPlayers(options)].map((p) => new Player(p));
+  }
+  /**
+   * 指定されたIDから動的プロパティがあるかどうかを取得します。 
+   * @param {string} identifier DynamicPropertyで指定されたID
+   * @param {Type} type Stringなどの型を指定します。DynamicPropertyで設定できるものだけが対応しています。
+   */
+  hasDynamicProperty(identifier, type = undefined){
+    if(!identifier) return false;
+    if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
+    if(!!type && this.getDynamicProperty(type) instanceof type) return true;
+    return false;
   }
   /**
    * 音楽を再生します。
@@ -135,7 +152,7 @@ class World {
    * @param {string} identifier
    */
   removeDynamicProperty(identifier) {
-    return w.removeDynamicProperty(identifier);
+    return w.setDynamicProperty(identifier, undefined);
   }
   /**
    * すべてのプレイヤーに対して、メッセージを送信します。

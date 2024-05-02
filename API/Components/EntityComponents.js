@@ -636,7 +636,9 @@ export class PlayerContainerComponent {
   /**
    * @readonly
    */
-  container = new PlayerInventoryComponent(this._player);
+  get container(){
+    return new PlayerInventoryComponent(this._player);
+  } 
   /**
    * @readonly
    */

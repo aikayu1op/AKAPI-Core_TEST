@@ -1,6 +1,5 @@
 import * as mc from "@minecraft/server";
 import { Vec3 } from "./Vec3.js";
-import { world } from "../../index.js";
 
 export class Vector {
   /**
@@ -281,6 +280,9 @@ export class Vector {
     this.z = param.z;
     return this;
   }
+  toString(){
+    return `${this.x} ${this.y} ${this.z}`;
+  }
   
 
   /**
@@ -291,10 +293,10 @@ export class Vector {
    * @param {number} y
    * @param {number} z
    * @overload
-   * @param {mc.Vector3 | mc.Vector | Vector} vector
+   * @param {mc.Vector3 | Vector} vector
    */
   constructor(x, y, z) {
-    if(x instanceof mc.Vector || x instanceof Vector){
+    if(x instanceof Vector){
         this.x = x.x;
         this.y = x.y;
         this.z = x.z;

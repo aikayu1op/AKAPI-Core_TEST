@@ -60,7 +60,6 @@ export class Command {
       obj.hasOwnProperty("permission")
     ){
       cmdData.set(obj.cmd, obj);
-      world.sendMessage("load command: "+obj.cmd);
     }
     else
       throw `[${
