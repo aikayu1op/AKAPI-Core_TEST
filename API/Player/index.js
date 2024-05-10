@@ -28,6 +28,7 @@ import Config from "../Utils/CommandBuilder/Config/index.js";
 import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 import "./setSpeed.js";
 import { instanceEnum } from "../Interfaces/instanceEnum.js";
+import { BlockRaycastHit } from "../Interfaces/BlockRaycastHit.js";
 
 /**
  * @template T
@@ -245,8 +246,8 @@ export class Player {
    * @param {mc.BlockRaycastOptions | BlockRaycastOptions} options 距離等のオプションの設定
    */
   getBlockFromViewDirection(options = {}) {
-    if (options instanceof BlockRaycastOptions) return this._player.getBlockFromViewDirection(options.getOptions());
-    else return this._player.getBlockFromViewDirection(options);
+    if (options instanceof BlockRaycastOptions) return new BlockRaycastHit(this._player.getBlockFromViewDirection(options.getOptions()));
+    else return new BlockRaycastHit(this._player.getBlockFromViewDirection(options));
   }
   /**
    * プレイヤーのコンポーネントを設定・取得するクラスを返します。
@@ -436,7 +437,7 @@ export class Player {
     }
   }
   /**
-   *
+   * 向いている一マス先の座標を取得します。
    */
   getViewDirection() {
     return new Vector(this._player.getViewDirection());
@@ -828,6 +829,9 @@ export class Player {
       this._player.teleport(location.getMCVector3(), options);
     else
       this._player.teleport(location.getMCVector3(), options.toObject());
+  }
+  toString(){
+    return "[object Player]";
   }
   /**
    * プレイヤーにメッセージを送信します。

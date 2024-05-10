@@ -8,8 +8,13 @@ import { Block } from "../Block/Block.js";
 import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 import { Vector2 } from "../Vector/Vector2.js";
+import { instanceEnum } from "../Interfaces/instanceEnum.js";
 
 export class Entity {
+  /**
+   * @private
+   */
+  _entity;
   /**
    * プレイヤーが今いるディメンションを取得します。
    * @readonly
@@ -330,9 +335,9 @@ export class Entity {
   hasDynamicProperty(identifier, type = undefined){
     let instance = ["string", "number", "boolean", "Vector", "undefined"];
     if(!identifier) return false;
-    if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
+    if(!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
     if(type == "Vector") return (this.getDynamicProperty(identifier) instanceof Vector);
-    if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
+    if(instance.includes(type) && typeof (this.getDynamicProperty(identifier) ?? undefined) === type) return true;
     return false;
   }
   /**
@@ -374,6 +379,12 @@ export class Entity {
    */
   playAnimation(animationName, options) {
     this._entity.playAnimation(animationName, options);
+  }
+  /**
+   * 
+   */
+  remove(){
+    this._entity.remove();
   }
   /**
    * エンティティに追加されているダイナミックプロパティを削除します。

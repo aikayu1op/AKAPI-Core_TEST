@@ -138,6 +138,7 @@ export class Block {
   }
 
   /**
+   * @param {mc.Block} block
    * @overload
    */
   constructor(block) {

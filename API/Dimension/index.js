@@ -56,7 +56,8 @@ export class Dimension {
    * 指定された数分を取得します。
    * @param {Vector} vector1
    * @param {Vector} vector2
-   * @returns {BlockIterator}
+   * @
+   * returns {BlockIterator}
    */
   getBlocks(vector1, vector2){
     let check1 = vector1 instanceof Vector? vector1 : new Vector(0, 0, 0);

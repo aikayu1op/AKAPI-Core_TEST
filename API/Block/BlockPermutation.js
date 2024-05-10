@@ -17,7 +17,7 @@ export class BlockPermutation{
      * 
      * @returns 
      */
-    getAllState(){
+    getAllStates(){
         return this._permutation.getAllStates();
     }
     /**
@@ -67,12 +67,13 @@ export class BlockPermutation{
      * @param {string | number | boolean} value 
      */
     withState(name, value){
-        return this._permutation.withState(name, value);
+        this._permutation.withState(name, value);
+        return this;
     }
     /**
      * 
      * @param {import("./Block.js").BlockID} blockId 
-     * @param {Record<string, boolean | number | string>} states 
+     * @param {Record<string, boolean | number | undefined>} states 
      */
     static resolve(blockId, states = undefined){
         return new BlockPermutation(mc.BlockPermutation.resolve(blockId, states));
