@@ -39,9 +39,10 @@ export class MultiLineActionbar {
    * @param {string} message 表示したいメッセージ
    * @param {number} tick 表示させたい時間
    */
-  static addMultiLineData(player, id, message, tick = -1) {
+  static addMultiLineData(player, id, message, tick = -1, debug = false) {
     if(!deleteDataTick.get(player.id)) deleteDataTick.set(player.id, new Map().set(id, tick));
     else deleteDataTick.set(player.id, deleteDataTick.get(player.id).set(id, tick));
+    if(debug) message = "§e[Debug]§r "+message;
 
     if (!alldata.has(player.id)) alldata.set(player.id, new Map().set(id, message));
     else alldata.set(player.id, alldata.get(player.id).set(id, message));

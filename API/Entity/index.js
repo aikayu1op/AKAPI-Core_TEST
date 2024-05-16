@@ -233,8 +233,8 @@ export class Entity {
    * @returns {string | number | boolean | Vector | undefined}
    */
   getDynamicProperty(identifier) {
-    if(typeof this._player.getDynamicProperty(identifier) === "object") return new Vector(this._player.getDynamicProperty(identifier));
-    return this._player.getDynamicProperty(identifier);
+    if(typeof this._entity.getDynamicProperty(identifier) === "object") return new Vector(this._entity.getDynamicProperty(identifier));
+    return this._entity.getDynamicProperty(identifier);
   }
   /**
    * DynamicPropertyに登録されている変数の一覧です。
@@ -335,7 +335,7 @@ export class Entity {
   hasDynamicProperty(identifier, type = undefined){
     let instance = ["string", "number", "boolean", "Vector", "undefined"];
     if(!identifier) return false;
-    if(!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
+    if(typeof this.getDynamicProperty(identifier) == "undefined" && (type == "undefined" || typeof type == "undefined")) return true;
     if(type == "Vector") return (this.getDynamicProperty(identifier) instanceof Vector);
     if(instance.includes(type) && typeof (this.getDynamicProperty(identifier) ?? undefined) === type) return true;
     return false;

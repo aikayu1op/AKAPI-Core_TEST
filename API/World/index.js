@@ -214,7 +214,42 @@ hasDynamicProperty(identifier, type = undefined){
    * @param {string} id
    */
   getEntity(id) {
-    new Entity(w.getEntity(id));
+    return new Entity(w.getEntity(id));
+  }
+  /**
+   * すべてのディメンションにいるエンティティを取得します。
+   * @param {myOptions.EntityQueryOptions} options
+   * @returns {Entity[]}
+   */
+  getEntities(options){
+    if(options instanceof myOptions.EntityQueryOptions) options = options.getOptions();
+    if(options instanceof myOptions.EntityQueryOptions || typeof options !== 'object') throw new Error("Invalid options.");
+    let exchange = [];
+    w.getDimension("overworld").getEntities(options).map(x => exchange.push(new Entity(x)));
+    w.getDimension("nether").getEntities(options).map(x => exchange.push(new Entity(x)));
+    w.getDimension("the_end").getEntities(options).map(x => exchange.push(new Entity(x)));
+    return exchange;
+  }
+  /**
+   * すべてのディメンションにいるエンティティを取得します。(Generator版)
+   * @param {myOptions.EntityQueryOptions} options
+   */
+  *getGeneratedEntities(options){
+    if(options instanceof myOptions.EntityQueryOptions) options = options.getOptions();
+    if(options instanceof myOptions.EntityQueryOptions || typeof options !== 'object') throw new Error("Invalid options.");
+    let exchange = [];
+    for(let entity of w.getDimension("overworld").getEntities(options)){
+      exchange.push(new Entity(entity));
+      yield exchange;
+    }
+    for(let entity of w.getDimension("nether").getEntities(options)){
+      exchange.push(new Entity(entity));
+      yield exchange;
+    }
+    for(let entity of w.getDimension("the_end").getEntities(options)){
+      exchange.push(new Entity(entity));
+      yield exchange;
+    }
   }
   /**
    * ワールドの絶対時間をセットします。

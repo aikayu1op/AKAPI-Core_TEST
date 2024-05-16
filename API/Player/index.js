@@ -924,10 +924,11 @@ export class Player {
    * ```
    * @param {string} id 表示用ID
    * @param {string} message 表示用テキスト
+   * @param {boolean} debug デバッグ用
    * @param {number} tick 表示時間(1/20s)
    */
-  setMultiLineActionbar(id = "main", message = "undefined", tick = 1) {
-    MultiLineActionbar.addMultiLineData(this, id, message, tick);
+  setMultiLineActionbar(id = "main", message = "undefined", debug = false, tick = 1) {
+    MultiLineActionbar.addMultiLineData(this, id, message, tick, debug);
   }
   /**
    * 右から左へ流れるactionbarを作ることができます。
