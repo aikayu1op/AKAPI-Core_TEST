@@ -590,7 +590,7 @@ export class Player {
    * @returns {ItemStack | undefined}
    */
   set mainhandItem(itemStack){
-    if (itemStack instanceof ItemStack) 
+    if (itemStack instanceof ItemStack || typeof itemStack === "undefined") 
       this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
   }
   /**

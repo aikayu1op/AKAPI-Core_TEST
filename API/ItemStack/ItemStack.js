@@ -262,20 +262,17 @@ export class ItemStack {
     if (itemType instanceof mc.ItemStack) {
       this._itemStack = itemType;
       this.typeId = this._itemStack.typeId;
-      //this.amount = this._itemStack.amount;
-      //if(nameTag != "") this._itemStack.nameTag = nameTag;
       if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
 
     }
-    if (itemType instanceof mc.ItemType || typeof itemType === "string") {
+    else if (itemType instanceof mc.ItemType || typeof itemType === "string") {
       this._itemStack = new mc.ItemStack(itemType, amount);
       this.typeId = this._itemStack.typeId;
       if(nameTag != "") this._itemStack.nameTag = nameTag;
       if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
-    }/*else{
-      world.sendMessage(itemType instanceof mc.ItemStack);
-      this._itemStack = undefined;
-    }*/
+    }else{
+      return;
+    }
   }
 }
 
