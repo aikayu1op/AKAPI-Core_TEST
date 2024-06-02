@@ -1,4 +1,5 @@
 import { Player } from "../Player/index.js";
+import { world } from "../World/index.js";
 import { ActionFormData } from "./ActionFormData.js";
 
 export class BookFormData{
@@ -36,15 +37,23 @@ export class BookFormData{
                 x += overWord;
                 overWord = "";
             }
-            if(x.length > 180){
-                overWord = x.substring(180);
-                x = x.substring(0, 180);
+            let line = x.split("\n");
+            world.sendMessage(String(line.length));
+            if(line.length > 14){
+                overWord = x.slice(15);
+                x = x.slice(0, 15);
             }
-            x += " ".repeat(180 - x.length)
-            pages.push(x);
+            let get = getSubstringWithinByteLimit(x, 360);
+            if(get[1] > 360){
+                overWord = x.substring(get[0].length-1);
+                x = x[0];
+            }
+            x.replace(/\n/g, "\\n");
+            world.sendMessage(String(get[0]))
+            x += " ".repeat(360 - get[1])
+            pages.push(formatText(x.replace(/\\n/g, "\n")));
         });
-        let convert = pages.map(x => formatText(x))
-        this._book = convert;
+        this._book = pages;
         return this;
     }
     /**
@@ -65,13 +74,14 @@ export class BookFormData{
             this._form.button("§n§o");
             check = true;
         }
-        if(Math.floor(this._book.length / 2) > this._pages){
+        if(Math.ceil(this._book.length / 2) > this._pages){
             this._form.button("§n§o");   
             this._form.button("右", undefined, () => { this._pages++; this.show(player);});   
             check = true;
         }
         if(!check) this._form.button("§n§o")
         this._form.show(player);
+        player.sendMessage((this._book[0]+this._book[1]).substring(0, 194));
     }
     constructor(){ }
 }
@@ -81,15 +91,59 @@ export class BookFormData{
  * @returns 
  */
 function formatText(input) {
-    let rowSize = 12;
-    let formattedText = "";
+    const ROW_SIZE = 12;
+    let check = 0;
+    let formatted = "";
+    for(let item of input.split("")){
+        if(item != "\n"){
+            formatted += item;
+            check++;
+        }
+        else{
+            formatted += item+" ".repeat(ROW_SIZE-check-2);
+            check = 0;
+        }
+        if(check == ROW_SIZE){
+            formatted += "\n";
+            check = 0;
+        }
+    }
+    return formatted;
+}
+/**
+ * 
+ * @param {string} str 
+ * @param {number} byteLimit
+ * @returns 
+ */
+function getSubstringWithinByteLimit(str, byteLimit) {
+    let byteLength = 0;
+    let endIndex = 0;
 
-    for (let j = 0; j < input.length; j += rowSize) {
-        if (j + rowSize < input.length)
-            formattedText += input.substring(j, j + rowSize) + "\n";
-        else 
-            formattedText += input.substring(j, j + rowSize);
+    for (let i = 0; i < str.length; i++) {
+        let charCode = str.charCodeAt(i);
+        let charByteLength;
+
+        if (str[i] === "\n") {
+            charByteLength = 2; // Treat \n as 2 bytes
+        } else if (charCode <= 0x007F) {
+            charByteLength = 1; // ASCII characters (1 byte)
+        } else if (charCode <= 0x07FF) {
+            charByteLength = 2; // Extended ASCII (2 bytes)
+        } else if (charCode <= 0xFFFF) {
+            charByteLength = 3; // Unicode characters (3 bytes)
+        } else {
+            charByteLength = 4; // Characters outside the Basic Multilingual Plane (4 bytes)
+            i++; // Skip the next code unit, as it is part of the surrogate pair
+        }
+
+        if (byteLength + charByteLength > byteLimit) {
+            break;
+        }
+
+        byteLength += charByteLength;
+        endIndex = i + 1;
     }
 
-    return formattedText;
+    return [str.substring(0, endIndex), byteLength];
 }
