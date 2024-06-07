@@ -81,7 +81,7 @@ export class Dimension {
    * optionsで指定されたエンティティを返します。
    *
    * optionsは指定がない場合はすべてのエンティティを返します。
-   * @param {EntityQueryOptions | {}} options
+   * @param {keyof EntityQueryOptions | EntityQueryOptions} options
    */
   getEntities(options = {}) {
     const push = [];

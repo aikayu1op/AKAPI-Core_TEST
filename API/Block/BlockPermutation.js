@@ -28,7 +28,7 @@ export class BlockPermutation{
         return this._permutation.getState(propertyName);
     }
     /**
-     * 
+     * ブロックのデータを保持したままItemStackを返します。
      * @param {number} amount 
      * @returns 
      */
@@ -40,12 +40,6 @@ export class BlockPermutation{
      */
     getTags(){
         return this._permutation.getTags()
-    }
-    /**
-     * ブロックのデータを保持したままItemStackを返します。
-     */
-    getItemStack(){
-        return new ItemStack(this._permutation.getItemStack())
     }
     /**
      * ブロックに本当にタグがついてるか検証します。
@@ -67,8 +61,7 @@ export class BlockPermutation{
      * @param {string | number | boolean} value 
      */
     withState(name, value){
-        this._permutation.withState(name, value);
-        return this;
+        return new BlockPermutation(this._permutation.withState(name, value));
     }
     /**
      * 

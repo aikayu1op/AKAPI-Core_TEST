@@ -5,6 +5,7 @@ import { BaseBlockComponent } from "../Components/BlockComponent.js";
 import { BlockPermutation } from "./BlockPermutation.js";
 import { BlockType } from "./BlockType.js";
 import { MinecraftBlockTypes } from "../Type/index.js";
+import { ItemStack } from "../ItemStack/ItemStack.js";
 /**
  * @typedef {MinecraftBlockTypes[keyof MinecraftBlockTypes] BlockID}
  */
@@ -40,6 +41,15 @@ export class Block {
    * @readonly
    */
   typeId;
+  above(steps = undefined){
+    if(!!this._block.above(steps)) return new Block(this._block);
+  }
+  below(steps = undefined){
+    if(!!this._block.below(steps)) return new Block(this._block);
+  }
+  bottomCenter(){
+    return Vector(this._block.bottomCenter());
+  }
   /**
    *
    * @param {BlockPermutation | BlockType} blockToPlace
@@ -51,6 +61,16 @@ export class Block {
     else if (blockToPlace instanceof BlockType)
       return this._block.canPlace(blockToPlace.getMCBlockType(), faceToPlaceOn);
   }
+  center(){
+    return new Vector(this._block.center());
+  }
+  /**
+   * クローンを生成します。
+   * @returns 
+   */
+  clone(){
+    return new Block(this._block);
+  }
   /**
    * ブロックの座標からオフセットをもとに再取得します。
    * @param {number} x 
@@ -60,11 +80,28 @@ export class Block {
   changeOffset(x,y,z){
     return new Block(this._block.dimension.getBlock(new Vector(this.x + x, this.y + y, this.z + z).getMCVector3()))
   }
+  east(steps = undefined){
+    if(!!this._block.east(steps)) return new Block(this._block);
+  }
   /**
    * コンポーネントを返します。
    */
   getComponent() {
     return new BaseBlockComponent(this);
+  }
+  /**
+   * レッドストーン信号の強さを取得します。
+   * @returns 
+   */
+  getRedstonePower(){
+    return this._block.getRedstonePower();
+  }
+  /**
+   * ブロックのItemStackを取得します。
+   * @returns 
+   */
+  getItemStack(){
+    if(!!this._block.getItemStack()) return new ItemStack(this._block.getItemStack());
   }
   /**
    * ブロックのタグを返します。
@@ -80,11 +117,33 @@ export class Block {
     return this._block.hasTag(tag);
   }
   /**
+   * 
+   * @param {string} blockName 
+   * @param {Record<string, string | number | boolean> | undefined} states 
+   * @returns 
+   */
+  matches(blockName, states = undefined){
+    return this._block.matches(blockName, states);
+  }
+  north(steps = undefined){
+    if(!!this._block.north(steps)) return new Block(this._block);
+  }
+  /**
    * BlockPermutationに設定されている状態のものをセットします。
    * @param {BlockPermutation} permutation
    */
   setPermutation(permutation) {
     this._block.setPermutation(permutation.getMCBlockPermutation());
+  }
+  /**
+   * ブロックの周りに水が入っているを設定・確認できます。
+   * @param {boolean} isWaterlogged 
+   */
+  setWaterlogged(isWaterlogged){
+    this._block.setWaterlogged(isWaterlogged);
+  }
+  south(steps = undefined){
+    if(!!this._block.south(steps)) return new Block(this._block);
   }
   /**
    * 指定されたBlockTypeでブロックをセットします。
@@ -101,16 +160,6 @@ export class Block {
     this._block.trySetPermutation(permutation.getMCBlockPermutation());
   }
   /**
-   * ブロックの周りに水が入っているを設定・確認できます。
-   * valueに値を入れると設定され、何も入れないと確認を取ることができます。
-   *
-   * @param {boolean} value
-   */
-  WaterLogged(value = undefined) {
-    if (value == undefined) return this._block.isWaterlogged;
-    this._block.isWaterlogged = value;
-  }
-  /**
    * マイクラ公式のBlockクラスを返します。
    * @deprecated
    * @returns {mc.Block}
@@ -122,19 +171,22 @@ export class Block {
    * 空気かどうかを返します。
    */
   isAir() {
-    return this._block.isAir();
+    return this._block.isAir;
   }
   /**
    * 液体かどうかを返します。
    */
   isLiquid() {
-    return this._block.isLiquid();
+    return this._block.isLiquid;
   }
   /**
    * 固体かどうかを返します。
    */
   isSolid() {
-    return this._block.isSolid();
+    return this._block.isSolid;
+  }
+  west(steps = undefined){    
+    if(!!this._block.west(steps)) return new Block(this._block);
   }
 
   /**

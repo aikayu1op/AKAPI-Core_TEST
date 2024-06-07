@@ -81,7 +81,7 @@ export class Player {
    * })
    * ```
    * @param {mc.EffectType} effectType エフェクトタイプを指定します。
-   * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick)
+   * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick) 20000000まで指定可能です
    * @param {keyof EntityEffectOptions | EntityEffectOptions} options
    */
   addEffect(effectType, duration = 400, options = {}) {

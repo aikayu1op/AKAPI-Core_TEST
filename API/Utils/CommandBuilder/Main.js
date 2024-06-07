@@ -271,7 +271,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
     //messageBuilder
     system.run(() =>{
       //WebSocket用通信
-      sender.runCommand(`titleraw @s actionbar {"rawtext":[{"text":"§m§s§g${message.split("").map(x => "§"+x).join("")}"}]}`);
+      //sender.runCommand(`titleraw @s actionbar {"rawtext":[{"text":"§m§s§g${message.split("").map(x => "§"+x).join("")}"}]}`);
       //同様
       sender.sendActionbar("");
 
