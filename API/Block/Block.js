@@ -48,7 +48,7 @@ export class Block {
     if(!!this._block.below(steps)) return new Block(this._block);
   }
   bottomCenter(){
-    return Vector(this._block.bottomCenter());
+    return new Vector(this._block.bottomCenter());
   }
   /**
    *
