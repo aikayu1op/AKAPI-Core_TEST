@@ -43,7 +43,7 @@ export class Dimension {
    */
   findClosestBiome(pos, biomeToFind, options = undefined){
     if(pos instanceof Vector) pos = pos.getMCVector3();
-    this._dimension.findClosestBiome(pos, biomeToFind, options);
+    return new Vector(this._dimension.findClosestBiome(pos, biomeToFind, options));
   }
   /**
    * 指定されたディメンションと座標のブロックを取得します。

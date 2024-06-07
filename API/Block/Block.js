@@ -42,10 +42,10 @@ export class Block {
    */
   typeId;
   above(steps = undefined){
-    if(!!this._block.above(steps)) return new Block(this._block);
+    if(!!this._block.above(steps)) return new Block(this._block.above(steps));
   }
   below(steps = undefined){
-    if(!!this._block.below(steps)) return new Block(this._block);
+    if(!!this._block.below(steps)) return new Block(this._block.below(steps));
   }
   bottomCenter(){
     return new Vector(this._block.bottomCenter());
@@ -81,7 +81,7 @@ export class Block {
     return new Block(this._block.dimension.getBlock(new Vector(this.x + x, this.y + y, this.z + z).getMCVector3()))
   }
   east(steps = undefined){
-    if(!!this._block.east(steps)) return new Block(this._block);
+    if(!!this._block.east(steps)) return new Block(this._block.east(steps));
   }
   /**
    * コンポーネントを返します。
@@ -126,7 +126,7 @@ export class Block {
     return this._block.matches(blockName, states);
   }
   north(steps = undefined){
-    if(!!this._block.north(steps)) return new Block(this._block);
+    if(!!this._block.north(steps)) return new Block(this._block.north(steps));
   }
   /**
    * BlockPermutationに設定されている状態のものをセットします。
@@ -143,7 +143,7 @@ export class Block {
     this._block.setWaterlogged(isWaterlogged);
   }
   south(steps = undefined){
-    if(!!this._block.south(steps)) return new Block(this._block);
+    if(!!this._block.south(steps)) return new Block(this._block.south(steps));
   }
   /**
    * 指定されたBlockTypeでブロックをセットします。
@@ -186,7 +186,7 @@ export class Block {
     return this._block.isSolid;
   }
   west(steps = undefined){    
-    if(!!this._block.west(steps)) return new Block(this._block);
+    if(!!this._block.west(steps)) return new Block(this._block.west(steps));
   }
 
   /**
