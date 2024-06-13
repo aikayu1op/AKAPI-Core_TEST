@@ -84,20 +84,3 @@ Command.register({
     }
   },
 });
-
-/*world.afterEvents.messageReceive.subscribe(ev =>{
-  console.log("test");
-  if(!ev.player && ev.id == "AKAPI:plugin"){
-    if(ev.message === "checkPL"){
-      console.log(`PluginList\n---------------------\n${allplugins}§f---------------------`)
-      console.log(`author: ${author}\n---------------------`);
-    }else if(ev.message === "checkPE"){
-      console.error("ErrorList--------------------\n");
-      for (const err of errorlist) {
-        const data = JSON.parse(err);
-        console.error(`Plugin: ${data.name}\n   ${data.err}\n`);
-      }  
-      console.error("\n----------------------------");
-    }
-  } 
-})*/

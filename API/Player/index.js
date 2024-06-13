@@ -561,7 +561,7 @@ export class Player {
    * 右手に持っているアイテムを取得します。
    */
   getMainhandItem() {
-    return this.getComponent().getInventory().container.getItem(this.selectedSlot);
+    return this.getComponent().getInventory().container.getItem(this.selectedSlotIndex);
   }
   /**
    * オフハンドに持っているアイテムを取得します。
@@ -581,7 +581,7 @@ export class Player {
    *
    */
   get mainhandItem(){
-    return this.getComponent().getInventory().container.getItem(this.selectedSlot);
+    return this.getComponent().getInventory().container.getItem(this.selectedSlotIndex);
   }
   /**
    * 右手に持っているアイテムを設定・取得します。
@@ -591,7 +591,7 @@ export class Player {
    */
   set mainhandItem(itemStack){
     if (itemStack instanceof ItemStack || typeof itemStack === "undefined") 
-      this.getComponent().getInventory().container.setItem(this.selectedSlot, itemStack);
+      this.getComponent().getInventory().container.setItem(this.selectedSlotIndex, itemStack);
   }
   /**
    * プレイヤーのMCIDをかえします。
@@ -852,15 +852,15 @@ export class Player {
   /**
    * プレイヤーが右手に持っているスロット番号を返します。
    */
-  get selectedSlot() {
-    return this._player.selectedSlot;
+  get selectedSlotIndex() {
+    return this._player.selectedSlotIndex;
   }
   /**
    * プレイヤーが右手に持っているスロット番号を返します。
    * @param {number} value 0~9の値を入れることで、ホットバーに指定された数値の場所にカーソルを合わせてくれます。
    */
-  set selectedSlot(value) {
-    if (typeof value == "number" && value <= 9) this._player.selectedSlot = value;
+  set selectedSlotIndex(value) {
+    if (typeof value == "number" && value <= 9) this._player.selectedSlotIndex = value;
   }
 
   /**
