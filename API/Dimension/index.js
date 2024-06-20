@@ -136,9 +136,9 @@ export class Dimension {
    */
   setBlock(location, block, options = undefined){
     if(block instanceof BlockPermutation)
-      this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block?.getMCBlockPermutation(), options);
+      this.fillBlocks(new mc.BlockVolume(location.getMCVector3(), location.getMCVector3()), block?.getMCBlockPermutation(), options);
     else 
-      this._dimension.fillBlocks(location.getMCVector3(), location.getMCVector3(), block, options);
+      this.fillBlocks(new mc.BlockVolume(location.getMCVector3(), location.getMCVector3()), block, options);
   }
   /**
    * 現在のディメンションの天気を変更します。
@@ -157,9 +157,9 @@ export class Dimension {
    */
   fillBlocks(begin, end, block, options = undefined){
     if(block instanceof BlockPermutation)
-      return this._dimension.fillBlocks(begin.getMCVector3(), end.getMCVector3(), block?.getMCBlockPermutation()??block, options);
+      return this._dimension.fillBlocks(new mc.BlockVolume(begin.getMCVector3(), end.getMCVector3()), block?.getMCBlockPermutation()??block, options);
     else
-      return this._dimension.fillBlocks(begin.getMCVector3(), end.getMCVector3(), block, options);
+      return this._dimension.fillBlocks(new mc.BlockVolume(begin.getMCVector3(), end.getMCVector3()), block, options);
   }
   /**
    * 指定されたエンティティを召喚します。

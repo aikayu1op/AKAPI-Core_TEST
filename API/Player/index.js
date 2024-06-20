@@ -68,6 +68,18 @@ export class Player {
   get fallDistance(){
     return this._player.fallDistance;
   }
+  /**
+   * @readonly
+   */
+  get camera(){
+    return this._player.camera;
+  }
+  /**
+   * @readonly
+   */
+  get inputPermissions(){
+    return this._player.inputPermissions;
+  }
 
   /**
    * プレイヤーにエフェクトを追加します。
@@ -208,6 +220,13 @@ export class Player {
    */
   extinguishFire(useEffects = undefined) {
     return this._player.extinguishFire(useEffects);
+  }
+  /**
+   * アイテムを食べます。
+   * @param {ItemStack} itemStack 
+   */
+  eatItem(itemStack){
+    this._player.eatItem(itemStack);
   }
   /**
    * 指定したスロットのアイテムをドロップします。
@@ -364,10 +383,7 @@ export class Player {
    * @returns {ValueOf<GameMode>}
    */
   getGameMode() {
-    for (const gamemodeName in mc.GameMode) {
-      if(this.matches({gameMode: mc.GameMode[gamemodeName]}))
-        return gamemodeName;
-    }
+    return this._player.getGameMode();
   }
   /**
    * 現在の経験値を取得します。

@@ -221,13 +221,15 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
               if(!nothingBool){
                 let array = z.split(regex);
                 if(array.every(() => {
-                  if ((array[i].includes("boolean") && x === "true") || x === "false") {
-                    x == "true" ? (x = true) : (x = false);
-                    return true;
-                  } else if (array[i].includes("number") && !isNaN(x)) {
+                  if (array[i].includes("number") && !isNaN(x)) {
                     x = Number(x);
                     return true;
-                  } else if (array[i].includes("object")) {
+                  } 
+                  else if ((array[i].includes("boolean") && x === "true") || x === "false") {
+                    x == "true" ? (x = true) : (x = false);
+                    return true;
+                  } 
+                  else if (array[i].includes("object")) {
                     try {                  
                       x = JSON.parse(x);
                       return true;
