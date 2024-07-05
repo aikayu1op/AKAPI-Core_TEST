@@ -118,8 +118,8 @@ class World {
 hasDynamicProperty(identifier, type = undefined){
   let instance = ["string", "number", "boolean", "Vector", "undefined"];
   if(!identifier) return false;
-  if(!!this.getDynamicProperty(identifier) && typeof type === "undefined") return true;
-  if(type == "Vector") return (this.getDynamicProperty(identifier) instanceof Vector);
+  if(type === "Vector"   ) return (this.getDynamicProperty(identifier) instanceof Vector);
+  if(type === "undefined" || typeof type === "undefined") return !this.getDynamicProperty(identifier);
   if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
   return false;
 }

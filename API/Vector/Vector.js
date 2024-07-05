@@ -1,5 +1,6 @@
 import * as mc from "@minecraft/server";
 import { Vec3 } from "./Vec3.js";
+import { world } from "../World/index.js";
 
 export class Vector {
   /**

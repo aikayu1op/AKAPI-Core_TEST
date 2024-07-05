@@ -107,7 +107,47 @@ export class ActionFormData{
                 if(typeof fn == "function") fn({player, index, count});
     
             });
+        });
+        return;
+    }
+        /**
+     * 指定したプレイヤーにフォームを表示します。
+     * @param {Player} showPlayer 
+     * @param {ActionFormCanceledResponse} callback
+     * @param {boolean} force
+     */
+    async showAsync(showPlayer, callback = undefined, force = false){
+        const form = new UI.ActionFormData()
+        .title(this.form.title)
+        .body(this.form.body);
+        for(let i = 0; i < this.buttons.length; i+=2) form.button(this.buttons[i], this.buttons[i+1]);
+        let firstCallback = this.firstCallback;
+        let _doCallback = this._doCallback;
+        let count = 0;
+        await new Promise((resolve) =>{
+            system.run(function forces(){
+                form.show(showPlayer.getMCPlayer()).then(response =>{
+                    let player = showPlayer;
+                    let index = response.selection;
+                    const {canceled} = response;
+                    if(typeof firstCallback == "function" && typeof index == "number") firstCallback({player, index, count});
+                    if(String(response.cancelationReason) == "UserBusy" && force){
+                        system.run(forces);
+                        return;
+                    }
+                    if(typeof callback != "function" && !!callback) throw "this callback is not a function.";
+                    resolve("");
+                    let cancelationReason = String(response.cancelationReason);
+                    if(response.selection != undefined) cancelationReason = "buttonClicked";
+                    if(typeof callback == "function") callback({player, cancelationReason, canceled, count, index});
+                    if(response.canceled) return;
+                    let fn = _doCallback[response.selection];
+                    if(typeof fn == "function") fn({player, index, count});
+        
+                });
+            });
         })
+        return true;
     }
     /**
      * フォームの最初の設定をします。
@@ -117,6 +157,11 @@ export class ActionFormData{
      *    data.player.addTag("example");
      * })
      * @overload
+     * @overload
+     * @param {string} title
+     * @overload
+     * @param {string} title
+     * @param {string} body
      * @overload
      * @param {string} title 
      * @param {string} body 
