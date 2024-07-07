@@ -9,6 +9,10 @@ import { Time } from "../Utils/Time/index.js";
 import { beforeEvents } from "../BeforeEvents/index.js";
 import { afterEvents } from "../AfterEvents/index.js";
 import { instanceEnum } from "../Interfaces/instanceEnum.js";
+/**
+ * @template T
+ * @typedef {T[keyof T]} ValueOf
+ */
 
 class World {
   /**
