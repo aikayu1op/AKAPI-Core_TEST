@@ -988,7 +988,7 @@ export class Player {
    * @param {Vector} vector
    */
   set location(vector){
-    this.teleport(vector);
+    if(!this.location.equals(vector)) this.teleport(vector);
   }
   /**
    * プレイヤーのMCIDを取得します。

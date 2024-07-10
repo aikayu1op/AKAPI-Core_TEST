@@ -733,8 +733,12 @@ export class PlayerInventoryComponent {
    * optionsのslotに値を設定すると、withEmptyが強制的にtrueになります。
    *
    * 戻り値はItemStackの配列です。
-   * @param {ItemQueryOptions | ItemQueryOptions[]} options
-   * @returns {ItemStack[] | ItemStack[][]}
+   * @overload
+   * @param {ItemQueryOptions} options
+   * @returns {ItemStack[]}
+   * @overload
+   * @param {ItemQueryOptions[]} options
+   * @returns {ItemStack[][]}
    */
   getAllItems(options = undefined) {
     /**

@@ -1,4 +1,5 @@
 export { EntityQueryOptions } from "./EntityQueryOptions.js";
+export { ItemQueryOptions } from "./ItemQueryOptions.js";
 export { MusicOptions } from "./MusicOptions.js";
 export { SoundOptions } from "./SoundOptions.js";
 export { BlockRaycastOptions } from "./BlockRaycastOptions.js";

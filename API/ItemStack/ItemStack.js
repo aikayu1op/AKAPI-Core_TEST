@@ -108,7 +108,7 @@ export class ItemStack {
    * @param {ItemLockMode[keyof ItemLockMode]} value
    */
   set lockMode(value){
-    if(typeof value === "boolean") this._itemStack.lockMode = value;
+    this._itemStack.lockMode = value;
   }
   /**
    * アドベンチャーモードで指定されたブロックに対して設置可能にします。

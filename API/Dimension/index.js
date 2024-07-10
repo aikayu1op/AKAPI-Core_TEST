@@ -7,6 +7,7 @@ import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { BlockPermutation } from "../Block/BlockPermutation.js";
+import { BlockType } from "../Block/BlockType.js";
 
 export class Dimension {
   /**
@@ -129,24 +130,39 @@ export class Dimension {
     return this._dimension.runCommandAsync(commandString);
   }
   /**
-   * 指定した座標にブロックを設置します。
-   * @param {Vector} location
-   * @param {string | mc.BlockType | mc.BlockPermutation | BlockPermutation} block
-   * @param {mc.BlockFillOptions | undefined} options
-   */
-  setBlock(location, block, options = undefined){
-    if(block instanceof BlockPermutation)
-      this.fillBlocks(new mc.BlockVolume(location.getMCVector3(), location.getMCVector3()), block?.getMCBlockPermutation(), options);
-    else 
-      this.fillBlocks(new mc.BlockVolume(location.getMCVector3(), location.getMCVector3()), block, options);
-  }
-  /**
    * 現在のディメンションの天気を変更します。
    * @param {"Clear" | "Rain" | "Thunder"} weatherType 天候のタイプを指定します。
    * @param {number} duration 何秒間変更するかを指定します。
    */
   setWeather(weatherType, duration = 0){
     this._dimension.setWeather(weatherType, duration);
+  }
+  /**
+   * 指定した座標にブロックを設置します。
+   * @param {Vector} location
+   * @param {import("../Block/Block.js").BlockID | string | mc.BlockType | mc.BlockPermutation | BlockPermutation } block
+   */
+  setBlock(location, block){
+    if(block instanceof BlockPermutation)
+      this.setBlockPermutation(location, block);
+    else 
+      this.setBlockType(location, block);
+  }
+  /**
+   * 
+   * @param {Vector} location 
+   * @param {BlockPermutation} permutation 
+   */
+  setBlockPermutation(location, permutation){
+    this._dimension.setBlockPermutation(location.getMCVector3(), permutation.getMCBlockPermutation());
+  }
+  /**
+   * 
+   * @param {Vector} location 
+   * @param {string | BlockType | mc.BlockType} blockType 
+   */
+  setBlockType(location, blockType){
+    this._dimension.setBlockType(location.getMCVector3(), blockType);
   }
   /**
    * 指定した始終点を基準にブロックを設置します。
