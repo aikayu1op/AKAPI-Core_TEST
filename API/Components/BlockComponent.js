@@ -78,7 +78,7 @@ export class BaseBlockComponent {
 /**
  * 看板のコンポーネントを取得します。
  */
-class BlockSignComponent {
+export class BlockSignComponent {
   /**
    * コンポーネントの名前が入っています。
    * @readonly
@@ -156,7 +156,7 @@ class BlockSignComponent {
 /**
  * コンテナー機能が追加されているブロックの中身を変更することができます。(例: チェスト、シュルカーボックス等)
  */
-class BlockInventoryComponent {
+export class BlockInventoryComponent {
   /**
    * コンポーネントの名前が入っています。
    * @readonly
@@ -179,7 +179,7 @@ class BlockInventoryComponent {
     } catch (e) {}
   }
 }
-class BlockInventoryComponentContainer {
+export class BlockInventoryComponentContainer {
   /**
    * 空のスロットがいくつあるかを返します。
    * @readonly
@@ -244,11 +244,7 @@ class BlockInventoryComponentContainer {
    * @param {ItemStack} itemStack
    */
   setItem(slot, itemStack) {
-    try {
-      this._blockComp.setItem(slot, itemStack.getItemStack());
-    } catch (e) {
-      return new Error(String(e));
-    }
+      this._blockComp.setItem(slot, itemStack?.getItemStack());
   }
   /**
    *
@@ -298,7 +294,7 @@ class BlockInventoryComponentContainer {
 /**
  * 大釜に溶岩が入ってる際に使用可能なコンポーネントです。
  */
-class BlockLavaContainerComponent {
+export class BlockLavaContainerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -322,7 +318,7 @@ class BlockLavaContainerComponent {
     } catch (e) {}
   }
 }
-class BlockPistonComponent {
+export class BlockPistonComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -374,7 +370,7 @@ class BlockPistonComponent {
 /**
  * 大釜にポーションが入ってる際に使用可能なコンポーネントです。
  */
-class BlockPotionContainerComponent {
+export class BlockPotionContainerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -408,7 +404,7 @@ class BlockPotionContainerComponent {
 /**
  * ジュークボックスと同じ機能を持つブロックの際に使用可能なコンポーネントです。
  */
-class BlockRecordPlayerComponent {
+export class BlockRecordPlayerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -448,7 +444,7 @@ class BlockRecordPlayerComponent {
 /**
  * 大釜に粉雪が入ってる際に使用可能なコンポーネントです。
  */
-class BlockSnowContainerComponent {
+export class BlockSnowContainerComponent {
   /**
    * @readonly
    * コンポーネントID
@@ -475,7 +471,7 @@ class BlockSnowContainerComponent {
 /**
  * 大釜に水が入ってる際に使用可能なコンポーネントです。
  */
-class BlockWaterContainerComponent {
+export class BlockWaterContainerComponent {
   /**
    * @readonly
    * コンポーネントID

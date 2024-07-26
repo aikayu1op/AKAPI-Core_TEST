@@ -191,7 +191,8 @@ export class Dimension {
    * @param {Vector} location
    */
   spawnItem(itemStack, location) {
-    return new Entity(this._dimension.spawnItem((itemStack instanceof ItemStack)? itemStack.getItemStack() : undefined, location.getMCVector3()));
+    if(!itemStack instanceof ItemStack) return undefined;
+    return new Entity(this._dimension.spawnItem(itemStack?.getItemStack(), location.getMCVector3()));
   }
   /**
    * 指定されたパーティクルを召喚します。

@@ -9,3 +9,6 @@ export { Block, BlockPermutation, BlockType } from "./API/Block/index.js";
 export { system } from "./API/System/index.js";
 export { MinecraftItemTypes } from "./API/Type/index.js";
 export * from "./API/Utils/index.js";
+export * from "./API/Components/BlockComponent.js";
+export * from "./API/Components/EntityComponents.js";
+export * from "./API/Components/ItemComponents.js";

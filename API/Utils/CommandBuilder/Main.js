@@ -201,7 +201,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
     return world.getPlayers().filter((x) => x.name.toLowerCase().startsWith(name?.toLowerCase()));
   };
   const getPlayer = (name) => {
-    return getPlayers(name?.toLowerCase())[0];
+    return world.getPlayers().find(x => x.name?.toLowerCase().startsWith(name?.toLowerCase()));
   };
   if(isCommand){
     const cmdData = Command.getCmdData();

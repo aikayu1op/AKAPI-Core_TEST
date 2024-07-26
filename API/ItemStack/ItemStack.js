@@ -20,7 +20,7 @@ export class ItemStack {
    * itemStackを複製します。
    */
   clone(){
-    return new ItemStack(this._itemStack);
+    return new ItemStack(this._itemStack.clone());
   }
   /**
    * 適応されている動的プロパティをクリアします。

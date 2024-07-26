@@ -92,7 +92,7 @@ export class Player {
    *    ev.sender.addEffect(MinecraftEffectTypes.speed, 20, 1, false);
    * })
    * ```
-   * @param {mc.EffectType} effectType エフェクトタイプを指定します。
+   * @param {mc.EffectType | string} effectType エフェクトタイプを指定します。
    * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick) 20000000まで指定可能です
    * @param {keyof EntityEffectOptions | EntityEffectOptions} options
    */
@@ -331,7 +331,7 @@ export class Player {
    * プレイヤーに指定されたEffectTypeが付与しているかどうかを返します。
    * 
    * 付与されている場合はEffectクラスが返り、そうじゃない場合はundefinedを返します。
-   * @param {mc.EffectType} effectType 取得したいエフェクトタイプ
+   * @param {mc.EffectType | string} effectType 取得したいエフェクトタイプ
    */
   getEffect(effectType) {
     return this._player.getEffect(effectType);
@@ -492,8 +492,12 @@ export class Player {
   setSpawn(spawnPosition = this.location, spawnDimension = this.dimension) {
     this._player.setSpawn(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
   }
-  stopSound(){
-    try{this._player.runCommand("stopsound @s");}catch{mc.system.run(() => this.stopSound())}
+  /**
+   * 音を止めます。
+   * @param {string} id 
+   */
+  stopSound(id = undefined){
+    try{this._player.runCommand(`stopsound @s ${id??""}`);}catch{mc.system.run(() => this.stopSound(id))}
   }
   /**
    * スポーンポイントをリセットします。
@@ -699,6 +703,13 @@ export class Player {
    */
   resetProperty(identifier){
     return this._player.resetProperty(identifier);
+  }
+  /**
+   * 指定したエフェクトを削除します。
+   * @param {mc.EffectType | string} effectType 
+   */
+  removeEffect(effectType){
+    return this._player.removeEffect(effectType);
   }
   /**
    * 首の向きを設定・取得します。
