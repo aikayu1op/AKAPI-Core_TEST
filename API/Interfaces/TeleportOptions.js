@@ -1,10 +1,11 @@
 import { Dimension } from "../Dimension/index.js";
 import { Vector } from "../Vector/Vector.js";
 import { Vector2 } from "../Vector/Vector2.js";
+import { world } from "../World/index.js";
 
 export class TeleportOptions{
     /**
-     * @type {Dimension}
+     * @type {Dimension | string}
      */
     dimension;
     /**
@@ -30,6 +31,7 @@ export class TeleportOptions{
     toObject(){
         let obj = {};
         if(!!this.dimension && this.dimension instanceof Dimension) obj.dimension = this.dimension;
+        if(typeof this.dimension === "string") obj.dimension = world.getDimension(this.dimension).getMCDimension();
         if(!!this.keepVelocity && typeof this.keepVelocity === "boolean") obj.keepVelocity = this.keepVelocity;
         if(!!this.rotation && typeof this.rotation instanceof Vector2) obj.rotation = this.rotation.toObject();
         if(!!this.checkForBlocks && typeof this.checkForBlocks === "boolean") obj.checkForBlocks = this.checkForBlocks;

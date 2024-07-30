@@ -113,8 +113,9 @@ export class ModalFormData{
      * 指定したプレイヤーにフォームを表示します。
      * @param {Player} showPlayer 
      * @param {ModalFormResponse} callback
+     * @param {boolean} force
      */
-    show(showPlayer, callback){
+    show(showPlayer, callback, force = false){
         const form = new UI.ModalFormData()
         .title(this.form.title)
         let dropdown = 0;
@@ -149,21 +150,76 @@ export class ModalFormData{
                 toggle+=2;
             }
         }
-        try{
+        system.run(function forces(){
             form.show(showPlayer.getMCPlayer()).then(response =>{
                 let player = showPlayer;
                 const { cancelationReason, formValues, canceled } = response;
+                if(cancelationReason === "UserBusy" && force){
+                    forces();
+                    return;
+                }
                 callback({ player, cancelationReason, formValues, canceled });
-            })
-        }catch{
-            system.run(() => form.show(showPlayer.getMCPlayer()).then(response =>{
-                let player = showPlayer;
-                const { cancelationReason, formValues, canceled } = response;
-                callback({ player, cancelationReason, formValues, canceled });
-            }))
-        }
+            });
+        })
         //const returnForm = form.show(showPlayer.getMCPlayer());
         //return returnForm;
+    }
+    /**
+     * 指定したプレイヤーにフォームを表示します。
+     * @param {Player} showPlayer 
+     * @param {ModalFormResponse} callback
+     */
+    async showAsync(showPlayer, callback, force = false){
+        const form = new UI.ModalFormData()
+        .title(this.form.title)
+        let dropdown = 0;
+        let textField = 0;
+        let slider = 0;
+        let toggle = 0;
+        for(let i = 0; i < this._list.length; i++){
+            if(this._list[i] == "dropdown"){
+                const data = this._dropdown[dropdown];
+                const keys = [...data.keys()][0];
+                const options = data.get(keys).get("options");
+                const index = data.get(keys).get("index");
+                form.dropdown(keys, options, index);
+                dropdown+=1;
+            }
+            else if(this._list[i] == "textField"){
+                const data = this._textField[textField];
+                const keys = [...data.keys()][0];
+                const data2 = data.get(keys);
+                form.textField(keys, data2[0],data2[1]);
+                textField+=1;
+            }
+            else if(this._list[i] == "slider"){
+                const data = this._slider[slider];
+                const keys = [...data.keys()][0];
+                const data2 =  data.get(keys);
+                form.slider(keys, data2[0],data2[1], data2[2], data2[3]);
+                slider+=1;
+            }
+            else if(this._list[i] == "toggle"){
+                form.toggle(this._toggle[toggle], this._toggle[toggle+1]);
+                toggle+=2;
+            }
+        }
+        await new Promise((resolve) =>{
+            system.run(function forces(){
+                form.show(showPlayer.getMCPlayer()).then(response =>{
+                    let player = showPlayer;
+                    const { cancelationReason, formValues, canceled } = response;
+                    if(cancelationReason === "UserBusy" && force){
+                        forces();
+                        return;
+                    }
+                    callback({ player, cancelationReason, formValues, canceled });
+                    resolve("");
+                });
+            })
+            //const returnForm = form.show(showPlayer.getMCPlayer());
+            //return returnForm;
+        })
     }
     /**
      * @overload

@@ -852,9 +852,11 @@ export class Player {
    * @param {TeleportOptions | keyof TeleportOptions} options
    */
   teleport(location, options = undefined) {
-    if(!options || !options instanceof TeleportOptions)
+    if((!options || !(options instanceof TeleportOptions))){
+      if(typeof options?.dimension === "string") options.dimension = world.getDimension(options.dimension).getMCDimension();
       this._player.teleport(location.getMCVector3(), options);
-    else
+    }
+    else if(options instanceof TeleportOptions)
       this._player.teleport(location.getMCVector3(), options.toObject());
   }
   toString(){

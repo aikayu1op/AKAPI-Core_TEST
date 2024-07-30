@@ -282,7 +282,7 @@ export class EntityComponentBase {
     return new EntityColorComponent(this._entity);
   }
   getEquippableInventory(){
-    return;
+    return new EntityEquippableComponent(this._entity);
   }
   /**
    * エンティティが火のダメージを無効にする際に付与されるコンポーネント関数
@@ -540,7 +540,7 @@ export class EntityComponentBase {
     return
   }
   getOnFire(){
-    return;
+    return new EntityOnFireComponent(this._entity);
   }
   /**
    * エンティティが押し通すことができる距離を設定するコンポーネント関数
@@ -1109,6 +1109,20 @@ export class PlayerInventoryComponent {
 export class PlayerMovementComponent extends EntityAttributeComponent {
   constructor(player){
     super(player, "minecraft:movement");
+  }
+}
+export class PlayerOnFireComponent{
+  get onFireTicksRemaining(){
+    return this._playerComp.onFireTicksRemaining;
+  }
+  /**
+   * 
+   * @param {Player} player 
+   */
+  constructor(player){
+    this._player = player;
+    this.typeId = "onfire";
+    this._playerComp = player.getComponent(this.typeId);
   }
 }
 /**
@@ -2197,6 +2211,63 @@ export class EntityColorComponent {
   Color(value = undefined) {
     if (value == undefined) return this.entityComp.value;
     else this.entityComp.value = value;
+  }
+  /**
+   *
+   * @param {Entity} entity
+   */
+  constructor(entity) {
+    try {
+      /**
+       * @private
+       */
+      this._entity = entity;
+      /**
+       * @private
+       */
+      this.entityComp = entity.getComponent(this.typeId);
+    } catch (e) {}
+  }
+}
+export class EntityEquippableComponent{
+  /**
+   * @readonly
+   * コンポーネントID
+   */
+  typeId = "minecraft:equippable";
+  /**
+   * プレイヤーがコンポーネントを持っているか確認できます。
+   * @returns 持っている場合はtrueを、持っていない場合はfalseが返ります
+   */
+  hasComponent() {
+    if (this._entity.hasComponent(this.typeId)) return true;
+    else return false;
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   */
+  getEquipment(equipmentSlot){
+    if(!!this._entity.getComponent(this.typeId).getEquipment(equipmentSlot))
+      return new ItemStack(this._entity.getComponent(this.typeId).getEquipment(equipmentSlot));
+    return undefined;
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   */
+  getEquipmentSlot(equipmentSlot){
+    if(!!this._entity.getComponent(this.typeId).getEquipmentSlot(equipmentSlot))
+      return new ContainerSlot(this._entity, this._entity.getComponent(this.typeId).getEquipmentSlot(equipmentSlot));
+    return undefined;
+  }
+  /**
+   * 
+   * @param {ValueOf<EquipmentSlot>} equipmentSlot 
+   * @param {ItemStack | undefined} itemStack 
+   */
+  setEquipment(equipmentSlot, itemStack){
+    this._entity.getComponent(this.typeId).setEquipment(equipmentSlot, itemStack?.getItemStack());
   }
   /**
    *

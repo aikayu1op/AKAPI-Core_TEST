@@ -34,7 +34,7 @@ export class ItemStack {
    * @returns 
    */
   getDynamicProperty(identifier){
-    if(typeof identifier === "object") return new Vector(this._itemStack.getDynamicProperty(identifier));
+    if(typeof this._itemStack.getDynamicProperty(identifier) === "object") return new Vector(this._itemStack.getDynamicProperty(identifier));
     return this._itemStack.getDynamicProperty(identifier);
   }
   /**
