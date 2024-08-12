@@ -8,8 +8,9 @@ export class Plugins {
   /**
    * プラグインを読み込みます。
    * @param {string[]} filenames
+   * @param {boolean} debug 読み込んだプラグインを表示します。
    */
-  static register(filenames) {
+  static register(filenames, debug = false) {
     for (const data of filenames) {
       const filename = data.split(",");
       if (data.includes("author: ")) author = data.split(":")[1].trim();
@@ -20,7 +21,7 @@ export class Plugins {
             let now = Date.now();
             allplugins += `§a${filename[0]} v${filename[1]} §f${now - time - minus}ms\n`;
             minus = now - time;
-            console.warn("load plugins: "+filename[0]);
+            if(debug) console.warn("load plugins: "+filename[0]);
           })
           .catch((e) => {
             allplugins += `§4${filename[0]} v${filename[1]} §f-1ms\n`;

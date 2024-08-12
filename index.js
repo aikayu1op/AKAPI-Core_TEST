@@ -12,3 +12,4 @@ export * from "./API/Utils/index.js";
 export * from "./API/Components/BlockComponent.js";
 export * from "./API/Components/EntityComponents.js";
 export * from "./API/Components/ItemComponents.js";
+import "./API/Utils/CommandBuilder/Command/index.js";
