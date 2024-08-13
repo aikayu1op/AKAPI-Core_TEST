@@ -264,6 +264,7 @@ export class EntityComponentBase {
     if (this.getNavigationGeneric().hasComponent()) comps.push(this.getNavigationGeneric());
     if (this.getNavigationHover().hasComponent()) comps.push(this.getNavigationHover());
     if (this.getNavigationWalk().hasComponent()) comps.push(this.getNavigationWalk());
+    if (this.getOnFire().hasComponent()) comps.push(this.getOnFire());
     if (this.getPushThrough().hasComponent()) comps.push(this.getPushThrough());
     if (this.getRideable().hasComponent()) comps.push(this.getRideable());
     if (this.getScale().hasComponent()) comps.push(this.getScale());
@@ -4143,6 +4144,28 @@ export class EntityNavigationWalkComponent {
     } catch (e) {}
   }
 }
+export class EntityOnFireComponent{
+  /**
+   * エンティティがコンポーネントを持っているか確認できます。
+   * @returns 持っている場合はtrueを、持っていない場合はfalseが返ります
+   */
+  hasComponent() {
+    if (this._entity.hasComponent(this.typeId)) return true;
+    else return false;
+  }
+  get onFireTicksRemaining(){
+    return this._entityComp.onFireTicksRemaining;
+  }
+  /**
+   * 
+   * @param {Entity} entity
+   */
+  constructor(entity){
+    this._entity = entity;
+    this.typeId = "minecraft:onfire";
+    this._entityComp = entity.getComponent(this.typeId);
+  }
+}
 export class EntityPushThroughComponent {
   /**
    * @readonly
@@ -4161,7 +4184,7 @@ export class EntityPushThroughComponent {
    * @param {number} value
    */
   value(value = undefined) {
-    if (value == undefined) return this.value;
+    if (value == undefined) return this.entityComp.value;
     else this.entityComp.value = value;
   }
   /**

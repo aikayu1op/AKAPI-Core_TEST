@@ -52,6 +52,28 @@ class World {
    * @readonly
    */
   scoreboard = new Scoreboard(w.scoreboard);
+
+  /**
+   * ディメンションを返します。
+   * @readonly
+   */
+  get overworld(){
+    return this.getDimension("overworld");
+  }
+  /**
+   * ディメンションを返します。
+   * @readonly
+   */
+  get nether(){
+    return this.getDimension("nether");
+  }
+  /**
+   * ディメンションを返します。
+   * @readonly
+   */
+  get theEnd(){
+    return this.getDimension("the_end");
+  }
   /**
    *
    * @param {string} id

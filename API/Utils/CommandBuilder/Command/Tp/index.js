@@ -12,7 +12,7 @@ Command.register({
             return;
         }
         if(!cmd.args[1]){
-                cmd.sender.location = player.location;
+                cmd.sender.location = player;
                 cmd.sender.sendMessage(`${player.name}にテレポートしました。`);
         }else{
             let toPlayer = cmd.getPlayer(cmd.args[1]);
@@ -20,7 +20,7 @@ Command.register({
                 cmd.sender.sendMessage(`§c指定したプレイヤーは存在しません。`);
                 return;
             }
-            player.location = toPlayer.location;
+            player.location = toPlayer;
             cmd.sender.sendMessage(`${player.name}を${toPlayer.name}にテレポートさせました。`);
         }
     }

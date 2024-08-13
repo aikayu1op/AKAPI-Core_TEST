@@ -854,6 +854,7 @@ export class Player {
   teleport(location, options = undefined) {
     if((!options || !(options instanceof TeleportOptions))){
       if(typeof options?.dimension === "string") options.dimension = world.getDimension(options.dimension).getMCDimension();
+      else if(options?.dimension instanceof Dimension) options.dimension = options.dimension.getMCDimension();
       this._player.teleport(location.getMCVector3(), options);
     }
     else if(options instanceof TeleportOptions)
@@ -998,10 +999,14 @@ export class Player {
   }
   /**
    * 現在の座標を設定・取得します。
+   * @overload
    * @param {Vector} vector
+   * @overload
+   * @param {Player} vector
    */
   set location(vector){
-    if(!this.location.equals(vector)) this.teleport(vector);
+    if(vector instanceof Vector && !this.location.equals(vector)) this.teleport(vector);
+    else if(vector instanceof Player) this.teleport(vector.location, {dimension: vector.dimension})
   }
   /**
    * プレイヤーのMCIDを取得します。

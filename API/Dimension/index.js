@@ -54,6 +54,18 @@ export class Dimension {
     return new Block(this._dimension.getBlock(location.getMCVector3()));
   }
   /**
+   * 
+   * 指定された座標がアクセス出来る状態かどうかを取得します。
+   * @param {Vector} location
+   * @returns 
+   */
+  getBlockIsValid(location){
+    try{
+      if(location instanceof Vector) this._dimension.getBlock(location.getMCVector3()).isValid();
+      return true;
+    }catch{return false;}
+  }
+  /**
    * 指定された数分を取得します。
    * @param {Vector} vector1
    * @param {Vector} vector2

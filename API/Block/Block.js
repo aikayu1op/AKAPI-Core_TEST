@@ -185,6 +185,13 @@ export class Block {
   isSolid() {
     return this._block.isSolid;
   }
+  /**
+   * そこへアクセスできるか取得します。
+   * @returns 
+   */
+  isValid(){
+    return this._block.isValid();
+  }
   west(steps = undefined){    
     if(!!this._block.west(steps)) return new Block(this._block.west(steps));
   }
