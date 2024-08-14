@@ -29,6 +29,15 @@ export class ItemStack {
     this._itemStack.clearDynamicProperties();
   }
   /**
+   * ポーションを作成します。
+   * @param {mc.PotionOptions} options 
+   */
+  static createPotion(options){
+    let create = mc.ItemStack.createPotion(options);
+    if(!create) return undefined;
+    return new ItemStack(create);
+  }
+  /**
    * このアイテムに保存されている動的プロパティを取得します。
    * @param {string} identifier 
    * @returns 
@@ -251,7 +260,7 @@ export class ItemStack {
    * const itemStackVersion = new ItemStack(example);
    * ```
    * @overload
-   * @param {mc.ItemType | string} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
+   * @param {mc.ItemType} itemType アイテムの指定、ここにMinecraft側のItemStackを入れることも可能です。
    * @param {number} amount 個数
    * @param {string} nameTag アイテム名
    * @param {string[]} lore アイテムの説明

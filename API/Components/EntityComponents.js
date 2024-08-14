@@ -17,6 +17,7 @@ import { BaseComponent } from "./BaseComponent.js";
 import { EquipmentSlot } from "../Interfaces/EquipmentSlot.js";
 import { ContainerSlot } from "../ItemStack/ContainerSlot.js";
 import { EntityAttributeComponent } from "./extends/EntityAttributeComponent.js";
+import { IllegalTypeError } from "../../../../RPG/Data/interface.js";
 /**
  * @template T
  * @typedef {T[keyof T]} ValueOf
@@ -67,6 +68,9 @@ class PlayerComponentBase {
    */
   getBreathable() {
     return new PlayerBreathableComponent(this._player);
+  }
+  getCursorInventory(){
+    return new PlayerCursorInventoryComponent(this._player);
   }
   /**
    * プレイヤーの装備品等を取得するコンポーネント関数
@@ -613,6 +617,72 @@ export class EntityComponentBase {
   }
 }
 
+export class IEntityComponent{
+  /**
+   * @private
+   */
+  _entity;
+  /**
+   * @private
+   */
+  _typeId;
+  /**
+   * @private
+   */
+  _entityComp;
+  /**
+   * entityの指定したComponentの状態を返します。
+   */
+  get entityComp(){
+    return this._entityComp;
+  }
+  /**
+   * ComponentのIdを返します。
+   */
+  get typeId(){
+    return this._typeId;
+  }
+  
+  /**
+   * コンポーネントを所持しているかどうかを取得します。
+   */
+  hasComponent(){
+    return this._entity.hasComponent(this.typeId);
+  }
+
+  /**
+   * 
+   * @param {Entity} entity 
+   * @param {string} typeId 
+   */
+  constructor(entity, typeId){
+    this._entity = entity;
+    this.entityComp = entity.getComponent(typeId);
+    this.typeId = typeId;
+  }
+}
+
+export class PlayerCursorInventoryComponent extends IEntityComponent{
+
+  get item(){
+    if(!super.entityComp.item) return undefined;
+    return new ItemStack(super.entityComp.item);
+  }
+  /**
+   * カーソルで持っているアイテムを削除します。
+   */
+  clear(){
+    super.entityComp.clear();
+  }
+  /**
+   * 
+   * @param {Player} player 
+   */
+  constructor(player){
+    super(player, "minecraft:cursor_inventory");
+  }
+}
+
 /**
  * プレイヤーのコンテナーを確認するクラス
  */
@@ -1143,8 +1213,15 @@ export class PlayerBreathableComponent {
     if (this._player.hasComponent(this.typeId)) return true;
     else return false;
   }
-  setAirSupply(value) {
-    this.playerComp.setAirSupply(value);
+  get airSupply(){
+    return this.playerComp.airSupply;
+  }
+  set airSupply(value){
+    if(typeof value !== "number") new IllegalTypeError();
+    this.playerComp.airSupply = value;
+  }
+  get canBreathe(){
+    return this.playerComp.canBreathe
   }
   /**
    *
@@ -2077,8 +2154,15 @@ export class EntityBreathableComponent {
     if (this._entity.hasComponent(this.typeId)) return true;
     else return false;
   }
-  setAirSupply(value) {
-    this.entityComp.setAirSupply(value);
+  get airSupply(){
+    return this.entityComp.airSupply;
+  }
+  set airSupply(value){
+    if(typeof value !== "number") new IllegalTypeError();
+    this.entityComp.airSupply = value;
+  }
+  get canBreathe(){
+    return this.entityComp.canBreathe;
   }
   getBreatheBlocks() {
     return this.entityComp.getBreatheBlocks().map((x) => new BlockPermutation(x));

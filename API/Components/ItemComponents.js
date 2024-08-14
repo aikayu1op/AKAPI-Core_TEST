@@ -18,6 +18,9 @@ export class ItemComponentBase {
   getItemStack() {
     return new ItemStack(this._itemStack);
   }
+  getItemPotion(){
+    return new ItemPotionComponent(this._itemStack);
+  }
   getComponents() {
     let returnPush = [];
     if (this.getDurability().hasComponent()) returnPush.push(this.getDurability());
@@ -35,66 +38,77 @@ export class ItemComponentBase {
     } catch (e) {}
   }
 }
-class ItemFoodComponent {
+class ItemComponentInterface{
   /**
+   * @private
+   */
+  _itemStack;
+  /**
+   * @private
+   */
+  _typeId;
+
+  hasComponent(){
+    return this._itemStack.getItemStack().hasComponent(this._typeId);
+  }
+  /**
+   * ComponentのIDを返します。
    * @readonly
    */
-  typeId = "minecraft:food";
-  /**
-   * アイテムがコンポーネントを持っているか確認する関数
-   */
-  hasComponent() {
-    if (this._itemStack.getItemStack().hasComponent(this.typeId)) return true;
-    else return false;
+  get typeId(){
+    return this._typeId;
   }
+  /**
+   * Componentを返します。
+   * @readonly
+   */
+  get itemComp(){
+    return this._itemStack.getItemStack().getComponent(this._typeId);
+  }
+
+  constructor(itemStack, typeId){
+    this._itemStack = itemStack;
+    this._typeId = typeId;
+  }
+}
+class ItemFoodComponent extends ItemComponentInterface{
   /**
    *
    * @param {ItemStack} itemStack
    */
   constructor(itemStack) {
     try {
-      this._itemStack = itemStack;
-      this.itemComp = this._itemStack.getItemStack().getComponent(this.typeId);
+      super(itemStack, "minecraft:food");
       /**
        * @readonly
        * @type {boolean}
        */
-      this.canAlwaysEat = this.itemComp.canAlwaysEat;
+      this.canAlwaysEat = super.itemComp.canAlwaysEat;
       /**
        * @readonly
        * @type {number}
        */
-      this.nutrition = this.itemComp.nutrition;
+      this.nutrition = super.itemComp.nutrition;
       /**
        * @readonly
        * @type {number}
        */
-      this.saturationModifier = this.itemComp.saturationModifier;
+      this.saturationModifier = super.itemComp.saturationModifier;
       /**
        * @readonly
        * @type {string}
        */
-      this.usingConvertsTo = this.itemComp.usingConvertsTo;
+      this.usingConvertsTo = super.itemComp.usingConvertsTo;
     } catch (e) {}
   }
 }
-class ItemDurabilityComponent {
-  /**
-   * @readonly
-   */
-  typeId = "minecraft:durability";
+class ItemDurabilityComponent extends ItemComponentInterface{
+
   /**
    * @private
    * @type {number}
    */
   damage = 0;
-  /**
-   * アイテムがコンポーネントを持っているか確認する関数
-   */
-  hasComponent() {
-    if (this._itemStack.getItemStack().hasComponent(this.typeId)) return true;
-    else return false;
-  }
   getDamageChance() {
     /**
      * @type {number}
@@ -128,17 +142,13 @@ class ItemDurabilityComponent {
    */
   constructor(itemStack) {
     try {
-      this._itemStack = itemStack;
-      /**
-       * @private
-       */
-      this.itemComp = this._itemStack.getItemStack().getComponent(this.typeId);
-      this.damage = this.itemComp.damage;
+      super(itemStack, "minecraft:durability");
+      this.damage = super.itemComp.damage;
       /**
        * @readonly
        * @type {number}
        */
-      this.maxDurability = this.itemComp.maxDurability;
+      this.maxDurability = super.itemComp.maxDurability;
     } catch (e) {}
   }
 }
@@ -183,6 +193,37 @@ class ItemCooldownComponent {
        */
       this.cooldownTicks = this.itemComp.cooldownTicks;
     } catch (e) {}
+  }
+}
+class ItemPotionComponent extends ItemComponentInterface{
+
+  /**
+   * @type {boolean}
+   * @readonly
+   */
+  get potionEffectType(){
+    return super.itemComp.potionEffectType;
+  }
+  /**
+   * @type {boolean}
+   * @readonly
+   */
+  get potionLiquidType(){
+    return super.itemComp.potionLiquidType;
+  }
+  /**
+   * @type {boolean}
+   * @readonly
+   */
+  get potionModifierType(){
+    return super.itemComp.potionModifierType;
+  }
+  /**
+   * 
+   * @param {ItemStack} itemStack 
+   */
+  constructor(itemStack){
+    super(itemStack, "minecraft:potion");
   }
 }
 class ItemEnchantmentsComponent {

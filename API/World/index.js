@@ -54,6 +54,19 @@ class World {
   scoreboard = new Scoreboard(w.scoreboard);
 
   /**
+   * ワールドがハードコアかどうかを取得します。
+   * @readonly
+   */
+  get isHardcore(){
+    return w.isHardcore;
+  }
+  /**
+   * @readonly
+   */
+  get structureManager(){
+    return w.structureManager;
+  }
+  /**
    * ディメンションを返します。
    * @readonly
    */
