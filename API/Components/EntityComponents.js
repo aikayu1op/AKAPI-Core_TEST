@@ -657,8 +657,8 @@ export class IEntityComponent{
    */
   constructor(entity, typeId){
     this._entity = entity;
-    this.entityComp = entity.getComponent(typeId);
-    this.typeId = typeId;
+    this._entityComp = entity.getComponent(typeId);
+    this._typeId = typeId;
   }
 }
 
