@@ -51,6 +51,13 @@ class System {
     mc.system.clearRun(runId);
   }
   /**
+   * 非同期処理を止めます。
+   * @param {number} jobId 
+   */
+  clearJob(jobId){
+    mc.system.clearJob(jobId);
+  }
+  /**
    * サーバーを強制的に終了させます。
    */
   close() {
@@ -79,13 +86,21 @@ class System {
     return mc.system.run(callback);
   }
   /**
+   * 非同期処理を実行します。
+   * @param {Generator<void, void, void>} callback 
+   * @returns 
+   */
+  runJob(callback){
+    return mc.system.runJob(callback);
+  }
+  /**
    * callback関数をdelayTicksごとに動かす際に使用します。
    * この関数は、イベントに登録されるので常に実行します。
    * @example
    * ```
    * import { system } from "./AKAPI-core/index.js";
    *
-   * system.runSchedule(() =>{
+   * system.runInterval(() =>{
    *    //code here.
    * }, 1)
    * ```
@@ -96,7 +111,7 @@ class System {
     return mc.system.runInterval(callback, delayTicks);
   }
   /**
-   *
+   * 指定したtick分処理を待ちます。
    * @param {Function} callback
    * @param {number} delayTicks
    */
