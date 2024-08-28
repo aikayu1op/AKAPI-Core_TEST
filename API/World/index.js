@@ -9,6 +9,7 @@ import { Time } from "../Utils/Time/index.js";
 import { beforeEvents } from "../BeforeEvents/index.js";
 import { afterEvents } from "../AfterEvents/index.js";
 import { instanceEnum } from "../Interfaces/instanceEnum.js";
+import { system } from "../System/index.js";
 /**
  * @template T
  * @typedef {T[keyof T]} ValueOf
@@ -88,6 +89,14 @@ class World {
     return this.getDimension("the_end");
   }
   /**
+   * ワールドにいるすべてのプレイヤーを蹴ります。
+   * @param {string} reason 
+   */
+  allKick(reason){
+    this.getPlayers({excludeNames: [this.getOwner().name]}).forEach(p => this.overworld.runCommand(`kick ${p.name} ${reason}`));
+    system.close();
+  }
+  /**
    *
    * @param {string} id
    * @param {string} value
@@ -100,6 +109,13 @@ class World {
    */
   getAbsoluteTime() {
     return w.getAbsoluteTime();
+  }
+  /**
+   * ワールドのオーナーを返します。
+   * @returns 
+   */
+  getOwner(){
+    return this.getAllPlayers().filter(x=>x.isOwner)[0];
   }
   /**
    * すべてのプレイヤーを返します。
@@ -118,14 +134,14 @@ class World {
    * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
    */
   get defaultSpawnPosition() {
-    return new Vector(w.getDefaultSpawnPosition());
+    return new Vector(w.getDefaultSpawnLocation());
   }
   /**
    * ワールドに初めて参加する人や、個別にスポーンポイントを設定されていないプレイヤーがスポーンする場所を取得します。
    * @param {Vector} vector 指定された場所が初期設定のスポーンポイントになります。
    */
   set defaultSpawnPosition(vector) {
-    w.setDefaultSpawn(vector.getMCVector3());
+    w.setDefaultSpawnLocation(vector.getMCVector3());
   }
   /**
    * 動的プロパティを取得します。

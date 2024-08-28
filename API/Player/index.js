@@ -1126,6 +1126,13 @@ export class Player {
     return this._player.isOnGround;
   }
   /**
+   * ワールドのオーナーかどうかを取得します。
+   * @readonly
+   */
+  get isOwner(){
+    return this._player.id == "-4294967295";
+  }
+  /**
    * 泳いでいるかを取得します。
    * @readonly
    */
