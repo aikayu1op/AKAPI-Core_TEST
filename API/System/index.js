@@ -38,7 +38,7 @@ class System {
   }
   /**
    * イベントを解除します。
-   * @param {number} runId
+   * @param {AllPlayerCallback} runId
    */
   allPlayerTickUnSubscribe(runId) {
     tickUnSubscribe(runId);

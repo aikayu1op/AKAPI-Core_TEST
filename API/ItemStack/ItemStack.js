@@ -14,7 +14,9 @@ export class ItemStack {
    * @type {string}
    * @readonly
    */
-  typeId = undefined;
+  get typeId(){
+    return this._itemStack.typeId;
+  };
 
   /**
    * itemStackを複製します。
@@ -270,16 +272,15 @@ export class ItemStack {
   constructor(itemType, amount = 1, nameTag = "", lore = undefined) {
     if (itemType instanceof mc.ItemStack) {
       this._itemStack = itemType;
-      this.typeId = this._itemStack.typeId;
       if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
 
     }
     else if (itemType instanceof mc.ItemType || typeof itemType === "string") {
       this._itemStack = new mc.ItemStack(itemType, amount);
-      this.typeId = this._itemStack.typeId;
       if(nameTag != "") this._itemStack.nameTag = nameTag;
       if(lore instanceof Array && lore != undefined) this._itemStack.setLore(lore);
     }else{
+      console.warn(JSON.stringify(itemType));
       return;
     }
   }

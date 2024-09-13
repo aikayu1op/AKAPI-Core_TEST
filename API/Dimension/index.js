@@ -8,6 +8,7 @@ import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
 import { BlockPermutation } from "../Block/BlockPermutation.js";
 import { BlockType } from "../Block/BlockType.js";
+import { Vector2 } from "../Vector/Vector2.js";
 
 export class Dimension {
   /**
@@ -109,6 +110,27 @@ export class Dimension {
    */
   getEntitiesAtBlockLocation(location) {
     return this._dimension.getEntitiesAtBlockLocation(location.getMCVector3()).map((x) => new Entity(x));
+  }
+  /**
+   * locationからdirectionまでの結んだ範囲内にエンティティが存在したら返ります。
+   * @param {Vector} location 
+   * @param {Vector} direction 
+   * @param {mc.EntityRaycastOptions} options 
+   * @returns 
+   */
+  getEntitiesFromRay(location, direction, options = {}){
+    return this._dimension.getEntitiesFromRay(location, direction, options);
+  }
+  /**
+   * 
+   * @param {Vector2} locationXZ 
+   * @param {number} minHeight 
+   * @returns 
+   */
+  getTopmostBlock(locationXZ, minHeight = undefined){
+    const block = this._dimension.getTopmostBlock(locationXZ.toVectorXZ(), minHeight);
+    if(!block) return undefined;
+    return new Block(block);
   }
   /**
    *

@@ -781,7 +781,7 @@ export class PlayerInventoryComponent {
       this.playerComp.container.addItem(itemStack.getItemStack());
       return itemStack;
     } catch (e) {
-      return new Error(e);
+      throw new Error(e);
     }
   }
   /**
@@ -980,7 +980,8 @@ export class PlayerInventoryComponent {
       const getData = options.getOptions();
       if (getData.withEmpty) allItem = Array(36);
       //#region mainhandのチェック
-      if (JSON.stringify(getData.location.mainhand) != "{}") {
+      console.warn(JSON.stringify(getData.location.mainhand));
+      if (!!getData.location.mainhand.isChecked) {
         const ITEM = this.getItem(this._player.selectedSlot);
         let lore;
         let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
@@ -1026,7 +1027,7 @@ export class PlayerInventoryComponent {
       //#endregion
 
       //#region hotbarのチェック
-      if (JSON.stringify(getData.location.hotbar) != "{}") {
+      if (!!getData.location.hotbar.isChecked) {
         for (let i = 0; i < 9; i++) {
           const ITEM = this.getItem(i);
           let lore;
@@ -1075,7 +1076,7 @@ export class PlayerInventoryComponent {
       //#endregion
 
       //#region inventoryのチェック
-      if (JSON.stringify(getData.location.inventory) != "{}") {
+      if (!!getData.location.inventory.isChecked) {
         for (let i = 9; i < 36; i++) {
           const ITEM = this.getItem(i);
           let lore;

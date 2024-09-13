@@ -7,3 +7,4 @@ import "./DeOp/index.js";
 import "./Tp/index.js";
 import "./Give/index.js";
 import "./NightVisionSwitch/index.js";
+import "./SeeInventory/index.js";

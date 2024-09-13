@@ -1,3 +1,4 @@
+import { ItemStack } from "../../index.js";
 import { Block } from "../Block/Block.js";
 import { Dimension } from "../Dimension/index.js";
 import { Entity } from "../Entity/index.js";
@@ -108,6 +109,26 @@ export class IPlayerJumpingEvents{
    * @type {boolean}
    */
   isMoment;  
+}
+export class IPlayerPickEvent{
+  /**
+   * プレイヤーを取得します。
+   * @readonly
+   * @type {Player}
+   */
+  player;
+  /**
+   * 取得したアイテム
+   * @readonly
+   * @type {ItemStack}
+   */
+  item;
+  /**
+   * 置かれたインベントリの場所番号
+   * @readonly
+   * @type {number}
+   */
+  index;
 }
 class IBlockFallingEvents{
   /**

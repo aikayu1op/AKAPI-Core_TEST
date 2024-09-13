@@ -48,6 +48,7 @@ export class ItemQueryOptions{
          * 
          * booleanでtrueにすると取得できますがfalseだと取得しません。
          * @type {{
+         * isChecked: boolean,
          * item: string[] | string | undefined,
          * excludeItem: string[] | string | undefined,
          * amount: NumberRange | number | undefined,
@@ -56,6 +57,7 @@ export class ItemQueryOptions{
          * }}
          */
         mainhand: {
+            isChecked: false,
             item: null,
             excludeItem: null,
             amount: new NumberRange(undefined, {max: 64}),
@@ -69,6 +71,7 @@ export class ItemQueryOptions{
          * 
          * それ以下や以上の場合は自動的に変換されます。
          * @type {{
+         * isChecked: boolean,
          * item: string[] | string | undefined,
          * excludeItem: string[] | string | undefined,
          * amount: NumberRange | number | undefined,
@@ -77,6 +80,7 @@ export class ItemQueryOptions{
          * }}
          */
         hotbar: {
+            isChecked: false,
             item: undefined,
             excludeItem: undefined,
             amount: new NumberRange(undefined, {max: 64}),
@@ -90,6 +94,7 @@ export class ItemQueryOptions{
          * 
          * それ以下や以上の場合は自動的に変換されます。
          * @type {{
+         * isChecked: boolean,
          * item: string[] | string | undefined,
          * excludeItem: string[] | string | undefined,
          * amount: NumberRange | number | undefined,
@@ -98,6 +103,7 @@ export class ItemQueryOptions{
          * }}
          */
         inventory: {
+            isChecked: false,
             item: undefined,
             excludeItem: undefined,
             amount: new NumberRange(undefined, {max: 64}),
@@ -130,6 +136,7 @@ export class ItemQueryOptions{
             !("nameTag" in this.location.mainhand) ||
             !("lore" in this.location.mainhand)
         ) this.location.mainhand = {
+            isChecked: false,
             item: undefined,
             excludeItem: undefined,
             amount: new NumberRange(undefined, {max: 64}),
@@ -143,6 +150,7 @@ export class ItemQueryOptions{
             !("nameTag" in this.location.hotbar) ||
             !("lore" in this.location.hotbar)
         ) this.location.hotbar = {
+            isChecked: false,
             item: undefined,
             excludeItem: undefined,
             amount: new NumberRange(undefined, {max: 64}),
@@ -156,6 +164,7 @@ export class ItemQueryOptions{
             !("nameTag" in this.location.inventory) ||
             !("lore" in this.location.inventory)
         ) this.location.inventory = {
+            isChecked: false,
             item: undefined,
             excludeItem: undefined,
             amount: new NumberRange(undefined, {max: 64}),
@@ -296,7 +305,8 @@ export class ItemQueryOptions{
            this.location.mainhand.amount.min == 1 &&
            this.location.mainhand.amount.max == 64 &&
            !this.location.mainhand.nameTag &&
-           !this.location.mainhand.lore) this.location.mainhand = {};
+           !this.location.mainhand.lore &&
+           !this.location.mainhand.isChecked) this.location.mainhand = {};
 
         if(this.location.hotbar.lore instanceof Array && this.location.hotbar.lore.length == 0) this.location.hotbar.lore = [""];
         if(!this.location.hotbar.item &&
@@ -304,7 +314,8 @@ export class ItemQueryOptions{
            this.location.hotbar.amount.min == 1 &&
            this.location.hotbar.amount.max == 64 &&
            !this.location.hotbar.nameTag &&
-           !this.location.hotbar.lore) this.location.hotbar = {};
+           !this.location.hotbar.lore &&
+           !this.location.hotbar.isChecked) this.location.hotbar = {};
 
         if(this.location.inventory.lore instanceof Array && this.location.inventory.lore.length == 0) this.location.inventory.lore = [""];
         if(!this.location.inventory.item &&
@@ -312,8 +323,8 @@ export class ItemQueryOptions{
            this.location.inventory.amount.min == 1 &&
            this.location.inventory.amount.max == 64 &&
            !this.location.inventory.nameTag &&
-           !this.location.inventory.lore) this.location.inventory = {};
-
+           !this.location.inventory.lore &&
+           !this.location.inventory.isChecked) this.location.inventory = {};
         options.location = this.location;
         options.withEmpty = this.withEmpty;
         return options;

@@ -41,6 +41,13 @@ export class Vector2{
         }
     }
     /**
+     * Minecraft公式のVectorXZ Interfaceに変換します。
+     * @deprecated
+     */
+    toVectorXZ(){
+        return {x: this.x, z: this.y}
+    }
+    /**
      * @overload
      * @param {number} x 
      * @param {number} y 
