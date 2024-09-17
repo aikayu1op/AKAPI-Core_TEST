@@ -30,6 +30,37 @@ export class onScreenDisplay {
   updateSubtitle(message) {
     this._screenDisplay.updateSubtitle(String(message));
   }
+  getHiddenHudElements(){
+    return this._screenDisplay.getHiddenHudElements();
+  }
+  /**
+   * 
+   * @param {mc.HudElement[]} hudElements 
+   */
+  hideAllExcept(hudElements = undefined){
+    this._screenDisplay.hideAllExcept(hudElements);
+  }
+  /**
+   * 
+   * @param {mc.HudElement} hudElement 
+   */
+  isForcedHidden(hudElement){
+    return this._screenDisplay.isForcedHidden(hudElement)
+  }
+  isValid(){
+    return this._screenDisplay.isValid();
+  }
+  resetHudElements(){
+    this._screenDisplay.resetHudElements();
+  }
+  /**
+   * 
+   * @param {mc.HudVisibility} visible
+   * @param {mc.HudElement[]} hudElement
+   */
+  setHudVisibility(visible, hudElements = undefined){
+    this._screenDisplay.setHudVisibility(visible, hudElements)
+  }
 
   /**
    *
