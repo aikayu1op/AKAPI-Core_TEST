@@ -54,3 +54,7 @@ export class ActionFormCanceledCallback{
      */
     index;
 }
+export class ActionFormCanceled extends ActionFormCanceledCallback{
+    /** @private */
+    player;
+}

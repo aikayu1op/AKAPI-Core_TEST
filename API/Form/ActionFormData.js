@@ -76,9 +76,14 @@ export class ActionFormData{
     }
     /**
      * 指定したプレイヤーにフォームを表示します。
+     * @overload
      * @param {Player} showPlayer 
      * @param {ActionFormCanceledResponse} callback
      * @param {boolean} force
+     * @returns {void}
+     * @overload
+     * @param {Player} showPlayer
+     * @returns {Promise<ActionFormCanceledCallback>}
      */
     show(showPlayer, callback = undefined, force = false){
         const form = new UI.ActionFormData()
@@ -88,6 +93,7 @@ export class ActionFormData{
         let firstCallback = this.firstCallback;
         let _doCallback = this._doCallback;
         let count = 0;
+        if(!callback && !force) return form.show(showPlayer.getMCPlayer());
         system.run(function forces(){
             form.show(showPlayer.getMCPlayer()).then(response =>{
                 let player = showPlayer;

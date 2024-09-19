@@ -2,6 +2,7 @@ import * as UI from "@minecraft/server-ui";
 import { Player } from "../Player/index.js";
 import { IModalFormResponse } from "./Callback/IModalFormCallback";
 import { system } from "@minecraft/server";
+import { IRawMessage } from "../Interfaces/IRawMessage.js";
 
 /**
  * @callback ModalFormResponse
@@ -52,8 +53,8 @@ export class ModalFormData{
     }
     /**
      * フォームにテキストボックスを配置します。
-     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
-     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} placeholderText 
+     * @param {string | IRawMessage} label 
+     * @param {string | IRawMessage} placeholderText 
      * @param {string} defaultValue 
      */
     textField(label = "", placeholderText = "", defaultValue = undefined){
@@ -111,11 +112,16 @@ export class ModalFormData{
 
     /**
      * 指定したプレイヤーにフォームを表示します。
+     * @overload
      * @param {Player} showPlayer 
      * @param {ModalFormResponse} callback
      * @param {boolean} force
+     * @returns {void}
+     * @overload
+     * @param {Player} showPlayer
+     * @returns {Promise<IModalFormResponse>}
      */
-    show(showPlayer, callback, force = false){
+    show(showPlayer, callback = undefined, force = false){
         const form = new UI.ModalFormData()
         .title(this.form.title)
         let dropdown = 0;
@@ -150,6 +156,7 @@ export class ModalFormData{
                 toggle+=2;
             }
         }
+        if(!callback && !force) return form.show(showPlayer.getMCPlayer());
         system.run(function forces(){
             form.show(showPlayer.getMCPlayer()).then(response =>{
                 let player = showPlayer;

@@ -48,3 +48,13 @@ export class MessageFormCanceledCallback{
      */
     canceled;
 }
+export class MessageFormCanceled extends MessageFormCanceledCallback{
+    /** @private */
+    player;
+    /**
+     * 押された番号を取得します。
+     * @readonly
+     * @type {number}
+     */
+    selection;
+}

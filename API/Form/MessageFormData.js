@@ -1,7 +1,7 @@
 import { system } from "../System/index.js";
 import * as UI from "@minecraft/server-ui";
 import { Player } from "../Player/index.js";
-import { MessageFormCallback, MessageFormCanceledCallback, MessageFormFirstCallback} from "./Callback/IMessageFormCallback.js";
+import { MessageFormCallback, MessageFormCanceled, MessageFormCanceledCallback, MessageFormFirstCallback} from "./Callback/IMessageFormCallback.js";
 
 /**
  * @callback MessageFormResponse
@@ -71,22 +71,28 @@ export class MessageFormData{
     }
     /**
      * 指定したプレイヤーにフォームを表示します。
+     * @overload
      * @param {Player} showPlayer 
      * @param {MessageFormCanceledResponse} callback
      * @param {boolean} force
+     * @returns {void}
+     * @overload
+     * @param {Player} showPlayer
+     * @returns {Promise<MessageFormCanceled>}
      */
-    show(showPlayer, callback, force = false){
+    show(showPlayer, callback = undefined, force = false){
         const title = this.form.title;
         const body = this.form.body;
         const _callback = this._callback;
         const _button = this._button;
+        const form = new UI.MessageFormData()
+        .title(title)
+        .body(body)
+        .button1(_button[0])
+        .button2(_button[2])
+        if(!callback && !force) return form.show(showPlayer.getMCPlayer())
         system.run(function forces(){
-            new UI.MessageFormData()
-            .title(title)
-            .body(body)
-            .button1(_button[0])
-            .button2(_button[2])
-            .show(showPlayer.getMCPlayer()).then(response =>{
+            form.show(showPlayer.getMCPlayer()).then(response =>{
                 const { canceled, cancelationReason: cr, selection: index} = response;
                 let player = showPlayer;
                 let cancelationReason = String(cr);
