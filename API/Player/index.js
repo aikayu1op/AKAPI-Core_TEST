@@ -978,6 +978,13 @@ export class Player {
     MultiLineActionbar.deleteData(this, id);
   }
   /**
+   * MultiLineActionbarに登録されたIDが存在するかどうかを取得します。
+   * @param {string} id 
+   */
+  hasMultiLineActionbar(id){
+    return MultiLineActionbar.isDat(this, id);
+  }
+  /**
    * プレイヤーが今いるディメンションを取得します。
    * @readonly
    */

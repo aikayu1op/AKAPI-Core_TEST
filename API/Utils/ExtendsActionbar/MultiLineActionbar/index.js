@@ -53,6 +53,15 @@ export class MultiLineActionbar {
   static getAllData(){
     return alldata;
   }
+  /**
+   * そのデータが存在しているかどうかを取得します。
+   * @param {Player} player 
+   * @param {string} id 
+   * @returns 
+   */
+  static isDat(player, id){
+    return alldata.get(player.id)?.has(id);
+  }
 }
 
 system.allPlayerTickSubscribe(({player}) =>{

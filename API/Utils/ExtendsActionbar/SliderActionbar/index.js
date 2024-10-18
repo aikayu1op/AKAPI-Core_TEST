@@ -1,6 +1,5 @@
 import { Player } from "../../../Player/index.js";
 import { system } from "../../../System/index.js";
-import { world } from "../../../World/index.js";
 
 /**
  * @type {Map<number, Map<string, string>>}

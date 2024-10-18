@@ -2,7 +2,7 @@ import { ActionFormData } from '@minecraft/server-ui';
 import { typeIdToDataId, typeIdToID } from './typeIds.js';
 import { Player } from '../../API/Player/index.js';
 
-const number_of_1_16_100_items = 0;
+const number_of_1_16_100_items = 1;
 const sizes = new Map([
 	['single', ['§c§h§e§s§t§2§7§r', 27]], ['small', ['§c§h§e§s§t§2§7§r', 27]],
 	['double', ['§c§h§e§s§t§5§4§r', 54]], ['large', ['§c§h§e§s§t§5§4§r', 54]],
