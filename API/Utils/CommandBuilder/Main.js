@@ -282,7 +282,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
       MB.message = message;
       MB.getPlayer = getPlayer;
       MB.getPlayers = getPlayers;
-      console.log(`<${sender.nameTag}> ${message}`)
+      //console.log(`<${sender.nameTag}> ${message}`)
       if (_messageCallback.length > 0) _messageCallback.forEach((f) => f(MB));  
       if (player.hasTag(Config.firstTagMsg + Config.noSend)) return;
       if (!_showPlayerMsg.has(sender.id)) {

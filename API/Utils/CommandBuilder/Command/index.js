@@ -8,3 +8,4 @@ import "./Tp/index.js";
 import "./Give/index.js";
 import "./NightVisionSwitch/index.js";
 import "./SeeInventory/index.js";
+import "./Summon/index.js";
