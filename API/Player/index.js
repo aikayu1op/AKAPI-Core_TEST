@@ -29,7 +29,6 @@ import { EntityQueryOptions } from "../Interfaces/EntityQueryOptions.js";
 import "./setSpeed.js";
 import { instanceEnum } from "../Interfaces/instanceEnum.js";
 import { BlockRaycastHit } from "../Interfaces/BlockRaycastHit.js";
-import { IllegalTypeError } from "../../../../RPG/Data/interface.js";
 
 /**
  * @template T
@@ -228,6 +227,16 @@ export class Player {
    */
   eatItem(itemStack){
     this._player.eatItem(itemStack);
+  }
+  /**
+   * AKAPI-Coreで作成したコマンドを送信します。
+   * @param {string} commandString 
+   */
+  async execute(commandString){
+    const regex = /\s+(?=(?:[^"]*"[^"]*")*[^"]*$)/;
+    let [cmd, ...arg] = commandString.split(regex);
+    let { executeCommand } = await import("../Utils/index.js");
+    executeCommand(this, this, cmd, arg, "", true);
   }
   /**
    * 指定したスロットのアイテムをドロップします。
@@ -1029,31 +1038,6 @@ export class Player {
    */
   get onScreenDisplay(){
     return new onScreenDisplay(this);
-  }
-  /**
-   * Pos1を設定・取得します。
-   */
-  get pos1(){
-    return new Vector(this.getDynamicProperty("AKAPI-Core:Pos1"));
-  }
-  /**
-   * @param {Vector} value
-   */
-  set pos1(value){
-    if(!(value instanceof Vector)) throw new IllegalTypeError();
-    this.setDynamicProperty("AKAPI-Core:Pos1", value.floor().getMCVector3());
-    this.sendMessage(`Pos1を設定しました --- ${value.floor().toString()}`);
-  }
-  /**
-   * Pos1を設定・取得します。
-   */
-  get pos2(){
-    return new Vector(this.getDynamicProperty("AKAPI-Core:Pos2"));
-  }
-  set pos2(value){
-    if(!(value instanceof Vector)) throw new IllegalTypeError();
-    this.setDynamicProperty("AKAPI-Core:Pos2", value.floor().getMCVector3());
-    this.sendMessage(`Pos2を設定しました --- ${value.floor().toString()}`);
   }
   /**
    * ScoreboardIdentityをかえします。

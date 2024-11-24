@@ -250,11 +250,11 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
         player.hasTag(Config.firstTag + Config.opTag)
       ) {
         let isOp = () => player.hasTag(Config.firstTag + Config.opTag);
-        system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }));
+        system.run(() => cmdData.get(cmd).execute({ sender, name: cmd, args, getPlayer, getPlayers, isOp }));
         return;
       } else if (typeof cmdData.get(cmd).permission == "boolean" && !cmdData.get(cmd).permission) {
         let isOp = () => player.hasTag(Config.firstTag + Config.opTag);
-        system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }))
+        system.run(() => cmdData.get(cmd).execute({ sender, name: cmd, args, getPlayer, getPlayers, isOp }))
         return;
       } else if (
         (typeof cmdData.get(cmd).permission === "string" &&
@@ -262,7 +262,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
         ev.sender.hasTag(Config.firstTag + Config.opTag)
       ) {
         let isOp = () => player.hasTag(Config.firstTag + Config.opTag)? true : player.hasTag(Config.firstTag + cmdData.get(cmd).permission)
-        system.run(() => cmdData.get(cmd).execute({ sender, args, getPlayer, getPlayers, isOp }))
+        system.run(() => cmdData.get(cmd).execute({ sender, name: cmd, args, getPlayer, getPlayers, isOp }))
         return;
       } else {
         system.run(() => sender.sendMessage(replaceArgs(Config.invalidMessage, cmd)));
@@ -275,7 +275,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
       //WebSocket用通信
       //sender.runCommand(`titleraw @s actionbar {"rawtext":[{"text":"§m§s§g${message.split("").map(x => "§"+x).join("")}"}]}`);
       //同様
-      sender.sendActionbar("");
+      //sender.sendActionbar("");
 
       const MB = new MessageBuilderData();
       MB.sender = sender;
@@ -363,3 +363,4 @@ export class MessageBuilder {
     if (typeof callback === "function") _messageCallback.push(callback);
   }
 }
+export {ExecuteObject}

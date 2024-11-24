@@ -243,6 +243,9 @@ export class Vector {
       z: this.z,
     };
   }
+  toObject(){
+    return this.getMCVector3();
+  }
   /**
    * Vectorのオフセットを変更します。
    * @overload

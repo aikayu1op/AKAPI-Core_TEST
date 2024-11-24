@@ -9,4 +9,10 @@ export class ExecuteObject extends IExecuteObject{
      * @readonly
      */
     args;
+    /**
+     * コマンドそのものが返ってきます。
+     * @type {string}
+     * @readonly
+     */
+    name;
 }
