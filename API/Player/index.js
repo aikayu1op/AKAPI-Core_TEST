@@ -41,6 +41,13 @@ export class Player {
    * @private
    */
   _player;
+
+  /**
+   * @readonly
+   */
+  get clientSystemInfo(){
+    return this._player.clientSystemInfo;
+  }
   
   /**
    * ジャンプしているかどうかを取得します。
@@ -855,6 +862,15 @@ export class Player {
       this.stopSound();
     },1);
     return true;
+  }
+  /**
+   * 指定した場所にパーティクルを生成します。
+   * @param {string} effectName 
+   * @param {Vector} location 
+   * @param {mc.MolangVariableMap} molangVariables 
+   */
+  spawnParticle(effectName, location, molangVariables){
+    this._player.spawnParticle(effectName, location.toObject(), molangVariables);
   }
   /**
    * プレイヤーをテレポートさせます。

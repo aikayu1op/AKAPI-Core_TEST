@@ -41,6 +41,7 @@ export class ItemComponentBase {
 class ItemComponentInterface{
   /**
    * @private
+   * @type {ItemStack}
    */
   _itemStack;
   /**
