@@ -176,11 +176,11 @@ export class Dimension {
    * @param {Vector} location
    * @param {import("../Block/Block.js").BlockID | string | mc.BlockType | mc.BlockPermutation | BlockPermutation } block
    */
-  setBlock(location, block){
+  setBlock(location, block, options = {}){
     if(block instanceof BlockPermutation)
-      this.setBlockPermutation(location, block);
+      this.setBlockPermutation(location, block, options);
     else 
-      this.setBlockType(location, block);
+      this.setBlockType(location, block, options);
   }
   /**
    * 

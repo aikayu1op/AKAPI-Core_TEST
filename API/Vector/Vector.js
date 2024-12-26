@@ -2,6 +2,9 @@ import * as mc from "@minecraft/server";
 import { Vec3 } from "./Vec3.js";
 import { world } from "../World/index.js";
 
+//ListBlockVolume --- 直線を結ぶ
+//BlockVolume --- その間を埋めてRectangleにする
+
 export class Vector {
   /**
    * @type {number}
@@ -19,10 +22,10 @@ export class Vector {
    * xyzが0であればtrueを、それ以外であればfalseを返します。
    * @readonly
    * @type {boolean}
+   *
    */
-  isZero;
   get isZero(){
-    return (this.x == 0 && this.y == 0 && this.z == 0)
+    return (this.x == 0 && this.y == 0 && this.z == 0);
   }
   /**
    * 指定した座標がすべて下回っている際にtrueを返します。
@@ -275,17 +278,16 @@ export class Vector {
    * @param {{x: number, y: number, z: number}} param
    */
   setVector(param){
-    //world.sendMessage(JSON.stringify(param));
-    if(!param.hasOwnProperty("x")) param.x = this.x
-    if(!param.hasOwnProperty("y")) param.y = this.y
-    if(!param.hasOwnProperty("z")) param.z = this.z
-    this.x = param.x;
-    this.y = param.y;
-    this.z = param.z;
+    if(param.hasOwnProperty("x")) this.x = param.x;
+    if(param.hasOwnProperty("y")) this.y = param.y;
+    if(param.hasOwnProperty("z")) this.z = param.z;
     return this;
   }
   toString(){
     return `${this.x} ${this.y} ${this.z}`;
+  }
+  toColor(){
+    return `§4${this.x} §a${this.y} §1${this.z}§r`;
   }
   
 

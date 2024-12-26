@@ -1,7 +1,7 @@
 import { Command } from "../../Main.js";
 
 Command.register({
-    cmd: "nvs",
+    cmd: "nv",
     description: "暗視を切り替えれます。",
     permission: true,
     execute: cmd =>{

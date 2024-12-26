@@ -19,12 +19,12 @@ export class Plugins {
         import(`../../../../../${filename[0]}.js`)
           .then(() => {
             let now = Date.now();
-            allplugins += `§a${filename[0]} v${filename[1]} §f${now - time - minus}ms\n`;
+            allplugins += `§a${filename[0]} ver${filename[1]} §f${now - time - minus}ms\n`;
             minus = now - time;
             if(debug) console.warn("load plugins: "+filename[0]);
           })
           .catch((e) => {
-            allplugins += `§4${filename[0]} v${filename[1]} §f-1ms\n`;
+            allplugins += `§4${filename[0]} ver${filename[1]} §f-1ms\n`;
             let list = JSON.stringify({
               name: filename,
               err: `${e}\n${String(e.stack)}`,
@@ -36,11 +36,11 @@ export class Plugins {
         import(`../../../../../${data}`)
           .then(() => {
             let now = Date.now();
-            allplugins += `§a${data} v? §f${now - time - minus}ms\n`;
+            allplugins += `§a${data} ver? §f${now - time - minus}ms\n`;
             minus = now - time;
           })
           .catch((e) => {
-            allplugins += `§4${data} v? §f-1ms\n`;
+            allplugins += `§4${data} ver? §f-1ms\n`;
             let list = JSON.stringify({
               name: filename,
               err: `${e}`,

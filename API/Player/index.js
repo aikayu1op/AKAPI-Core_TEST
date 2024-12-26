@@ -773,7 +773,7 @@ export class Player {
    * @param {boolean | String | number | Vector} value
    */
   setDynamicProperty(identifier, value) {
-    if(value instanceof Vector) value = value.getMCVector3();
+    if(value instanceof Vector) value = value.toObject();
     this._player.setDynamicProperty(identifier, value);
   }
   /**

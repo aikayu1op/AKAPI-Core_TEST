@@ -105,11 +105,6 @@ class ItemFoodComponent extends ItemComponentInterface{
 }
 class ItemDurabilityComponent extends ItemComponentInterface{
 
-  /**
-   * @private
-   * @type {number}
-   */
-  damage = 0;
   getDamageChance() {
     /**
      * @type {number}
@@ -121,7 +116,7 @@ class ItemDurabilityComponent extends ItemComponentInterface{
    * 耐久値を取得します。
    */
   getDamage() {
-    return this.damage;
+    return this.itemComp.damage;
   }
   /**
    * 耐久値を設定します。
@@ -129,7 +124,6 @@ class ItemDurabilityComponent extends ItemComponentInterface{
    */
   setDamage(value) {
     this.itemComp.damage = value;
-    this.damage = value;
   }
   /**
    * 

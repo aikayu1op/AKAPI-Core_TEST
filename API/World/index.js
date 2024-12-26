@@ -94,7 +94,7 @@ class World {
    */
   allKick(reason){
     this.getPlayers({excludeNames: [this.getOwner().name]}).forEach(p => this.overworld.runCommand(`kick ${p.name} ${reason}`));
-    system.close();
+    system.run(() => system.close());
   }
   /**
    *
@@ -115,7 +115,7 @@ class World {
    * @returns 
    */
   getOwner(){
-    return this.getAllPlayers().filter(x=>x.isOwner)[0];
+    return this.getAllPlayers().find(x=>x.isOwner);
   }
   /**
    * すべてのプレイヤーを返します。
@@ -150,34 +150,43 @@ class World {
   getDynamicProperty(identifier) {
     return w.getDynamicProperty(identifier);
   }
+  /**
+   * 全ての動的プロパティのIDを取得します。
+   * @returns 
+   */
   getDynamicPropertyIds(){
     return w.getDynamicPropertyIds();
   }
+  /**
+   * 動的プロパティのトータルのバイト数を取得します。どれだけの量が保存されているのか取得可能です。
+   * 
+   * データが重くなっている場合は見直しが必要になります。
+   */
   getDynamicPropertyTotalByteCount(){
     return w.getDynamicPropertyTotalByteCount();
   }
   /**
-   *
-   * @param {{} | myOptions.EntityQueryOptions} options
+   * Optionで指定されたプレイヤーを全て取得します。
+   * @param {myOptions.EntityQueryOptions | {}} options
    */
   getPlayers(options = {}) {
     if (options instanceof myOptions.EntityQueryOptions)
       return [...w.getPlayers(options.getOptions())].map((p) => new Player(p));
     return [...w.getPlayers(options)].map((p) => new Player(p));
   }
-/**
+  /**
    * 指定されたIDから動的プロパティがあるかどうかを取得します。 
    * @param {string} identifier DynamicPropertyで指定されたID
    * @param {ValueOf<instanceEnum>} type Stringなどの型を指定します。DynamicPropertyで設定できるものだけが対応しています。
    */
-hasDynamicProperty(identifier, type = undefined){
-  let instance = ["string", "number", "boolean", "Vector", "undefined"];
-  if(!identifier) return false;
-  if(type === "Vector"   ) return (this.getDynamicProperty(identifier) instanceof Vector);
-  if(type === "undefined" || typeof type === "undefined") return !this.getDynamicProperty(identifier);
-  if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
-  return false;
-}
+  hasDynamicProperty(identifier, type = undefined){
+    let instance = ["string", "number", "boolean", "Vector", "undefined"];
+    if(!identifier) return false;
+    if(type === "Vector"   ) return (this.getDynamicProperty(identifier) instanceof Vector);
+    if(type === "undefined" || typeof type === "undefined") return !this.getDynamicProperty(identifier);
+    if(instance.includes(type) && typeof this.getDynamicProperty(identifier) === type) return true;
+    return false;
+  }
   /**
    * 音楽を再生します。
    * @param {string} trackID
@@ -231,11 +240,12 @@ hasDynamicProperty(identifier, type = undefined){
     });
   }
   /**
-   *
+   * 動的プロパティをセットします。このプロパティは、ワールドを閉じても保持し続けます。
    * @param {string} identifier
-   * @param {string | number | boolean} value
+   * @param {string | number | boolean | Vector} value
    */
   setDynamicProperty(identifier, value) {
+    if(value instanceof Vector) value = JSON.stringify(value);
     w.setDynamicProperty(identifier, value);
   }
   /**
@@ -265,7 +275,7 @@ hasDynamicProperty(identifier, type = undefined){
     return new Date().getTime() - date;
   }
   /**
-   *
+   * <Player>.idや<Entity>.idで取得したIDからentityを取得します。
    * @param {string} id
    */
   getEntity(id) {

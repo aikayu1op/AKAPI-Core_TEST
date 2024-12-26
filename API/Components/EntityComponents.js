@@ -1132,6 +1132,22 @@ export class PlayerInventoryComponent {
     }
   }
   /**
+   * インベントリを最大限埋めることができるアイテムの数を計算します。
+   * スタックサイズを考慮した最大個数を返します。
+   * @param {ItemStack} itemStack 取得したいアイテム
+   */
+  getMaxFillableCount(itemStack){
+    if(!itemStack.isStackable) return this.emptySlotsCount;
+    let count = itemStack.maxAmount * this.emptySlotsCount;
+    for(let i = 0; i < this.size; i++){
+      const item = this.getItem(i);
+      if(!item || !item.isStackableWith(itemStack)) continue;
+      else count += itemStack.maxAmount - item.amount;
+    }
+    return count;
+  }
+
+  /**
    * アイテムを指定されたスロットに設定します。
    * @param {number} slot
    * @param {ItemStack} itemStack

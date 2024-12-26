@@ -1,4 +1,4 @@
-import { ItemStack } from "../../index.js";
+import { ItemStack, Vector } from "../../index.js";
 import { Block } from "../Block/Block.js";
 import { Dimension } from "../Dimension/index.js";
 import { Entity } from "../Entity/index.js";
@@ -63,10 +63,12 @@ export class IPlayerMoveEventSignal{
   player;
   /**
    * プレイヤーの速度を取得します。
+   * @return {Vector}
    */
   getVelocity(){}
   /**
    * 現在のプレイヤーの座標を取得します。
+   * @return {Vector}
    */
   getLocation(){}
   /**
