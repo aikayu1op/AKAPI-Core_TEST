@@ -950,6 +950,9 @@ export class Player {
     if (value == undefined) return this._player.isSneaking;
     if (typeof value == "boolean") this._player.isSneaking = value;
   }
+  toJSON(){
+    return {id: this.id, name: this.name, typeId: this.typeId};
+  }
   /**
    * アニメーションを再生します。
    * @param {string} animationName 
@@ -1177,7 +1180,7 @@ export class Player {
    * @readonly
    */
   get isSprinting(){
-    return this._player.isSprinting
+    return this._player.isSprinting;
   }
   /**
    * 寝ているかどうかを取得します。
@@ -1205,10 +1208,10 @@ export class Player {
    * @param {mc.Player} player
    */
   constructor(player) {
-      this._player = player;
+    this._player = player;
+
   }
 }
-
 /**
  * @param {Player} player 
  * @param {number} x
