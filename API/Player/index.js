@@ -321,7 +321,7 @@ export class Player {
    * ```
    */
   getComponents() {
-    return Components.getEntity(this._player).getComponents();
+    return Components.getPlayer(this._player).getComponents();
   }
   /**
    * 動的プロパティを取得します。
@@ -661,7 +661,7 @@ export class Player {
   playSound(soundID, options = {}) {
     try{
       if (options instanceof SoundOptions) this._player.playSound(soundID, options.getOptions());
-      else if (typeof options == "object") this._player.playSound(soundID, options);
+      else if (typeof options == "object") this._player.playSound(soundID, new SoundOptions(options).getOptions());
     }catch{mc.system.run(() => this.playSound(soundID, options))}
   }
   

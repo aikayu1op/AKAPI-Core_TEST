@@ -60,7 +60,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: null,
             excludeItem: null,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: null,
             lore: null
         },
@@ -83,7 +83,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: undefined,
             excludeItem: undefined,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: undefined,
             lore: null
         },
@@ -106,7 +106,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: undefined,
             excludeItem: undefined,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: undefined,
             lore: null
         }
@@ -139,7 +139,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: undefined,
             excludeItem: undefined,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: undefined,
             lore: null
         }
@@ -153,7 +153,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: undefined,
             excludeItem: undefined,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: undefined,
             lore: null
         }
@@ -167,7 +167,7 @@ export class ItemQueryOptions{
             isChecked: false,
             item: undefined,
             excludeItem: undefined,
-            amount: new NumberRange(undefined, {max: 64}),
+            amount: new NumberRange({max: 64}),
             nameTag: undefined,
             lore: null
         }
@@ -193,7 +193,7 @@ export class ItemQueryOptions{
         }
 
         if(!(this.location.mainhand.amount instanceof NumberRange) && typeof this.location.mainhand.amount !== "number"){
-            const range = new NumberRange(undefined, {min: 1, max: 64});
+            const range = new NumberRange({min: 1, max: 64});
             this.location.mainhand.amount = range;
         }else if(typeof this.location.mainhand.amount === "number"){
             if(this.location.mainhand.amount < 0) this.location.mainhand.amount = 0;
@@ -238,7 +238,7 @@ export class ItemQueryOptions{
         }
 
         if(!(this.location.hotbar.amount instanceof NumberRange) && typeof this.location.hotbar.amount !== "number"){
-            const range = new NumberRange(undefined, {min: 1, max: 64});
+            const range = new NumberRange({min: 1, max: 64});
             this.location.hotbar.amount = range;
         }else if(typeof this.location.hotbar.amount === "number"){
             if(this.location.hotbar.amount < 0) this.location.hotbar.amount = 0;
@@ -280,7 +280,7 @@ export class ItemQueryOptions{
         }
 
         if(!(this.location.inventory.amount instanceof NumberRange) && typeof this.location.inventory.amount !== "number"){
-            const range = new NumberRange(undefined, {min: 1, max: 64});
+            const range = new NumberRange({min: 1, max: 64});
             this.location.inventory.amount = range;
         }else if(typeof this.location.inventory.amount === "number"){
             if(this.location.inventory.amount < 0) this.location.inventory.amount = 0;

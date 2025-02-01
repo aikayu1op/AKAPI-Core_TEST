@@ -130,6 +130,7 @@ class ItemDurabilityComponent extends ItemComponentInterface{
    */
   getDamageRange(){
     return new NumberRange(this.itemComp.getDamageRange());
+
   }
   /**
    *

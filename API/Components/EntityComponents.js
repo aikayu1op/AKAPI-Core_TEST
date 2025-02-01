@@ -84,6 +84,11 @@ class PlayerComponentBase {
   getHealth() {
     return new PlayerHealthComponent(this._player);
   }
+  getComponents(){
+    const components = Components.getEntity(this._player).getComponents();
+    components.push(this.getCursorInventory());
+    return components;
+  }
   /**
    * プレイヤーのインベントリに関するコンポーネント関数
    * ```
@@ -542,7 +547,7 @@ export class EntityComponentBase {
     return new EntityNavigationWalkComponent(this._entity);
   }
   getNPC(){
-    return
+    return 
   }
   getOnFire(){
     return new EntityOnFireComponent(this._entity);
@@ -830,7 +835,7 @@ export class PlayerInventoryComponent {
           if (JSON.stringify(getData.location.mainhand) != "{}") {
             const ITEM = this.getItem(this._player.selectedSlot);
             let lore;
-            let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+            let amount = getData.location.mainhand?.amount ?? new NumberRange({ min: 1, max: 64 });
             if (getData.location.mainhand.amount instanceof NumberRange) {
               if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
               else if (
@@ -877,7 +882,7 @@ export class PlayerInventoryComponent {
             for (let i = 0; i < 9; i++) {
               const ITEM = this.getItem(i);
               let lore;
-              let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+              let amount = getData.location.hotbar?.amount ?? new NumberRange({ min: 1, max: 64 });
               if (getData.location.hotbar.amount instanceof NumberRange) {
                 if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
                 else if (
@@ -926,7 +931,7 @@ export class PlayerInventoryComponent {
             for (let i = 9; i < 36; i++) {
               const ITEM = this.getItem(i);
               let lore;
-              let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+              let amount = getData.location.inventory?.amount ?? new NumberRange({ min: 1, max: 64 });
               if (getData.location.inventory.amount instanceof NumberRange) {
                 if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
                 else if (
@@ -984,7 +989,7 @@ export class PlayerInventoryComponent {
       if (!!getData.location.mainhand.isChecked) {
         const ITEM = this.getItem(this._player.selectedSlot);
         let lore;
-        let amount = getData.location.mainhand?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+        let amount = getData.location.mainhand?.amount ?? new NumberRange({ min: 1, max: 64 });
         if (amount instanceof NumberRange) {
           if (!getData.location.mainhand.lore && !!ITEM) lore = ITEM.getLore();
           else if (
@@ -1031,7 +1036,7 @@ export class PlayerInventoryComponent {
         for (let i = 0; i < 9; i++) {
           const ITEM = this.getItem(i);
           let lore;
-          let amount = getData.location.hotbar?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+          let amount = getData.location.hotbar?.amount ?? new NumberRange({ min: 1, max: 64 });
           if (amount instanceof NumberRange) {
             if (!getData.location.hotbar.lore && !!ITEM) lore = ITEM.getLore();
             else if (
@@ -1080,7 +1085,7 @@ export class PlayerInventoryComponent {
         for (let i = 9; i < 36; i++) {
           const ITEM = this.getItem(i);
           let lore;
-          let amount = getData.location.inventory?.amount ?? new NumberRange(undefined, { min: 1, max: 64 });
+          let amount = getData.location.inventory?.amount ?? new NumberRange({ min: 1, max: 64 });
           if (amount instanceof NumberRange) {
             if (!getData.location.inventory.lore && !!ITEM) lore = ITEM.getLore();
             else if (

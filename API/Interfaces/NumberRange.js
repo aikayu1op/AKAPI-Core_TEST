@@ -35,13 +35,10 @@ export class NumberRange{
     }
     /**
      * 
-     * @param {Object} object 
-     * @param {{min: number, max: number}}
+     * @param {{min: number, max: number} | Object} object 
      */
-    constructor(object = undefined, {min = null, max = null}){
-        if(!!min) this.min = min;
-        if(!!max) this.max = max;
-        if(typeof object == "object" && 'min' in object && 'max' in object){
+    constructor(object = undefined){
+        if(typeof object == "object"){
             if(typeof object.min == "number") this.min = object.min;
             if(typeof object.max == "number") this.max = object.max;
         }

@@ -129,7 +129,7 @@ export class ItemStack {
    * @param {string[]} blockIdentifiers 指定されたブロックIDだけを設置可能にします。
    */
   set canPlaceOn(blockIdentifiers){
-    this._itemStack.setCanPlaceOn(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
+    this._itemStack.setCanPlaceOn(blockIdentifiers.map(x => {if(!x.includes(":")) return x = "minecraft:"+x; return x}));
   }
   /**
    * アドベンチャーモードで指定されたブロックに対して破壊可能にします。
@@ -139,7 +139,7 @@ export class ItemStack {
    * @param {string[]} blockIdentifiers 指定されたブロックIDだけを破壊可能にします。
    */
   set canDestroy(blockIdentifiers){
-    this._itemStack.setCanDestroy(blockIdentifiers.map(x => {if(!x.startsWith("minecraft:")) return x = "minecraft:"+x;else return x}));
+    this._itemStack.setCanDestroy(blockIdentifiers.map(x => {if(!x.includes(":")) return "minecraft:"+x; return x}));
   }
   /**
    * アイテムに説明文を追加します。
