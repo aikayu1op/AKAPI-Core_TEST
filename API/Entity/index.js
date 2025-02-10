@@ -9,6 +9,7 @@ import { TeleportOptions } from "../Interfaces/TeleportOptions.js";
 import { ScoreboardIdentity } from "../Scoreboard/ScoreboardIdentity.js";
 import { Vector2 } from "../Vector/Vector2.js";
 import { instanceEnum } from "../Interfaces/instanceEnum.js";
+import { Player } from "../Player/index.js";
 
 export class Entity {
   /**
@@ -152,14 +153,28 @@ export class Entity {
    * @param {mc.EntityEffectOptions} options
    */
   addEffect(effectType, duration = 400, options = undefined) {
-    this._entity.addEffect(effectType, duration, options);
+    return this._entity.addEffect(effectType, duration, options);
   }
   /**
    * エンティティにタグを設定します。
    * @param {String} tag ここで指定された名前でタグを付与します。
    */
   addTag(tag) {
-    this._entity.addTag(tag);
+    return this._entity.addTag(tag);
+  }
+  /**
+   * エンティティにダメージを与えます。
+   * 0以下のダメージはfalseが返り、ダメージが当たりません。
+   * 
+   * それ以外の場合はtrueが返ります。
+   * @param {number} amount ダメージ量
+   * @param {mc.EntityApplyDamageByProjectileOptions | mc.EntityApplyDamageOptions} options
+   */
+  applyDamage(amount, options = {}){
+    if(options?.damagingEntity instanceof Entity) options.damagingEntity = options.damagingEntity.getMCEntity();
+    if(options?.damagingEntity instanceof Player) options.damagingEntity = options.damagingEntity.getMCPlayer();
+    if(options?.damagingProjectile instanceof Entity) options.damagingProjectile = options.damagingProjectile.getMCEntity();
+    return this._entity.applyDamage(amount, options);
   }
   /**
    * 現在の速度に衝撃を与えたベクトルを追加します。

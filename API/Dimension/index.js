@@ -215,7 +215,7 @@ export class Dimension {
    * 指定されたエンティティを召喚します。
    * @param {string} identifier
    * @param {Vector} location
-   * @param {{}} options
+   * @param {mc.SpawnEntityOptions} options
    */
   spawnEntity(identifier, location, options = undefined) {
     return new Entity(this._dimension.spawnEntity(identifier, location.getMCVector3(), options));

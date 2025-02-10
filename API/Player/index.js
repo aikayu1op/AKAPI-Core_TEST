@@ -323,6 +323,9 @@ export class Player {
   getComponents() {
     return Components.getPlayer(this._player).getComponents();
   }
+  getDimensionLocation(){
+    return new DimensionLocation({x: this.location.x, y: this.location.y, z: this.location.z, dimension: this.dimension.getMCDimension()});
+  }
   /**
    * 動的プロパティを取得します。
    * @param {string} identifier 取得したいデータ

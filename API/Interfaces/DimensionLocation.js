@@ -8,17 +8,22 @@ export class DimensionLocation{
     _dl;
     /**
      * ディメンションを取得します。
+     * @returns {Dimension}
      * @readonly
      */
     get dimension(){
-        return Dimension(this._dl.dimension);
+        return new Dimension(this._dl.dimension);
     }
     /**
      * 座標を取得します。
+     * @returns {Vector}
      * @readonly
      */
     get location(){
-        return Vector(this._dl.x,this._dl.y,this._dl.z);
+        return new Vector(this._dl.x,this._dl.y,this._dl.z);
+    }
+    get native(){
+        return this._dl;
     }
     /**
      * 
