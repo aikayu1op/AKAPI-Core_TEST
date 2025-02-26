@@ -148,7 +148,7 @@ export class Entity {
    *    ev.sender.addEffect(MinecraftEffectTypes.speed, 20, 1, false);
    * })
    * ```
-   * @param {mc.EffectType} effectType エフェクトタイプを指定します。
+   * @param {import("@minecraft/vanilla-data").MinecraftEffectTypesValueOf} effectType エフェクトタイプを指定します。
    * @param {number} duration 時間を指定しますが、tickで指定してください。(20/1tick)
    * @param {mc.EntityEffectOptions} options
    */

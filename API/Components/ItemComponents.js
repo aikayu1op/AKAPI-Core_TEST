@@ -1,6 +1,7 @@
 import * as mc from "@minecraft/server";
 import { NumberRange } from "../Interfaces/NumberRange.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
+import { Color } from "./Color/Color.js";
 
 export class ItemComponentBase {
   getDurability() {
@@ -8,6 +9,9 @@ export class ItemComponentBase {
   }
   getCooldown() {
     return new ItemCooldownComponent(this._itemStack);
+  }
+  getDyeable(){
+    return new ItemDyeableComponent(this._itemStack);
   }
   getEnchantments() {
     return new ItemEnchantmentsComponent(this._itemStack);
@@ -24,6 +28,7 @@ export class ItemComponentBase {
   getComponents() {
     let returnPush = [];
     if (this.getDurability().hasComponent()) returnPush.push(this.getDurability());
+    if (this.getDyeable().hasComponent()) returnPush.push(this.getDyeable());
     if (this.getCooldown().hasComponent()) returnPush.push(this.getCooldown());
     if (this.getEnchantments().hasComponent()) returnPush.push(this.getEnchantments());
     if (this.getItemFood().hasComponent()) returnPush.push(this.getItemFood());
@@ -103,6 +108,42 @@ class ItemFoodComponent extends ItemComponentInterface{
     } catch (e) {}
   }
 }
+class ItemDyeableComponent extends ItemComponentInterface{
+  /**
+   * アイテムがコンポーネントを持っているか確認する関数
+   */
+  hasComponent() {
+    if (this._itemStack.getItemStack().hasComponent(this.typeId)) return true;
+    else return false;
+  }
+  get color(){
+    return this.itemComp.color;
+  }
+  /**
+   * @param {Color} value
+   */
+  set color(value){
+    this.itemComp.color = value.getDyeableColor().getMCColor();
+  }
+  /**
+   * @readonly
+   */
+  get defaultColor(){
+    return this.itemComp.defaultColor;
+  }
+
+
+  /**
+   *
+   * @param {ItemStack} itemStack
+   */
+  constructor(itemStack) {
+    try {
+      super(itemStack, "minecraft:dyeable");
+    } catch (e) {}
+  }
+}
+
 class ItemDurabilityComponent extends ItemComponentInterface{
 
   getDamageChance() {

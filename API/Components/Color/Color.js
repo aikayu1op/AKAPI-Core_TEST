@@ -65,11 +65,28 @@ export class Color{
         return "#"+[this.red, this.green, this.blue].map(x => ("0"+x.toString(16)).slice(-2)).join("");
     }
     /**
+     * Hexコードから255割った結果を返します。
+     */
+    getDyeableColor(){
+        this.red /= 255;
+        this.green /= 255;
+        this.blue /= 255;
+        return this;
+    }
+    /**
      * マイクラ公式のColorクラスを返します。
      * @deprecated
      * @returns {{}}
      */
     getMCColor(){
+        return {
+            red: this.red,
+            green: this.green,
+            blue: this.blue,
+            alpha: this.alpha
+        }
+    }
+    toObject(){
         return {
             red: this.red,
             green: this.green,
@@ -107,11 +124,11 @@ export class Color{
             this.red = cc[0];
             this.green = cc[1];
             this.blue = cc[2];
-        }else if(red instanceof mc.Color){
+        }else if(typeof red === "object"){
             this.red = red.red;
             this.green = red.green;
             this.blue = red.blue;
-            this.alpha = red.alpha;
+            this.alpha = red?.alpha;
         }
     }
 }

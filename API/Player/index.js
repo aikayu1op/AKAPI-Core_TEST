@@ -84,6 +84,12 @@ export class Player {
   /**
    * @readonly
    */
+  get inputInfo(){
+    return this._player.inputInfo;
+  }
+  /**
+   * @readonly
+   */
   get inputPermissions(){
     return this._player.inputPermissions;
   }
@@ -585,6 +591,13 @@ export class Player {
     }*/
   }
   /**
+   * 読み込めるかどうかを取得します。
+   * @returns 
+   */
+  isValid(){
+    return this._player.isValid();
+  }
+  /**
    * プレイヤーをキルします。
    */
   kill() {
@@ -681,7 +694,7 @@ export class Player {
    * @param {String} identifier
    */
   removeDynamicProperty(identifier) {
-    return this._player.removeDynamicProperty(identifier);
+    this._player.setDynamicProperty(identifier, undefined);
   }
   /**
    * プレイヤーに登録されているタグを削除します。
@@ -748,7 +761,7 @@ export class Player {
   }
   /**
    * プレイヤーにアクションバーを送信します。
-   * @param {string} message
+   * @param {string | IRawMessage} message
    */
   sendActionbar(message) {
     try{
@@ -953,6 +966,7 @@ export class Player {
     if (value == undefined) return this._player.isSneaking;
     if (typeof value == "boolean") this._player.isSneaking = value;
   }
+  /** @deprecated */
   toJSON(){
     return {id: this.id, name: this.name, typeId: this.typeId};
   }

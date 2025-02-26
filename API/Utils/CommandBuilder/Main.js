@@ -259,7 +259,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
       } else if (
         (typeof cmdData.get(cmd).permission === "string" &&
           player.hasTag(Config.firstTag + cmdData.get(cmd).permission)) ||
-        ev.sender.hasTag(Config.firstTag + Config.opTag)
+          player.hasTag(Config.firstTag + Config.opTag)
       ) {
         let isOp = () => player.hasTag(Config.firstTag + Config.opTag)? true : player.hasTag(Config.firstTag + cmdData.get(cmd).permission)
         system.run(() => cmdData.get(cmd).execute({ sender, name: cmd, args, getPlayer, getPlayers, isOp }))

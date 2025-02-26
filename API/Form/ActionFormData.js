@@ -76,7 +76,6 @@ export class ActionFormData{
     }
     /**
      * 指定したプレイヤーにフォームを表示します。
-     * @overload
      * @param {Player} showPlayer 
      * @param {ActionFormCanceledResponse} callback
      * @param {boolean} force
@@ -110,7 +109,6 @@ export class ActionFormData{
     
             });
         });
-        return;
     }
         /**
      * 指定したプレイヤーにフォームを表示します。
