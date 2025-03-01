@@ -225,7 +225,7 @@ export function executeCommand(player, sender, cmd, arg, message, isCommand) {
                     x = Number(x);
                     return true;
                   } 
-                  else if ((array[i].includes("boolean") && x === "true") || x === "false") {
+                  else if (array[i].includes("boolean") && (x === "true" || x === "false")) {
                     x == "true" ? (x = true) : (x = false);
                     return true;
                   } 

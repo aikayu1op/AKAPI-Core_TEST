@@ -213,7 +213,7 @@ export class ItemStack {
    * アイテムの個数を確認します。
    */
   get amount(){
-    return this._itemStack.amount;
+    return this._itemStack.amount??1;
   }
   /**
    * アイテムの個数を確認します。
@@ -245,6 +245,15 @@ export class ItemStack {
    */
   getItemStack() {
     return this._itemStack;
+  }
+  /** @deprecated */
+  toJSON(){
+    let obj = {};
+    for(let prop in this){
+        if(prop != "_itemStack")
+        obj[prop.substring(1)] = this[prop];
+    }
+    return obj;
   }
   /**
    * ワールドで使用するItemStackの初期化処理

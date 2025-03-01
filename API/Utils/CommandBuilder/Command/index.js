@@ -10,3 +10,4 @@ import "./NightVisionSwitch/index.js";
 import "./SeeInventory/index.js";
 import "./PosSave/index.js";
 import "./Summon/index.js";
+import "./Reload/index.js";
