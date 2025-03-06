@@ -26,6 +26,21 @@ export const custom_ui_content = {
 		type: 'item'
 	},
 	*/
+	"aikayu1op:color_leather_helmet": {
+        type: 'item'
+	},
+	"aikayu1op:color_leather_chestplate": {
+        type: 'item'
+	},
+	"aikayu1op:color_leather_leggings": {
+        type: 'item'
+	},
+	"aikayu1op:color_leather_boots": {
+        type: 'item'
+	},
+	"aikayu1op:no_arrow_bow": {
+        type: 'item'
+	},
 };
 //Blocks are excluded from the count, as they do not shift vanilla IDs.
 const number_of_custom_items = Object.values(custom_ui_content).filter(v => v.type === 'item').length;
@@ -104,7 +119,7 @@ class ChestFormData {
 		}
 		this.#buttonArray.splice(Math.max(0, Math.min(slot, this.slotCount - 1)), 1, [
 			buttonRawtext,
-			ID === undefined ? targetTexture : ((ID + (ID < 262 ? 0 : 1)+(ID < 256 ? 0 : number_of_custom_items)) * 65536) + (enchanted ? 32768 : 0)
+			ID === undefined ? targetTexture : ((ID + (ID < 256 ? 0 : number_of_custom_items)) * 65536) + (enchanted ? 32768 : 0)
 		]);
 		return this;
 	}
