@@ -2,6 +2,7 @@ export * from "./CommandBuilder/index.js";
 export * from "./PluginManager/index.js";
 export * from "./Thread/index.js";
 export * from "./Time/timer.js";
+export * from "./FMBE/index.js";
 
 class UtilsClass{
     /**
@@ -12,7 +13,7 @@ class UtilsClass{
      */
     centerText(text, width) {
         let save = text;
-        const textLength = this.getStringByteCount(save.replace(/§./gm, ""));
+        const textLength = this.getStringByteCount(save.replace(/§./g, ""));
         if (textLength >= width) return text;
         
         const totalSpaces = width - textLength;
@@ -28,6 +29,7 @@ class UtilsClass{
      */
     getStringByteCount(str) {
         let count = 0;
+        str = str.replace(/§./g, );
         for (let i = 0; i < str.length; i++) {
             const code = str.charCodeAt(i);
             if (code <= 0x7f)        count += 1;

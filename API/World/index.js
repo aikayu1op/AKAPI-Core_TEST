@@ -167,7 +167,7 @@ class World {
   }
   /**
    * Optionで指定されたプレイヤーを全て取得します。
-   * @param {myOptions.EntityQueryOptions | {}} options
+   * @param {myOptions.EntityQueryOptions} options
    */
   getPlayers(options = {}) {
     if (options instanceof myOptions.EntityQueryOptions)

@@ -31,12 +31,20 @@ export class SliderActionbar{
      */
     static setData(player, id, message){
         let fixed = `${" ".repeat(50)}${message}`;
-        if(!slider.has(player.id)) slider.set(player.id, new Map().set(id, fixed));
-        else slider.set(player.id, slider.get(player.id).set(id, fixed));
-        if(!sliderTick.has(player.id)) sliderTick.set(player.id, new Map().set(id, 0));
-        else sliderTick.set(player.id, sliderTick.get(player.id).set(id, 0));
-        if(!sliderFlash.has(player.id)) sliderFlash.set(player.id, new Map().set(id, false));
-        else sliderFlash.set(player.id, sliderFlash.get(player.id).set(id, false));
+        if(! slider.has(player.id)) slider.set(player.id, new Map().set(id, fixed));
+        else slider.set(player.id,  slider.get(player.id).set(id, fixed));
+        if(! sliderTick.has(player.id)) sliderTick.set(player.id, new Map().set(id, 0));
+        else sliderTick.set(player.id,  sliderTick.get(player.id).set(id, 0));
+        if(! sliderFlash.has(player.id)) sliderFlash.set(player.id, new Map().set(id, false));
+        else sliderFlash.set(player.id,  sliderFlash.get(player.id).set(id, false));
+    }
+    /**
+     * データが存在するかどうか
+     * @param {Player} player 
+     * @param {string} id 
+     */
+    static isData(player, id){
+
     }
 }
 system.allPlayerTickSubscribe(({player: p}) =>{
@@ -46,9 +54,9 @@ system.allPlayerTickSubscribe(({player: p}) =>{
     let getFlash = sliderFlash.get(p.id);
     for(const data of sliderData.keys()){
         sliderData.set(data, sliderData.get(data).slice(1)+" ");
-        if(getTick.get(data) % 4 == 0) getFlash.set(data, getFlash.get(data) ? false : true);
-        if(getFlash.get(data)) p.setMultiLineActionbar(data, `§l§e${sliderData.get(data).slice(1)}§r `.substring(0,50));
-        else p.setMultiLineActionbar(data, `§r§l${sliderData.get(data).slice(1)} `.substring(0, 50));
+        if(getTick.get(data) % 4 == 0) getFlash.set(data, !getFlash.get(data));
+        if(getFlash.get(data)) p.setMultiLineActionbar(data, `§l§e${sliderData.get(data).slice(1)} `.substring(0,50)+"§r", false, 3);
+        else p.setMultiLineActionbar(data, `§r§l${sliderData.get(data).slice(1)} `.substring(0, 50)+"§r", false, 3);
         if(getTick.get(data) <= sliderData.get(data).length) getTick.set(data, getTick.get(data)+1);
         else{
             p.deleteMultiLineActionbar(data); 

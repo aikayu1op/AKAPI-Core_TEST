@@ -390,7 +390,7 @@ export class Entity {
   /**
    * アニメーションを実行します。
    * @param {string} animationName
-   * @param {{}} options
+   * @param {{} | mc.PlayAnimationOptions} options
    */
   playAnimation(animationName, options) {
     this._entity.playAnimation(animationName, options);

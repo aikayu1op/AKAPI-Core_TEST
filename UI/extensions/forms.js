@@ -27,18 +27,23 @@ export const custom_ui_content = {
 	},
 	*/
 	"aikayu1op:color_leather_helmet": {
+		texture: "minecraft:leather_helmet",
         type: 'item'
 	},
 	"aikayu1op:color_leather_chestplate": {
+		texture: "minecraft:leather_chestplate",
         type: 'item'
 	},
 	"aikayu1op:color_leather_leggings": {
+		texture: "minecraft:leather_leggings",
         type: 'item'
 	},
 	"aikayu1op:color_leather_boots": {
+		texture: "minecraft:leather_boots",
         type: 'item'
 	},
 	"aikayu1op:no_arrow_bow": {
+		texture: "minecraft:bow",
         type: 'item'
 	},
 };

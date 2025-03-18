@@ -70,7 +70,7 @@ function start(){
                 if(beforeInv[i].amount === x.amount){ index = invIndex[i]; return true;}
             }));
             if(isPlayer){
-                _listener.forEach(f => f({player, item: comp.itemStack, index: (index==-1?lastIndex:index)}));
+                system.run(() => _listener.forEach(f => f({player, item: comp.itemStack, index: (index==-1?lastIndex:index)})));
                 return;
             }
         });
