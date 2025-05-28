@@ -1,6 +1,6 @@
 import * as UI from "@minecraft/server-ui";
 import { Player } from "../Player/index.js";
-import { IModalFormResponse } from "./Callback/IModalFormCallback";
+import { IModalFormDropDownOptions, IModalFormResponse, IModalFormTextFieldOptions, IModalFormToggleOptions } from "./Callback/IModalFormCallback";
 import { system } from "@minecraft/server";
 import { IRawMessage } from "../Interfaces/IRawMessage.js";
 
@@ -12,101 +12,144 @@ import { IRawMessage } from "../Interfaces/IRawMessage.js";
 export class ModalFormData{
     /**
      * @private
+     * @type {string}
      */
-    form = {
-        title: "",
-    }
+    _title;
     /**
      * アイテムの順番を取得する
      * @private
-     * @type {string[]}
+     * @type {{id: string, label: string | IRawMessage, placeholderText: string, defaultValueIndex: number, defaultValue: string | number | boolean, minValue: number, maxValue: number, valueStep: number, defaultValue: number, tooltip: string | IRawMessage}[]}
      */
-    _list = [];
+    _elements = [];
     /**
      * @private
-     * @type {Map<string, Map<string, string[]>>[]}
+     * @type {string}
      */
-    _dropdown = [];
-    /**
-     * @private
-     * @type {Map<string, string[]>[]}
-     */
-    _textField = [];
-    /**
-     * @private
-     * @type {string | boolean[]}
-     */
-     _toggle = [];
-     /**
-     * @private
-     * @type {Map<string, number[]>[]}
-     */
-    _slider = [];
+    _submitButton;
 
     /**
-     * ModalFormDataのtitleテキストを設定します。
-     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} text
+     * フォームにドロップダウンを配置します。
+     * @overload
+     * @param { string | IRawMessage} label 
+     * @param {(string | IRawMessage)[]} items 
+     * @param {number} defaultValueIndex
+     * @param {string | IRawMessage} tooltip
+     * @returns {this}
+     * @overload
+     * @param {string | IRawMessage} label
+     * @param {(string | IRawMessage)[]} items 
+     * @param {IModalFormDropDownOptions} options
+     * @returns {this}
+     * 
      */
-    title(text){
-        this.form.title = text;
+    dropdown(label = "", items = [], defaultValueIndex = 0, tooltip = undefined){
+        if(typeof defaultValueIndex === "object"){
+            this._elements.push({id: "textField", label, options: defaultValueIndex});
+            return this;
+        }
+        this._elements.push({id: "dropdown", label, items, options:{ defaultValueIndex, tooltip }});
         return this;
     }
     /**
-     * フォームにテキストボックスを配置します。
-     * @param {string | IRawMessage} label 
-     * @param {string | IRawMessage} placeholderText 
-     * @param {string} defaultValue 
+     * 仕切りをフォームに追加します。
      */
-    textField(label = "", placeholderText = "", defaultValue = undefined){
-        let data = [];
-        let map = new Map();
-        data.push(placeholderText, defaultValue);
-        map.set(label, data);
-        this._list.push("textField");
-        this._textField.push(map);
+    divider(){
+        this._elements.push({id: "divider"});
+        return this;
+    }
+    header(text = ""){
+        this._elements.push({id: "header", text});
         return this;
     }
     /**
-     * フォームにトグルを配置します。
-     * @param {string} label 
-     * @param {boolean} defaultValue 
+     * 
+     * @param {string | IRawMessage} text 
      */
-    toggle(label = "", defaultValue = false){
-        this._list.push("toggle");
-        this._toggle.push(label, defaultValue);
+    label(text = ""){
+        this._elements.push({id: "label", text});
         return this;
     }
     /**
      * フォームにスライダーを配置します。
-     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
+     * @overload
+     * @param {string | IRawMessage} label 
      * @param {number} minValue 
      * @param {number} maxValue 
      * @param {number} valueStep 
      * @param {number} defaultValue 
+     * @param {string | IRawMessage} tooltip
+     * @returns {this}
+     * @overload
+     * @param {string | IRawMessage} label 
+     * @param {number} minValue 
+     * @param {number} maxValue 
+     * @param {IModalFormSliderOptions} options
+     * @returns {this}
      */
-    slider(label = "", minValue = 0, maxValue = 100, valueStep = 1, defaultValue = minValue){
-        let data = [];
-        let map = new Map();
-        data.push(minValue, maxValue, valueStep, defaultValue);
-        map.set(label, data);
-        this._list.push("slider");
-        this._slider.push(map);
+    slider(label = "", minValue = 0, maxValue = 100, valueStep = 1, defaultValue = minValue, tooltip = undefined){
+        if(typeof valueStep === "object"){
+            this._elements.push({id: "textField", label, options: valueStep});
+            return this;
+        }
+        this._elements.push({id: "slider", label, minValue, maxValue, options: { valueStep, defaultValue, tooltip }});
         return this;
     }
     /**
-     * フォームにドロップダウンを配置します。
-     * @param {string | import("../Interfaces/IRawMessage.js").IRawMessage} label 
-     * @param {(string | import("../Interfaces/IRawMessage.js").IRawMessage)[]} options 
-     * @param {number} defaultValueIndex 
+     * 決定ボタンをフォームの名前を変更します。
+     * @param {string | IRawMessage} text 
+     * @returns 
      */
-    dropdown(label = "", options = [], defaultValueIndex = 0){
-        let data = new Map();
-        let map = new Map();
-        data.set("options", options)
-        data.set("index", defaultValueIndex)
-        map.set(label, data);
-        this._list.push("dropdown");
-        this._dropdown.push(map);
+    submitButton(text){
+        this._submitButton = text;
+        return this;
+    }
+    /**
+     * ModalFormDataのtitleテキストを設定します。
+     * @param {string | IRawMessage} text
+     */
+    title(text){
+        this._title = text;
+        return this;
+    }
+    /**
+     * フォームにテキストボックスを配置します。
+     * @overload
+     * @param {string | IRawMessage} label 
+     * @param {string | IRawMessage} placeholderText 
+     * @param {string} defaultValue 
+     * @returns {this}
+     * @overload
+     * @param {string | IRawMessage} label 
+     * @param {string | IRawMessage} placeholderText 
+     * @param {IModalFormTextFieldOptions} options
+     * @returns {this}
+     */
+    textField(label = "", placeholderText = "", defaultValue = undefined, tooltip = undefined){
+        if(typeof defaultValue === "object"){
+            this._elements.push({id: "textField", label, options: defaultValue});
+            return this;
+        }
+        this._elements.push({id: "textField", label, options:{ placeholderText, defaultValue, tooltip }});
+        return this;
+    }
+    /**
+     * フォームにトグルを配置します。
+     * @overload
+     * @param {string} label 
+     * @param {boolean} defaultValue 
+     * @param {string | IRawMessage} tooltip
+     * @returns {this}
+     * @overload
+     * @param {string} label 
+     * @param {IModalFormToggleOptions} defaultValue 
+     * @returns {this}
+     */
+    toggle(label = "", defaultValue = false, tooltip = undefined){
+        if(typeof defaultValue === "object"){
+            this._elements.push({id: "textField", label, options: defaultValue});
+            return this;
+        }
+        this._elements.push({id: "toggle", label, options:{defaultValue, tooltip}});
         return this;
     }
 
@@ -123,37 +166,31 @@ export class ModalFormData{
      */
     show(showPlayer, callback = undefined, force = false){
         const form = new UI.ModalFormData()
-        .title(this.form.title)
-        let dropdown = 0;
-        let textField = 0;
-        let slider = 0;
-        let toggle = 0;
-        for(let i = 0; i < this._list.length; i++){
-            if(this._list[i] == "dropdown"){
-                const data = this._dropdown[dropdown];
-                const keys = [...data.keys()][0];
-                const options = data.get(keys).get("options");
-                const index = data.get(keys).get("index");
-                form.dropdown(keys, options, index);
-                dropdown+=1;
-            }
-            else if(this._list[i] == "textField"){
-                const data = this._textField[textField];
-                const keys = [...data.keys()][0];
-                const data2 = data.get(keys);
-                form.textField(keys, data2[0],data2[1]);
-                textField+=1;
-            }
-            else if(this._list[i] == "slider"){
-                const data = this._slider[slider];
-                const keys = [...data.keys()][0];
-                const data2 =  data.get(keys);
-                form.slider(keys, data2[0],data2[1], data2[2], data2[3]);
-                slider+=1;
-            }
-            else if(this._list[i] == "toggle"){
-                form.toggle(this._toggle[toggle], this._toggle[toggle+1]);
-                toggle+=2;
+        .title(this._title)
+        if(!!this._submitButton) form.submitButton(this._submitButton);
+        for(const dat of this._elements){
+            switch(dat.id){
+                case "dropdown":
+                    form.dropdown(dat.label, dat.items, dat.options);
+                    break;
+                case "divider":
+                    form.divider();
+                    break;
+                case "header":
+                    form.header(dat.text);
+                    break;
+                case "label":
+                    form.label(dat.text);
+                    break;
+                case "slider":
+                    form.slider(dat.label, dat.minValue, dat.maxValue, dat.options);
+                    break;
+                case "textField":
+                    form.textField(dat.label, dat.placeholderText, dat.options);
+                    break;
+                case "toggle":
+                    form.toggle(dat.label, dat.options);
+                    break;
             }
         }
         if(!callback && !force) return form.show(showPlayer.getMCPlayer());
@@ -178,37 +215,31 @@ export class ModalFormData{
      */
     async showAsync(showPlayer, callback, force = false){
         const form = new UI.ModalFormData()
-        .title(this.form.title)
-        let dropdown = 0;
-        let textField = 0;
-        let slider = 0;
-        let toggle = 0;
-        for(let i = 0; i < this._list.length; i++){
-            if(this._list[i] == "dropdown"){
-                const data = this._dropdown[dropdown];
-                const keys = [...data.keys()][0];
-                const options = data.get(keys).get("options");
-                const index = data.get(keys).get("index");
-                form.dropdown(keys, options, index);
-                dropdown+=1;
-            }
-            else if(this._list[i] == "textField"){
-                const data = this._textField[textField];
-                const keys = [...data.keys()][0];
-                const data2 = data.get(keys);
-                form.textField(keys, data2[0],data2[1]);
-                textField+=1;
-            }
-            else if(this._list[i] == "slider"){
-                const data = this._slider[slider];
-                const keys = [...data.keys()][0];
-                const data2 =  data.get(keys);
-                form.slider(keys, data2[0],data2[1], data2[2], data2[3]);
-                slider+=1;
-            }
-            else if(this._list[i] == "toggle"){
-                form.toggle(this._toggle[toggle], this._toggle[toggle+1]);
-                toggle+=2;
+        .title(this._title)
+        if(!!this._submitButton) form.submitButton(this._submitButton);
+        for(const dat of this._elements){
+            switch(dat.id){
+                case "dropdown":
+                    form.dropdown(dat.label, dat.items, dat.options);
+                    break;
+                case "divider":
+                    form.divider();
+                    break;
+                case "header":
+                    form.header(dat.text);
+                    break;
+                case "label":
+                    form.label(dat.text);
+                    break;
+                case "slider":
+                    form.slider(dat.label, dat.minValue, dat.maxValue, dat.options);
+                    break;
+                case "textField":
+                    form.textField(dat.label, dat.placeholderText, dat.options);
+                    break;
+                case "toggle":
+                    form.toggle(dat.label, dat.options);
+                    break;
             }
         }
         await new Promise((resolve) =>{
@@ -234,7 +265,7 @@ export class ModalFormData{
      * @param {string} title 
      */
     constructor(title = ""){
-        this.form.title = title;
+        this._title = title;
     }
 }
 

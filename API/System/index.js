@@ -12,19 +12,23 @@ class System {
    * @type {number}
    * @readonly
    */
-  currentTick = mc.system.currentTick;
+  get currentTick(){return mc.system.currentTick;}
   /**
    * @readonly
    */
-  beforeEvents = mc.system.beforeEvents;
+  get beforeEvents(){return mc.system.beforeEvents;}
   /**
    * @readonly
    */
-  afterEvents = mc.system.afterEvents;
+  get afterEvents(){return mc.system.afterEvents}
   /**
    * @readonly
    */
-  WORLD_TICKS = 20;
+  get WORLD_TICKS(){return mc.system.WORLD_TICKS;}
+  /**
+   * @readonly
+   */
+  get serverSystemInfo(){return mc.server.serverSystemInfo;}
 
   /**
    * forを使ったすべてのプレイヤーに対して実行するものを強制的に1つのForにまとめさせれるものです。
@@ -117,6 +121,9 @@ class System {
    */
   runTimeout(callback, delayTicks = 0) {
     return mc.system.runTimeout(callback, delayTicks);
+  }
+  waitTicks(tick = 1){
+    return mc.system.waitTicks(tick);
   }
 }
 export const system = new System();

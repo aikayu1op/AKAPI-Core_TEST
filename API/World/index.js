@@ -25,12 +25,12 @@ class World {
      * 公式のイベントをかえします。
      * @readonly
      */
-    mc: w.beforeEvents,
+    get mc(){ return w.beforeEvents },
     /**
      * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
      * @readonly
      */
-    api: beforeEvents,
+    get api(){ return beforeEvents;},
   };
   /**
    * イベントを格納しているプロパティ
@@ -41,18 +41,18 @@ class World {
      * 公式のイベントをかえします。
      * @readonly
      */
-    mc: w.afterEvents,
+    get mc(){ return w.afterEvents},
     /**
      * mcのイベントを自クラスのものに変えたり、新しく追加したりしているものをかえします。
      * @readonly
      */
-    api: afterEvents,
+    get api(){ return afterEvents },
   };
   /**
    * スコアボードを取得したい場合に使用するプロパティ
    * @readonly
    */
-  scoreboard = new Scoreboard(w.scoreboard);
+  get scoreboard(){ return new Scoreboard(w.scoreboard); }
 
   /**
    * ワールドがハードコアかどうかを取得します。

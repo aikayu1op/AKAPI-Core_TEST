@@ -185,13 +185,11 @@ export class Entity {
   }
   /**
    *
-   * @param {number} directionX
-   * @param {number} directionZ
-   * @param {number} horizontalStrength
+   * @param {Vector2} horizontalForce
    * @param {number} verticalStrength
    */
-  applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength) {
-    this._entity.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+  applyKnockback(horizontalForce, verticalStrength) {
+    this._entity.applyKnockback(horizontalForce.toVectorXZ(), horizontalStrength, verticalStrength);
   }
   /**
    * 速度をリセットさせます。
@@ -382,10 +380,9 @@ export class Entity {
   }
   /**
    * 
-   * @returns 
    */
   isValid(){
-    return this._entity.isValid();
+    return this._entity.isValid;
   }
   /**
    * アニメーションを実行します。
@@ -415,13 +412,6 @@ export class Entity {
    */
   removeTag(tag) {
     return this._entity.removeTag(tag);
-  }
-  /**
-   * 指定されたコマンドを実行します。
-   * @param {String} command
-   */
-  runCommandAsync(command) {
-    return this._entity.runCommandAsync(command);
   }
   /**
    * 指定されたコマンドを実行します。

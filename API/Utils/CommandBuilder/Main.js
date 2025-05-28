@@ -1,4 +1,5 @@
 import { system, world } from "../../../index.js";
+import * as mc from "@minecraft/server";
 import { IBuilderObject } from "./Object/BuilderObject.js";
 import Config from "./Config/index.js";
 import { Player } from "../../Player/index.js";
@@ -152,7 +153,7 @@ export class Command {
   constructor() {}
 }
 
-world.beforeEvents.mc.chatSend.subscribe((ev) => {
+mc.world.beforeEvents.chatSend.subscribe((ev) => {
   let player = ev.sender;
   const message = ev.message;
   let sender = new Player(player);

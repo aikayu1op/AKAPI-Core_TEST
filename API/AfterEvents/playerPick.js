@@ -1,7 +1,7 @@
 import * as mc from "@minecraft/server";
 import { Entity } from "../Entity/index.js";
 import { ItemStack } from "../ItemStack/ItemStack.js";
-import { Player, system } from "../../index.js";
+import { Player, system, world } from "../../index.js";
 import { IPlayerPickEvent } from "./interface.js";
 import { isDuplicate } from "./isDuplicate.js";
 
@@ -70,17 +70,21 @@ function start(){
                 if(beforeInv[i].amount === x.amount){ index = invIndex[i]; return true;}
             }));
             if(isPlayer){
-                system.run(() => _listener.forEach(f => f({player, item: comp.itemStack, index: (index==-1?lastIndex:index)})));
+                system.run(() =>{
+                    _listener.forEach(f => f({player, item: comp.itemStack, index: (index==-1?lastIndex:index)}))
+                });
                 return;
             }
         });
     });
 
-    let event2 = system.allPlayerTickSubscribe(({player}) =>{
-        if(!isRunning){
-            mc.world.beforeEvents.entityRemove.unsubscribe(event1);
-            system.allPlayerTickUnSubscribe(event2);
+    let event2 = system.runInterval(() =>{
+        for(const player of world.getAllPlayers()){
+            if(!isRunning){
+                mc.world.beforeEvents.entityRemove.unsubscribe(event1);
+                system.clearRun(event2);
+            }
+            inventory.set(player.id, player.getComponent().getInventory().container.getAllItems());
         }
-        inventory.set(player.id, player.getComponent().getInventory().container.getAllItems());
     });
 }

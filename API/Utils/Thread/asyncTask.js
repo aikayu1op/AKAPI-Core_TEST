@@ -10,7 +10,7 @@ import { setImmediate } from "../Time/timer.js";
 // watchdogを無効化するコードを入れている場合、32msくらいまで大きくできるけど
 // setblockとか負荷の高い系のコマンドの場合はせいぜい10msくらいにしておかないと
 // エラーが発生するので、カリカリにチューニングしたい場合以外は0.1～5.5msが無難
-const THRESHOLD = 0.01;
+const THRESHOLD = 32;
 
 /** @type Generator[] 疑似スレッドで実行するタスク（ジェネレータ）の配列 */
 let tasks = [];

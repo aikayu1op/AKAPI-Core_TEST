@@ -82,14 +82,12 @@ export class Dimension {
    *
    * @param {Vector} location
    * @param {Vector} direction
-   * @param {BlockRaycastOptions | {}} options
+   * @param {mc.BlockRaycastOptions | BlockRaycastOptions} options
    */
   getBlockFromRay(location, direction, options = {}) {
     if (options instanceof BlockRaycastOptions)
-      return new Block(
-        this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options.getOptions())
-      );
-    else return new Block(this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options));
+        return this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options.getOptions())
+    else return this._dimension.getBlockFromRay(location.getMCVector3(), direction.getMCVector3(), options);
   }
   /**
    * optionsで指定されたエンティティを返します。

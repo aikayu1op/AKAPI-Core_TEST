@@ -48,6 +48,15 @@ export class Vector2{
         return {x: this.x, z: this.y}
     }
     /**
+     * x, yを強制的に設定します。
+     * @param {{x: number, y: number}} param
+     */
+    setVector(param){
+        if(param.hasOwnProperty("x")) this.x = param.x;
+        if(param.hasOwnProperty("y")) this.y = param.y;
+        return this;
+    }
+    /**
      * @overload
      * @param {number} x 
      * @param {number} y 

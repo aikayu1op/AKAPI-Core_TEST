@@ -200,6 +200,14 @@ export class Vector {
     return new Vector(new Vec3(this).rejection(vector.getMCVector3()))
   }
   /**
+   * 
+   * @param {this} vector 
+   * @returns 
+   */
+  subtract(vector){
+    return new Vector(new Vec3(this).subtract(vector.getMCVector3()))
+  }
+  /**
    * 現在の座標が始点と終点の間に含まれているかどうかを取得します。
    * @param {this} startPoint
    * @param {this} endPoint
@@ -288,6 +296,9 @@ export class Vector {
   }
   toColor(){
     return `§4${this.x} §a${this.y} §1${this.z}§r`;
+  }
+  toVectorXZ(){
+    return {x: this.x, z: this.z}
   }
   
 

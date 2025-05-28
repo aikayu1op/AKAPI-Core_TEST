@@ -123,7 +123,8 @@ class ItemDyeableComponent extends ItemComponentInterface{
    * @param {Color} value
    */
   set color(value){
-    this.itemComp.color = value.getDyeableColor().getMCColor();
+    if(value instanceof Color) this.itemComp.color = value.getDyeableColor().getMCColor();
+    this.itemComp.color = value;
   }
   /**
    * @readonly
@@ -235,7 +236,7 @@ class ItemCooldownComponent {
 class ItemPotionComponent extends ItemComponentInterface{
 
   /**
-   * @type {boolean}
+   * @type {string}
    * @readonly
    */
   get potionEffectType(){

@@ -1,4 +1,5 @@
 import { system } from "../System/index.js";
+import { thread } from "../Utils/index.js";
 import { world } from "../World/index.js";
 import { IPlayerMoveEventSignal } from "./interface.js";
 import { isDuplicate } from "./isDuplicate.js";
@@ -51,12 +52,14 @@ export const playerMove = new PlayerMoveEvent();
  * イベント登録数が1個以上の場合にイベントを監視するようにします。
  */
 function start(){
-    let runId = system.allPlayerTickSubscribe(({player}) =>{
-        if(!isRunning) system.allPlayerTickUnSubscribe(runId);
-        if(player.getVelocity().isZero) return;
-        let getVelocity = () => player.getVelocity();
-        let getLocation = () => player.location;
-        let dimension = player.dimension;
-        _listener.forEach(f => f({player, getVelocity, getLocation, dimension}));
-    })
+    let runId = system.runInterval(() =>{
+        for(const player of world.getAllPlayers()){
+            if(!isRunning) system.clearRun(runId);
+            if(player.getVelocity().isZero) continue;
+            let getVelocity = () => player.getVelocity();
+            let getLocation = () => player.location;
+            let dimension = player.dimension;
+            _listener.forEach(f => f({player, getVelocity, getLocation, dimension}));
+        }
+    }, 1);
 }

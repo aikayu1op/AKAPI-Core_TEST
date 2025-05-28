@@ -1,9 +1,12 @@
+import { system } from "../../System/index.js";
 import { Command } from "../CommandBuilder/index.js";
 
 let author = "";
 let allplugins = "";
 let errorlist = [];
 let minus = 0;
+let index = 0;
+let files;
 export class Plugins {
   /**
    * プラグインを読み込みます。
@@ -11,44 +14,49 @@ export class Plugins {
    * @param {boolean} debug 読み込んだプラグインを表示します。
    */
   static register(filenames, debug = false) {
-    for (const data of filenames) {
+    files = filenames;
+    let loadPlugins = system.runInterval(() =>{
+      const data = files[index];
+      if(!data){
+        system.clearRun(loadPlugins);
+        return;
+      }
       const filename = data.split(",");
       if (data.includes("author: ")) author = data.split(":")[1].trim();
       else if (filename.length == 2) {
         let time = Date.now();
         import(`../../../../../${filename[0]}.js`)
-          .then(() => {
-            let now = Date.now();
-            allplugins += `§a${filename[0]} ver${filename[1]} §f${now - time - minus}ms\n`;
-            minus = now - time;
-            if(debug) console.warn("load plugins: "+filename[0]);
-          })
-          .catch((e) => {
-            allplugins += `§4${filename[0]} ver${filename[1]} §f-1ms\n`;
-            let list = JSON.stringify({
-              name: filename,
-              err: `${e}\n${String(e.stack)}`,
-            });
-            errorlist.push(list);
+        .then(() => {
+          let now = Date.now();
+          allplugins += `§a${filename[0]} ver${filename[1]} §f${now - time}ms\n`;
+          if(debug) console.warn("load plugins: "+filename[0]);
+        })
+        .catch((e) => {
+          allplugins += `§4${filename[0]} ver${filename[1]} §f-1ms\n`;
+          let list = JSON.stringify({
+            name: filename,
+            err: `${e}\n${String(e.stack)}`,
           });
+          errorlist.push(list);
+        });
       } else {
         let time = Date.now();
         import(`../../../../../${data}`)
-          .then(() => {
-            let now = Date.now();
-            allplugins += `§a${data} ver? §f${now - time - minus}ms\n`;
-            minus = now - time;
-          })
-          .catch((e) => {
-            allplugins += `§4${data} ver? §f-1ms\n`;
-            let list = JSON.stringify({
-              name: filename,
-              err: `${e}`,
-            });
-            errorlist.push(list);
+        .then(() => {
+          let now = Date.now();
+          allplugins += `§a${data} ver? §f${now - time}ms\n`;
+        })
+        .catch((e) => {
+          allplugins += `§4${data} ver? §f-1ms\n`;
+          let list = JSON.stringify({
+            name: filename,
+            err: `${e}`,
           });
+          errorlist.push(list);
+        });
       }
-    }
+      index++;
+    })
   }
 }
 

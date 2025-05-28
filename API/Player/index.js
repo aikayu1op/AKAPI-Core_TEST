@@ -174,13 +174,9 @@ export class Player {
      *
      * This function can't be called in read-only mode.
      *
-     * @param directionX
-     * X direction in horizontal plane.
-     * @param directionZ
-     * Z direction in horizontal plane.
-     * @param horizontalStrength
+     * @param {Vector2} horizontalForce
      * Knockback strength for the horizontal vector.
-     * @param verticalStrength
+     * @param {number} verticalStrength
      * Knockback strength for the vertical vector.
      * @throws This function can throw errors.
      * @example bounceSkeletons.ts
@@ -201,8 +197,8 @@ export class Player {
      *   }
      * ```
      */
-  applyKnockback(directionX = 0, directionZ = 0, horizontalStrength = 0, verticalStrength = 0) {
-    this._player.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+  applyKnockback(horizontalForce, verticalStrength = 0) {
+    this._player.applyKnockback(horizontalForce.toVectorXZ(), verticalStrength);
   }
   /**
    * 
@@ -212,7 +208,7 @@ export class Player {
     const { x, y, z } = vector;
     const horizontal = Math.sqrt(x * x + z * z) * 2.0;
     const vertical = y < 0.0 ? 0.5 * y : y;
-    this._player.applyKnockback(x, z, horizontal, vertical);
+    this._player.applyKnockback(vector.multiply(horizontal), vertical);
   }
   /**
    * EntityクラスからPlayerクラスへ変換します。
@@ -595,7 +591,7 @@ export class Player {
    * @returns 
    */
   isValid(){
-    return this._player.isValid();
+    return this._player.isValid;
   }
   /**
    * プレイヤーをキルします。
@@ -716,18 +712,11 @@ export class Player {
     this._player.resetLevel();
   }
   /**
-   * 指定されたコマンドを実行します。(同期処理)
+   * 指定されたコマンドを実行します。
    * @param {String} command 
    */
   runCommand(command){
     return this._player.runCommand(command);
-  }
-  /**
-   * 指定されたコマンドを実行します。(非同期処理)
-   * @param {String} command
-   */
-  runCommandAsync(command) {
-    return this._player.runCommandAsync(command);
   }
   /**
    * 
@@ -821,9 +810,9 @@ export class Player {
    * @param {ValueOf<GameMode>} gameMode
    * @returns {void}
    */
-  async setGameModeAsync(gameMode) {
+  setGameMode(gameMode) {
     try {
-      await this.runCommandAsync(`gamemode ${gameMode}`);
+      return this.runCommand(`gamemode ${gameMode}`);
     } catch (e) {
       throw e;
     }
@@ -968,7 +957,7 @@ export class Player {
   }
   /** @deprecated */
   toJSON(){
-    return {id: this.id, name: this.name, typeId: this.typeId};
+    return {id: this.id, typeId: this.typeId};
   }
   /**
    * アニメーションを再生します。

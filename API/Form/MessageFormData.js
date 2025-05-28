@@ -53,8 +53,8 @@ export class MessageFormData{
      * @param {MessageFormResponse} callback
      */
     button1(text, callback){
-        this._button[2] = text;
-        if(typeof callback == "function") this._button[3] = callback;
+        this._button[0] = text;
+        if(typeof callback == "function") this._button[1] = callback;
         return this;
     }
     /**
@@ -65,8 +65,8 @@ export class MessageFormData{
      * @param {MessageFormResponse} callback
      */
      button2(text, callback){
-        this._button[0] = text;
-        if(typeof callback == "function") this._button[1] = callback;
+        this._button[2] = text;
+        if(typeof callback == "function") this._button[3] = callback;
         return this;
     }
     /**

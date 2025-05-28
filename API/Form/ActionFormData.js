@@ -32,9 +32,13 @@ export class ActionFormData{
     firstCallback = undefined;
     /**
      * @private
-     * @type {string[]}
+     * @type {{id: string, text: string, iconPath: string}[]}
      */
-    buttons = [];
+    elements = [];
+    /**
+     * @private
+     */
+    _divider = false;
     /**
      * ボタンのコールバックを返します。
      * @private
@@ -69,9 +73,13 @@ export class ActionFormData{
      * @param {ActionFormResponse} callback
      */
     button(text, iconPath = undefined, callback = undefined){
-        this.buttons.push(text,iconPath);
+        this.elements.push({id: "button", text, iconPath});
         this._callbackIndex++;
         if(typeof callback == "function" && callback) this._doCallback[this._callbackIndex] = callback;
+        return this;
+    }
+    divider(){
+        this.elements.push({id: "divider"});
         return this;
     }
     /**
@@ -84,7 +92,21 @@ export class ActionFormData{
         const form = new UI.ActionFormData()
         .title(this.form.title)
         .body(this.form.body);
-        for(let i = 0; i < this.buttons.length; i+=2) form.button(this.buttons[i], this.buttons[i+1]);
+        for(let i = 0; i < this.elements.length; i++){
+            switch(this.elements[i].id){
+                case "button":
+                    form.button(this.elements[i].text, this.elements[i].iconPath);
+                    break;
+                case "label":
+                    form.label(this.elements[i].text);
+                    break;
+                case "divider":
+                    form.divider();
+                    break;
+                default:
+                    throw "this element is not found.";
+            }
+        }
         let firstCallback = this.firstCallback;
         let _doCallback = this._doCallback;
         let count = 0;
@@ -120,7 +142,19 @@ export class ActionFormData{
         const form = new UI.ActionFormData()
         .title(this.form.title)
         .body(this.form.body);
-        for(let i = 0; i < this.buttons.length; i+=2) form.button(this.buttons[i], this.buttons[i+1]);
+        if(this._divider) form.divider();
+        for(let i = 0; i < this.elements.length; i++){
+            switch(this.elements[i].id){
+                case "button":
+                    form.button(this.elements[i].text, this.elements[i].iconPath);
+                    break;
+                case "label":
+                    form.label(this.elements[i].text);
+                    break;
+                default:
+                    throw "this element is not found.";
+            }
+        }
         let firstCallback = this.firstCallback;
         let _doCallback = this._doCallback;
         let count = 0;
