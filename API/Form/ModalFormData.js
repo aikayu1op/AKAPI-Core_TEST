@@ -126,10 +126,10 @@ export class ModalFormData{
      */
     textField(label = "", placeholderText = "", defaultValue = undefined, tooltip = undefined){
         if(typeof defaultValue === "object"){
-            this._elements.push({id: "textField", label, options: defaultValue});
+            this._elements.push({id: "textField", label, placeholderText, options: defaultValue});
             return this;
         }
-        this._elements.push({id: "textField", label, options:{ placeholderText, defaultValue, tooltip }});
+        this._elements.push({id: "textField", label, placeholderText, options:{ defaultValue, tooltip }});
         return this;
     }
     /**
