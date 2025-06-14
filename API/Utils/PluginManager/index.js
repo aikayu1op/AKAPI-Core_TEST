@@ -12,6 +12,11 @@ let pluginFolder = {};
 export class Plugins {
   /**
    * プラグインを読み込みます。フォルダの名前がAPIと最後についている場合は、APIとして読み込み、getやgetAllで呼び出せるようになります。
+   * 
+   * この際プラグインのクラスは、フォルダ名と同じ名前で且つ、index.jsでエクスポートされている必要があります。
+   * 
+   * 
+   * 読み込んだプラグインは、Plugins.get("フォルダ名")で取得できます。
    * @param {string[]} filenames
    * @param {boolean} debug 読み込んだプラグインを表示します。
    */
@@ -33,17 +38,8 @@ export class Plugins {
         .then((plugin) => {
           let now = Date.now();
           if(isAPI){
-            Object.entries(plugin).map(([key, value]) => {
-              // コメント・改行・インデント削除
-              const cleanedCode = value.toString()
-                .replace(/\/\*[\s\S]*?\*\//g, '')      // /* コメント */
-                .replace(/\/\/.*$/gm, '')              // // コメント
-                .replace(/^\s+/gm, '')                 // インデント
-                .replace(/\r?\n|\r/g, '');             // 改行
-
-                // クラスを return する形に変換し、即時実行
-              pluginFolder[key] = new Function(`${cleanedCode}; return ${key};`)();
-            });
+            pluginFolder[filename[0]] = plugin[filename[0]];
+            pluginFolder[filename[0]].version = filename[1];
           }
           allplugins += `§a${filename[0]} ver${filename[1]} §f${now - time}ms\n`;
           if(debug) console.warn("load plugins: "+filename[0]);
@@ -89,7 +85,7 @@ export class Plugins {
    * @param {string} pluginName 
    * @returns {Class}
    */
-  static getPlugin(pluginName){
+  static get(pluginName){
       if(!pluginFolder[pluginName]) throw new Error(`Plugin ${pluginName} is not found.`);
       return pluginFolder[pluginName];
   }
@@ -98,7 +94,7 @@ export class Plugins {
    * @returns {string[]}
    * @description 登録されている全てのプラグインの名前を取得します。
    */
-  static getAllPlugins(){
+  static getAll(){
       return Object.entries(pluginFolder).map(([name, _]) => name);
   }
 }
