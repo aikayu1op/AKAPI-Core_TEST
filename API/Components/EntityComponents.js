@@ -3,7 +3,6 @@ import {
   Entity,
   EntityDefinitionFeedItem,
   Trigger,
-  FilterGroup,
   FeedItem,
   Seat,
   Container,
@@ -2592,11 +2591,6 @@ export class EntityHealableComponent {
        * @private
        */
       this.entityComp = entity.getComponent(this.typeId);
-      /**
-       * @readonly
-       * @type {FilterGroup}
-       */
-      this.filters = this.entityComp.filters;
       /**
        * @readonly
        * @type {boolean}
