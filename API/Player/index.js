@@ -224,6 +224,50 @@ export class Player {
     this._player.clearSpawn();
   }
   /**
+   * 
+   * @param {Entity} targetEntity 
+   */
+  clearPropertyOverridesForEntity(targetEntity){
+    this._player.clearPropertyOverridesForEntity(targetEntity.getMCEntity());
+  }
+  /**
+   * プレイヤーの速度をクリアします。この際、当たり判定もクリアされます。
+   */
+  clearVelocity(){
+    this._player.clearVelocity();
+  }
+  /**
+   * プレイヤーのコマンドの権限レベルを取得します。
+   */
+  get commandPermissionLevel(){
+    return this._player.commandPermissionLevel;
+  }
+  /**
+   * プレイヤーのグラフィックモードを取得します。
+   * @readonly
+   */
+  get graphicsMode(){
+    return this._player.graphicsMode;
+  }
+  /**
+   * プレイヤーの現在の言語を取得します。
+   * @readonly
+   */
+  get localizationKey(){
+    return this._player.localizationKey;
+  }
+  /**
+   * 
+   * @param {Entity} targetEntity 
+   * @param {string} identifier 
+   * @param {boolean | number | string} value 
+   */
+  setPropertyOverrideForEntity(targetEntity, identifier, value) {
+    this._player.setPropertyOverrideForEntity(targetEntity.getMCEntity(), identifier, value);
+  }
+
+
+  /**
    *
    * @param {boolean} useEffects
    */
@@ -511,8 +555,8 @@ export class Player {
   /**
    * 死んだ際にスポーンする場所を設定できます。
    */
-  setSpawn(spawnPosition = this.location, spawnDimension = this.dimension) {
-    this._player.setSpawn(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
+  setSpawnPoint(spawnPosition = this.location, spawnDimension = this.dimension) {
+    this._player.setSpawnPoint(spawnPosition.getMCVector3(), spawnDimension.getMCDimension());
   }
   /**
    * 音を止めます。
@@ -605,6 +649,13 @@ export class Player {
    */
   kick(reason){
     this.runCommand(`kick ${this.name} ${reason ?? ""}`)
+  }
+  /**
+   * 
+   * @param {Vector} location 
+   */
+  lookAt(location){
+    this._player.lookAt(location.getMCVector3());
   }
   /**
    * 右手に持っているアイテムを取得します。
@@ -1215,7 +1266,6 @@ export class Player {
    */
   constructor(player) {
     this._player = player;
-
   }
 }
 /**
